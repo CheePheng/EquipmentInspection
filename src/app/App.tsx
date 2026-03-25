@@ -3,13 +3,26 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
 import { useNetworkStatus } from '../stores/app.store';
 import { seedDatabase } from '../db/seed';
+import { checkStorageWarning } from '../lib/storage';
+import { useToastStore } from '../stores/toast.store';
 
 export default function App() {
   useNetworkStatus();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    seedDatabase().then(() => setReady(true));
+    seedDatabase().then(() => {
+      setReady(true);
+      // Check storage usage
+      checkStorageWarning().then(warning => {
+        if (warning) {
+          useToastStore.getState().addToast(
+            'Storage usage is high. Consider clearing old data in Settings.',
+            'info'
+          );
+        }
+      });
+    });
   }, []);
 
   if (!ready) {
