@@ -47,7 +47,7 @@ export const router = createBrowserRouter([
       { path: 'machines', element: <SuspenseWrapper><MachineList /></SuspenseWrapper> },
       { path: 'machines/:id', element: <SuspenseWrapper><MachineDetail /></SuspenseWrapper> },
       {
-        path: 'machines/:machineId/inspect',
+        path: 'machines/:id/inspect',
         element: <RoleGuard roles={['operator', 'supervisor']}><SuspenseWrapper><InspectionForm /></SuspenseWrapper></RoleGuard>,
       },
       { path: 'defects', element: <SuspenseWrapper><DefectList /></SuspenseWrapper> },

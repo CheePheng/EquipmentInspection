@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { useEffect } from 'react';
 
 interface AppState {
   isOnline: boolean;
@@ -8,14 +9,23 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  isOnline: navigator.onLine,
+  isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
   setOnline: (online) => set({ isOnline: online }),
   currentSiteFilter: null,
   setSiteFilter: (siteId) => set({ currentSiteFilter: siteId }),
 }));
 
-// Listen for online/offline events
-if (typeof window !== 'undefined') {
-  window.addEventListener('online', () => useAppStore.getState().setOnline(true));
-  window.addEventListener('offline', () => useAppStore.getState().setOnline(false));
+/** Call this hook once in App.tsx to register online/offline listeners */
+export function useNetworkStatus() {
+  useEffect(() => {
+    const setOnline = useAppStore.getState().setOnline;
+    const handleOnline = () => setOnline(true);
+    const handleOffline = () => setOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 }

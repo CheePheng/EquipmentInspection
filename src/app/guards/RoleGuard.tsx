@@ -1,16 +1,17 @@
+import { type ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../../features/auth/auth.store';
 import type { UserRole } from '../../lib/constants';
 
 interface RoleGuardProps {
-  children: React.ReactNode;
+  children: ReactNode;
   roles?: UserRole[];
 }
 
 export default function RoleGuard({ children, roles }: RoleGuardProps) {
-  const { isAuthenticated, currentUser } = useAuthStore();
+  const currentUser = useAuthStore((s) => s.currentUser);
 
-  if (!isAuthenticated || !currentUser) {
+  if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
 

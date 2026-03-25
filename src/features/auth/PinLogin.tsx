@@ -30,27 +30,33 @@ export default function PinLogin() {
       return;
     }
 
-    const user = await db.users.where('pin').equals(pin).first();
-    if (!user) {
-      setError('Invalid PIN');
-      setPin('');
-      return;
-    }
+    try {
+      const user = await db.users.where('pin').equals(pin).first();
+      if (!user) {
+        setError('Invalid PIN');
+        setPin('');
+        return;
+      }
 
-    login(user);
-    addToast(`Welcome, ${user.name}`);
+      login(user);
+      addToast(`Welcome, ${user.name}`);
 
-    // Navigate to role-based home
-    switch (user.role) {
-      case 'operator':
-        navigate('/machines');
-        break;
-      case 'mechanic':
-        navigate('/repairs');
-        break;
-      case 'supervisor':
-        navigate('/dashboard');
-        break;
+      // Navigate to role-based home
+      switch (user.role) {
+        case 'operator':
+          navigate('/machines');
+          break;
+        case 'mechanic':
+          navigate('/repairs');
+          break;
+        case 'supervisor':
+          navigate('/dashboard');
+          break;
+        default:
+          navigate('/machines');
+      }
+    } catch {
+      setError('Login failed. Please try again.');
     }
   };
 
