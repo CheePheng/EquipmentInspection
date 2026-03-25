@@ -1,0 +1,46 @@
+@import "tailwindcss";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+
+@theme {
+  --color-obsidian: #0F1419;
+  --color-slate-dark: #1A2332;
+  --color-elevated: #243447;
+  --color-border: #334155;
+
+  --color-amber-primary: #F59E0B;
+  --color-amber-hover: #FBBF24;
+  --color-amber-pressed: #D97706;
+  --color-amber-muted: rgba(245, 158, 11, 0.2);
+
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+
+  --color-status-available: #10B981;
+  --color-status-critical: #EF4444;
+  --color-status-warning: #F59E0B;
+  --color-status-progress: #3B82F6;
+  --color-status-deferred: #6B7280;
+
+  --font-family-sans: "Inter", system-ui, sans-serif;
+}
+
+body {
+  @apply bg-obsidian text-text-primary font-sans antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-obsidian);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
