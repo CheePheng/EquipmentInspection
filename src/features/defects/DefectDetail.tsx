@@ -1,12 +1,13 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { CheckCircle, XCircle, Wrench } from 'lucide-react';
+import { CheckCircle, XCircle, Wrench, AlertTriangle } from 'lucide-react';
 import { AnimatedPage } from '../../components/ui/AnimatedPage';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { Spinner } from '../../components/ui/Spinner';
+import { EmptyState } from '../../components/ui/EmptyState';
 import { PhotoGrid } from './PhotoGrid';
 import { useDefect, useDefectPhotos, updateDefectStatus } from './useDefects';
 import { useMachine } from '../machines/useMachines';
@@ -70,20 +71,27 @@ export default function DefectDetail() {
 
   if (defect === undefined) {
     return (
-      <div className="min-h-screen bg-obsidian flex items-center justify-center">
-        <Spinner size="lg" />
-      </div>
+      <AnimatedPage>
+        <div className="min-h-screen bg-obsidian flex items-center justify-center">
+          <Spinner size="lg" />
+        </div>
+      </AnimatedPage>
     );
   }
 
   if (defect === null) {
     return (
-      <div className="min-h-screen bg-obsidian flex flex-col items-center justify-center gap-4 px-4">
-        <p className="text-text-secondary">Defect not found.</p>
-        <Button variant="secondary" onClick={() => navigate(-1)}>
-          Go Back
-        </Button>
-      </div>
+      <AnimatedPage>
+        <div className="min-h-screen bg-obsidian">
+          <PageHeader title="Defect Not Found" showBack />
+          <EmptyState
+            icon={AlertTriangle}
+            title="Defect not found"
+            description="This defect may have been removed."
+            action={{ label: 'Go Back', onClick: () => navigate(-1) }}
+          />
+        </div>
+      </AnimatedPage>
     );
   }
 
@@ -91,7 +99,7 @@ export default function DefectDetail() {
 
   return (
     <AnimatedPage>
-      <div className="min-h-screen bg-obsidian pb-8">
+      <div className="min-h-screen bg-obsidian pb-20">
         <PageHeader title={`Defect #${defect.id}`} showBack />
 
         <div className="px-4 py-4 space-y-4">

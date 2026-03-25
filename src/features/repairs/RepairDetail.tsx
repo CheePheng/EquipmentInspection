@@ -43,9 +43,11 @@ export default function RepairDetail() {
   // ---- Guard: loading ----
   if (repair === undefined) {
     return (
-      <div className="min-h-screen bg-obsidian flex items-center justify-center">
-        <Spinner size="lg" />
-      </div>
+      <AnimatedPage>
+        <div className="min-h-screen bg-obsidian flex items-center justify-center">
+          <Spinner size="lg" />
+        </div>
+      </AnimatedPage>
     );
   }
 

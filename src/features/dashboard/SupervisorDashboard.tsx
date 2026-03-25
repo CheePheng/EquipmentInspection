@@ -73,12 +73,14 @@ export default function SupervisorDashboard() {
   // Loading state
   if (data === undefined) {
     return (
-      <div className="flex flex-col min-h-screen bg-obsidian">
-        <PageHeader title="Dashboard" />
-        <div className="flex-1 flex items-center justify-center">
-          <Spinner />
+      <AnimatedPage>
+        <div className="flex flex-col min-h-screen bg-obsidian">
+          <PageHeader title="Dashboard" />
+          <div className="flex-1 flex items-center justify-center">
+            <Spinner />
+          </div>
         </div>
-      </div>
+      </AnimatedPage>
     );
   }
 

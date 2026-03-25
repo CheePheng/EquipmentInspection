@@ -198,7 +198,7 @@ export default function WorkQueue() {
         </div>
 
         {/* Content */}
-        <div className="px-4 pt-3 space-y-3">
+        <div className="px-4 pt-3">
           {filteredRepairs === undefined ? (
             <div className="flex justify-center py-12">
               <Spinner size="lg" />
@@ -222,21 +222,32 @@ export default function WorkQueue() {
               }
             />
           ) : (
-            filteredRepairs.map((repair, index) => (
-              <motion.div
-                key={repair.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.04, duration: 0.2, ease: 'easeOut' }}
-              >
-                <RepairCard
-                  repair={repair}
-                  onClick={() => navigate(`/repairs/${repair.id}`)}
-                  onClaim={() => handleClaim(repair)}
-                  onMarkFixed={() => handleMarkFixed(repair)}
-                />
-              </motion.div>
-            ))
+            <motion.div
+              className="space-y-3"
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: {},
+                show: { transition: { staggerChildren: 0.05 } },
+              }}
+            >
+              {filteredRepairs.map(repair => (
+                <motion.div
+                  key={repair.id}
+                  variants={{
+                    hidden: { opacity: 0, y: 10 },
+                    show: { opacity: 1, y: 0, transition: { duration: 0.2, ease: 'easeOut' } },
+                  }}
+                >
+                  <RepairCard
+                    repair={repair}
+                    onClick={() => navigate(`/repairs/${repair.id}`)}
+                    onClaim={() => handleClaim(repair)}
+                    onMarkFixed={() => handleMarkFixed(repair)}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
           )}
         </div>
 

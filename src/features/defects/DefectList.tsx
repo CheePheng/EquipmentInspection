@@ -108,7 +108,7 @@ export default function DefectList() {
 
   return (
     <AnimatedPage>
-      <div className="min-h-screen bg-obsidian pb-8">
+      <div className="min-h-screen bg-obsidian pb-20">
         <PageHeader
           title="Defects"
           action={
