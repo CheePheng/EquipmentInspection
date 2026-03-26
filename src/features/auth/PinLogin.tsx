@@ -4,6 +4,8 @@ import { Delete, LogIn } from 'lucide-react';
 import { db } from '../../db/database';
 import { useAuthStore } from './auth.store';
 import { useToastStore } from '../../stores/toast.store';
+import { LanguageToggle } from '../../components/ui/LanguageToggle';
+import { useTranslation } from '../../i18n/useTranslation';
 
 export default function PinLogin() {
   const [pin, setPin] = useState('');
@@ -11,6 +13,7 @@ export default function PinLogin() {
   const navigate = useNavigate();
   const login = useAuthStore((s) => s.login);
   const addToast = useToastStore((s) => s.addToast);
+  const { t } = useTranslation();
 
   const handleDigit = (digit: string) => {
     if (pin.length < 6) {
@@ -60,11 +63,16 @@ export default function PinLogin() {
   const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'];
 
   return (
-    <div className="min-h-screen bg-obsidian flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen bg-obsidian flex flex-col items-center justify-center px-6 relative">
+      {/* Language toggle — top-right */}
+      <div className="absolute top-4 right-4">
+        <LanguageToggle />
+      </div>
+
       {/* Logo / Title */}
       <div className="mb-10 text-center">
-        <h1 className="text-3xl font-bold text-text-primary">CCT FieldOps</h1>
-        <p className="text-text-secondary mt-2 text-sm">Enter your PIN to continue</p>
+        <h1 className="text-3xl font-bold text-text-primary">{t('login.title')}</h1>
+        <p className="text-text-secondary mt-2 text-sm">{t('login.enterPin')}</p>
       </div>
 
       {/* PIN dots */}
@@ -120,7 +128,7 @@ export default function PinLogin() {
         className="w-full max-w-[280px] h-12 rounded-xl bg-amber-primary text-obsidian font-semibold flex items-center justify-center gap-2 disabled:opacity-40 active:bg-amber-pressed transition-colors"
       >
         <LogIn className="w-5 h-5" />
-        Sign In
+        {t('login.signIn')}
       </button>
     </div>
   );

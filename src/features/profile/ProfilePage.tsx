@@ -10,6 +10,8 @@ import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { useAuthStore } from '../auth/auth.store';
 import { db } from '../../db/database';
+import { LanguageToggle } from '../../components/ui/LanguageToggle';
+import { useTranslation } from '../../i18n/useTranslation';
 
 function getInitials(name: string): string {
   return name
@@ -37,6 +39,7 @@ export default function ProfilePage() {
 
   const [pinRevealed, setPinRevealed] = useState(false);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  const { t } = useTranslation();
 
   const site = useLiveQuery(
     () => (currentUser?.siteId ? db.sites.get(currentUser.siteId) : undefined),
@@ -111,6 +114,14 @@ export default function ProfilePage() {
                   {pinRevealed ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
+            </div>
+          </Card>
+
+          {/* Language toggle */}
+          <Card>
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-text-secondary">{t('label.language')}</p>
+              <LanguageToggle />
             </div>
           </Card>
 

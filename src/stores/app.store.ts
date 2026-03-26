@@ -6,6 +6,8 @@ interface AppState {
   setOnline: (online: boolean) => void;
   currentSiteFilter: number | null;
   setSiteFilter: (siteId: number | null) => void;
+  language: 'en' | 'zh';
+  setLanguage: (lang: 'en' | 'zh') => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -13,6 +15,11 @@ export const useAppStore = create<AppState>((set) => ({
   setOnline: (online) => set({ isOnline: online }),
   currentSiteFilter: null,
   setSiteFilter: (siteId) => set({ currentSiteFilter: siteId }),
+  language: (typeof localStorage !== 'undefined' ? localStorage.getItem('fieldops-lang') : null) as 'en' | 'zh' || 'en',
+  setLanguage: (lang) => {
+    localStorage.setItem('fieldops-lang', lang);
+    set({ language: lang });
+  },
 }));
 
 /** Call this hook once in App.tsx to register online/offline listeners */
