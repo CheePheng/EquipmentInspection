@@ -41,7 +41,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? 'modal-title' : undefined}
-            className="relative bg-slate-dark rounded-2xl border border-border max-w-md w-full mx-4 p-6 shadow-2xl"
+            className="relative bg-slate-dark rounded-2xl border border-border max-w-md w-full mx-4 p-6 shadow-[0_16px_48px_rgba(0,0,0,0.5)]"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}

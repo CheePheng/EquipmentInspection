@@ -47,7 +47,7 @@ export default function BottomNav() {
   const tabs = TABS_BY_ROLE[role] ?? TABS_BY_ROLE.operator;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-14 bg-slate-dark border-t border-border flex items-stretch z-40 safe-area-inset-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 h-14 bg-slate-dark border-t border-border flex items-stretch z-40 safe-area-inset-bottom shadow-[0_-4px_12px_rgba(0,0,0,0.3)]">
       {tabs.map(({ path, label, icon: Icon }) => (
         <NavLink
           key={path}

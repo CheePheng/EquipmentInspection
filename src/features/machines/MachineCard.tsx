@@ -13,12 +13,7 @@ interface MachineCardProps {
   site?: Site;
 }
 
-import type { Variants } from 'framer-motion';
-
-export const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: 'easeOut' as const } },
-};
+import { cardVariants } from '../../lib/motion';
 
 export function MachineCard({ machine, site }: MachineCardProps) {
   const navigate = useNavigate();
@@ -44,7 +39,7 @@ export function MachineCard({ machine, site }: MachineCardProps) {
         {/* Bottom row: type badge + meter hours + site */}
         <div className="flex items-center gap-2 mt-3 flex-wrap">
           <Badge variant="default">{MACHINE_TYPE_LABELS[machine.type]}</Badge>
-          <span className="text-text-muted text-xs font-mono">
+          <span className="text-text-muted text-xs font-mono tabular-nums">
             {formatMeterHours(machine.currentMeterHours)}
           </span>
           {site && (
