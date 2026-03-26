@@ -35,18 +35,18 @@ export function useAvailabilityBoard(siteId?: number | null) {
       if (machineDowntime.some(d => !d.endTime)) {
         state = 'down';
       }
-      // Open critical defect → needs-repair
-      else if (machineDefects.some(d => d.status === 'open' && d.severity === 'critical')) {
-        state = 'needs-repair';
+      // Open critical defect → down
+      else if (machineDefects.some(d => d.severity === 'critical' && (d.status === 'open' || d.status === 'in-progress'))) {
+        state = 'down';
       }
-      // Overdue maintenance → inspection-due
+      // Overdue maintenance → service-due
       else if (machineSchedules.some(s =>
         s.isActive && (
           (s.dueDate && s.dueDate <= todayStr) ||
           (s.dueHours && s.dueHours <= machine.currentMeterHours)
         )
       )) {
-        state = 'inspection-due';
+        state = 'service-due';
       }
 
       return {

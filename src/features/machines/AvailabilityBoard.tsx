@@ -20,51 +20,38 @@ import { listVariants, cardVariants } from '../../lib/motion';
 
 // Display order: most critical first
 const GROUP_ORDER: AvailabilityState[] = [
-  'down',
-  'needs-repair',
-  'under-maintenance',
-  'inspection-due',
-  'available',
-  'out-of-service',
+  'down', 'out-for-service', 'service-due', 'available',
 ];
 
 const STATE_LABELS: Record<AvailabilityState, string> = {
   'down': 'Down',
-  'needs-repair': 'Needs Repair',
-  'under-maintenance': 'Under Maintenance',
-  'inspection-due': 'Inspection Due',
+  'out-for-service': 'Out for Service',
+  'service-due': 'Service Due',
   'available': 'Available',
-  'out-of-service': 'Out of Service',
 };
 
 // Summary KPI labels (shorter)
 const KPI_LABELS: Record<AvailabilityState, string> = {
   'down': 'Down',
-  'needs-repair': 'Needs Repair',
-  'under-maintenance': 'In Maintenance',
-  'inspection-due': 'Inspection Due',
+  'out-for-service': 'Out for Service',
+  'service-due': 'Service Due',
   'available': 'Available',
-  'out-of-service': 'Out of Service',
 };
 
 // Section left-border accent colors per state
 const STATE_BORDER: Record<AvailabilityState, string> = {
   'down': 'border-l-red-500',
-  'needs-repair': 'border-l-orange-500',
-  'under-maintenance': 'border-l-blue-500',
-  'inspection-due': 'border-l-amber-400',
+  'out-for-service': 'border-l-orange-500',
+  'service-due': 'border-l-amber-400',
   'available': 'border-l-emerald-500',
-  'out-of-service': 'border-l-gray-500',
 };
 
 // Section background tint per state
 const STATE_SECTION_BG: Record<AvailabilityState, string> = {
   'down': 'bg-red-950/20',
-  'needs-repair': 'bg-orange-950/20',
-  'under-maintenance': 'bg-blue-950/20',
-  'inspection-due': 'bg-amber-950/20',
+  'out-for-service': 'bg-orange-950/20',
+  'service-due': 'bg-amber-950/20',
   'available': 'bg-emerald-950/20',
-  'out-of-service': 'bg-gray-950/20',
 };
 
 // cardVariants and listVariants imported from src/lib/motion.ts

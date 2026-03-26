@@ -8,11 +8,9 @@ type BadgeVariant =
   | 'fixed'
   | 'deferred'
   | 'available'
-  | 'needs-repair'
-  | 'under-maintenance'
+  | 'service-due'
   | 'down'
-  | 'out-of-service'
-  | 'inspection-due'
+  | 'out-for-service'
   | 'default';
 
 interface BadgeProps {
@@ -31,11 +29,9 @@ const variantClasses: Record<BadgeVariant, string> = {
   fixed: 'bg-emerald-900/40 text-emerald-300',
   deferred: 'bg-gray-700/60 text-gray-400',
   available: 'bg-emerald-900/40 text-emerald-300',
-  'needs-repair': 'bg-red-900/40 text-red-300',
-  'under-maintenance': 'bg-blue-900/40 text-blue-300',
+  'service-due': 'bg-amber-primary/20 text-amber-primary',
   down: 'bg-red-900/40 text-red-300',
-  'out-of-service': 'bg-gray-700/60 text-gray-400',
-  'inspection-due': 'bg-amber-primary/20 text-amber-primary',
+  'out-for-service': 'bg-orange-900/40 text-orange-300',
   default: 'bg-elevated text-text-secondary',
 };
 

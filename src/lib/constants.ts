@@ -4,12 +4,8 @@ export type Severity = typeof SEVERITY_LEVELS[number];
 export const DEFECT_STATUSES = ['open', 'in-progress', 'fixed', 'deferred'] as const;
 export type DefectStatus = typeof DEFECT_STATUSES[number];
 
-export const REPAIR_STATUSES = ['pending', 'assigned', 'in-progress', 'completed', 'deferred'] as const;
-export type RepairStatus = typeof REPAIR_STATUSES[number];
-
 export const AVAILABILITY_STATES = [
-  'available', 'inspection-due', 'needs-repair',
-  'under-maintenance', 'down', 'out-of-service'
+  'available', 'service-due', 'down', 'out-for-service'
 ] as const;
 export type AvailabilityState = typeof AVAILABILITY_STATES[number];
 
@@ -79,11 +75,9 @@ export const SEVERITY_COLORS: Record<Severity, { bg: string; text: string; borde
 
 export const AVAILABILITY_STATE_COLORS: Record<AvailabilityState, { bg: string; text: string; dot: string }> = {
   'available': { bg: 'bg-emerald-900/30', text: 'text-emerald-400', dot: 'bg-emerald-400' },
-  'inspection-due': { bg: 'bg-amber-900/30', text: 'text-amber-400', dot: 'bg-amber-400' },
-  'needs-repair': { bg: 'bg-orange-900/30', text: 'text-orange-400', dot: 'bg-orange-400' },
-  'under-maintenance': { bg: 'bg-blue-900/30', text: 'text-blue-400', dot: 'bg-blue-400' },
+  'service-due': { bg: 'bg-amber-900/30', text: 'text-amber-400', dot: 'bg-amber-400' },
   'down': { bg: 'bg-red-900/30', text: 'text-red-400', dot: 'bg-red-400' },
-  'out-of-service': { bg: 'bg-gray-900/30', text: 'text-gray-400', dot: 'bg-gray-400' },
+  'out-for-service': { bg: 'bg-orange-900/30', text: 'text-orange-400', dot: 'bg-orange-400' },
 };
 
 export const MAINTENANCE_DUE_SOON_DAYS = 7;

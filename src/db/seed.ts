@@ -119,7 +119,7 @@ export async function seedDatabase(): Promise<void> {
       // Skidders
       const sk001Id = await db.machines.add({
         code: 'SK-001', name: 'Cat 535D', type: 'skidder',
-        siteId: site1Id as number, status: 'active', availabilityState: 'needs-repair',
+        siteId: site1Id as number, status: 'active', availabilityState: 'down',
         currentMeterHours: 6200, assignedOperatorId: null,
       });
       const sk002Id = await db.machines.add({
@@ -155,7 +155,7 @@ export async function seedDatabase(): Promise<void> {
       // Dozer
       const dz001Id = await db.machines.add({
         code: 'DZ-001', name: 'Cat D6T', type: 'dozer',
-        siteId: site1Id as number, status: 'active', availabilityState: 'under-maintenance',
+        siteId: site1Id as number, status: 'active', availabilityState: 'out-for-service',
         currentMeterHours: 7200, assignedOperatorId: null,
       });
 

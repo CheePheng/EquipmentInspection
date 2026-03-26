@@ -8,7 +8,7 @@ interface StatusIndicatorProps {
   size?: 'sm' | 'md';
 }
 
-const PULSE_STATES: AvailabilityState[] = ['available', 'under-maintenance'];
+const PULSE_STATES: AvailabilityState[] = ['available'];
 
 const dotSizeClasses = {
   sm: 'w-2 h-2',
