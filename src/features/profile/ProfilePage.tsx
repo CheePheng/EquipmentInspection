@@ -22,14 +22,12 @@ function getInitials(name: string): string {
 
 function getRoleBadgeVariant(role: string) {
   if (role === 'supervisor') return 'available' as const;
-  if (role === 'mechanic') return 'in-progress' as const;
   return 'default' as const;
 }
 
 function getRoleLabel(role: string): string {
   if (role === 'supervisor') return 'Supervisor';
-  if (role === 'mechanic') return 'Mechanic';
-  return 'Operator';
+  return 'Worker';
 }
 
 export default function ProfilePage() {
@@ -47,7 +45,7 @@ export default function ProfilePage() {
 
   const inspectionCount = useLiveQuery(
     () =>
-      currentUser?.role === 'operator' && currentUser.id
+      currentUser?.role === 'worker' && currentUser.id
         ? db.inspections.where('operatorId').equals(currentUser.id).count()
         : Promise.resolve(0),
     [currentUser?.id, currentUser?.role]
@@ -55,7 +53,7 @@ export default function ProfilePage() {
 
   const defectCount = useLiveQuery(
     () =>
-      currentUser?.role === 'operator' && currentUser.id
+      currentUser?.role === 'worker' && currentUser.id
         ? db.defects.where('reportedBy').equals(currentUser.id).count()
         : Promise.resolve(0),
     [currentUser?.id, currentUser?.role]
@@ -117,7 +115,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* Operator stats */}
-          {currentUser.role === 'operator' && (
+          {currentUser.role === 'worker' && (
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2 px-1">
                 Your Activity

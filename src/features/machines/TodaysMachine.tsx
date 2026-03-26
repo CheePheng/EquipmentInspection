@@ -41,7 +41,7 @@ export function TodaysMachine() {
   }, [currentUser?.id]);
 
   // Only show for operators
-  if (!currentUser || currentUser.role !== 'operator') return null;
+  if (!currentUser || currentUser.role !== 'worker') return null;
   // Still loading or no machine found
   if (machine === undefined || machine === null) return null;
 

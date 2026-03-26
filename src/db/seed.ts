@@ -73,16 +73,15 @@ export async function seedDatabase(): Promise<void> {
 
       // -----------------------------------------------------------------------
       // USERS
-      // Operators: 1-Johan, 2-Sipho, 3-Maria, 4-Thabo
-      // Mechanics:  5-Willem, 6-David
+      // Workers: 1-Johan, 2-Sipho, 3-Maria, 4-Thabo, 5-Willem, 6-David
       // Supervisors: 7-Pieter, 8-Sarah
       // -----------------------------------------------------------------------
-      const johanId = await db.users.add({ pin: '1111', name: 'Johan van der Merwe', role: 'operator', siteId: site1Id as number });
-      const siphoId = await db.users.add({ pin: '1112', name: 'Sipho Nkosi', role: 'operator', siteId: site1Id as number });
-      const mariaId = await db.users.add({ pin: '1113', name: 'Maria Dlamini', role: 'operator', siteId: site2Id as number });
-      const thaboId = await db.users.add({ pin: '1114', name: 'Thabo Mokoena', role: 'operator', siteId: site2Id as number });
-      const willemId = await db.users.add({ pin: '2222', name: 'Willem Botha', role: 'mechanic', siteId: site1Id as number });
-      const davidId = await db.users.add({ pin: '2223', name: 'David Sithole', role: 'mechanic', siteId: site2Id as number });
+      const johanId = await db.users.add({ pin: '1111', name: 'Johan van der Merwe', role: 'worker', siteId: site1Id as number });
+      const siphoId = await db.users.add({ pin: '1112', name: 'Sipho Nkosi', role: 'worker', siteId: site1Id as number });
+      const mariaId = await db.users.add({ pin: '1113', name: 'Maria Dlamini', role: 'worker', siteId: site2Id as number });
+      const thaboId = await db.users.add({ pin: '1114', name: 'Thabo Mokoena', role: 'worker', siteId: site2Id as number });
+      const willemId = await db.users.add({ pin: '2222', name: 'Willem Botha', role: 'worker', siteId: site1Id as number });
+      const davidId = await db.users.add({ pin: '2223', name: 'David Sithole', role: 'worker', siteId: site2Id as number });
       await db.users.add({ pin: '3333', name: 'Pieter Joubert', role: 'supervisor', siteId: site1Id as number });
       await db.users.add({ pin: '3334', name: 'Sarah Mthembu', role: 'supervisor', siteId: site2Id as number });
 

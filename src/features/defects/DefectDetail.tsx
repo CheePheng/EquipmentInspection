@@ -58,7 +58,7 @@ export default function DefectDetail() {
   );
 
   const canChangeStatus =
-    currentUser?.role === 'mechanic' || currentUser?.role === 'supervisor';
+    currentUser?.role === 'worker' || currentUser?.role === 'supervisor';
 
   const handleStatusChange = async (newStatus: string) => {
     try {

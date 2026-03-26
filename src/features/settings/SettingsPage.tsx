@@ -177,8 +177,6 @@ export default function SettingsPage() {
                         variant={
                           u.role === 'supervisor'
                             ? 'available'
-                            : u.role === 'mechanic'
-                            ? 'in-progress'
                             : 'default'
                         }
                       >

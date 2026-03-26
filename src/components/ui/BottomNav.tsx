@@ -4,7 +4,6 @@ import {
   AlertTriangle,
   Clock,
   User,
-  Wrench,
   Calendar,
   BarChart3,
   Grid3X3,
@@ -20,16 +19,10 @@ interface TabConfig {
 }
 
 const TABS_BY_ROLE: Record<UserRole, TabConfig[]> = {
-  operator: [
+  worker: [
     { path: '/machines', label: 'Machines', icon: Cog },
     { path: '/defects', label: 'Defects', icon: AlertTriangle },
     { path: '/downtime', label: 'Downtime', icon: Clock },
-    { path: '/profile', label: 'Profile', icon: User },
-  ],
-  mechanic: [
-    { path: '/queue', label: 'Queue', icon: Wrench },
-    { path: '/machines', label: 'Machines', icon: Cog },
-    { path: '/maintenance', label: 'Maintenance', icon: Calendar },
     { path: '/profile', label: 'Profile', icon: User },
   ],
   supervisor: [
@@ -43,8 +36,8 @@ const TABS_BY_ROLE: Record<UserRole, TabConfig[]> = {
 
 export default function BottomNav() {
   const currentUser = useAuthStore((s) => s.currentUser);
-  const role = currentUser?.role ?? 'operator';
-  const tabs = TABS_BY_ROLE[role] ?? TABS_BY_ROLE.operator;
+  const role = currentUser?.role ?? 'worker';
+  const tabs = TABS_BY_ROLE[role] ?? TABS_BY_ROLE.worker;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 h-14 bg-slate-dark border-t border-border flex items-stretch z-40 safe-area-inset-bottom shadow-[0_-4px_12px_rgba(0,0,0,0.3)]">

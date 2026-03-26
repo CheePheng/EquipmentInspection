@@ -159,7 +159,7 @@ export default function MachineDetail() {
 
             {/* ── Action Buttons (2-column grid) ───────────────────────── */}
             <div className="grid grid-cols-2 gap-3">
-              {(role === 'operator' || role === 'supervisor') && (
+              {(role === 'worker' || role === 'supervisor') && (
                 <Button
                   variant="primary"
                   size="sm"
@@ -170,7 +170,7 @@ export default function MachineDetail() {
                   Start Inspection
                 </Button>
               )}
-              {(role === 'operator' || role === 'mechanic' || role === 'supervisor') && (
+              {(role === 'worker' || role === 'supervisor') && (
                 <Button
                   variant="secondary"
                   size="sm"
@@ -181,7 +181,7 @@ export default function MachineDetail() {
                   Report Defect
                 </Button>
               )}
-              {(role === 'operator' || role === 'mechanic' || role === 'supervisor') && (
+              {(role === 'worker' || role === 'supervisor') && (
                 <Button
                   variant="ghost"
                   size="sm"

@@ -43,11 +43,8 @@ export default function PinLogin() {
 
       // Navigate to role-based home
       switch (user.role) {
-        case 'operator':
+        case 'worker':
           navigate('/machines');
-          break;
-        case 'mechanic':
-          navigate('/repairs');
           break;
         case 'supervisor':
           navigate('/dashboard');

@@ -18,10 +18,8 @@ export default function RoleGuard({ children, roles }: RoleGuardProps) {
   if (roles && !roles.includes(currentUser.role)) {
     // Redirect to role-appropriate home
     switch (currentUser.role) {
-      case 'operator':
+      case 'worker':
         return <Navigate to="/machines" replace />;
-      case 'mechanic':
-        return <Navigate to="/repairs" replace />;
       case 'supervisor':
         return <Navigate to="/dashboard" replace />;
     }

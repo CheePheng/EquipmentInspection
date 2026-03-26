@@ -49,34 +49,34 @@ export const router = createBrowserRouter([
       { path: 'machines/:id', element: <SuspenseWrapper><MachineDetail /></SuspenseWrapper> },
       {
         path: 'machines/:id/inspect',
-        element: <RoleGuard roles={['operator', 'supervisor']}><SuspenseWrapper><InspectionForm /></SuspenseWrapper></RoleGuard>,
+        element: <RoleGuard roles={['worker', 'supervisor']}><SuspenseWrapper><InspectionForm /></SuspenseWrapper></RoleGuard>,
       },
       { path: 'defects', element: <SuspenseWrapper><DefectList /></SuspenseWrapper> },
       {
         path: 'defects/new',
-        element: <RoleGuard roles={['operator', 'supervisor']}><SuspenseWrapper><DefectReport /></SuspenseWrapper></RoleGuard>,
+        element: <RoleGuard roles={['worker', 'supervisor']}><SuspenseWrapper><DefectReport /></SuspenseWrapper></RoleGuard>,
       },
       { path: 'defects/:id', element: <SuspenseWrapper><DefectDetail /></SuspenseWrapper> },
       { path: 'downtime', element: <SuspenseWrapper><DowntimeHistory /></SuspenseWrapper> },
       {
         path: 'downtime/log',
-        element: <RoleGuard roles={['operator', 'supervisor']}><SuspenseWrapper><DowntimeLogger /></SuspenseWrapper></RoleGuard>,
+        element: <RoleGuard roles={['worker', 'supervisor']}><SuspenseWrapper><DowntimeLogger /></SuspenseWrapper></RoleGuard>,
       },
       {
         path: 'repairs',
-        element: <RoleGuard roles={['mechanic', 'supervisor']}><SuspenseWrapper><WorkQueue /></SuspenseWrapper></RoleGuard>,
+        element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><WorkQueue /></SuspenseWrapper></RoleGuard>,
       },
       {
         path: 'repairs/:id',
-        element: <RoleGuard roles={['mechanic', 'supervisor']}><SuspenseWrapper><RepairDetail /></SuspenseWrapper></RoleGuard>,
+        element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><RepairDetail /></SuspenseWrapper></RoleGuard>,
       },
       {
         path: 'maintenance',
-        element: <RoleGuard roles={['mechanic', 'supervisor']}><SuspenseWrapper><MaintenanceList /></SuspenseWrapper></RoleGuard>,
+        element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><MaintenanceList /></SuspenseWrapper></RoleGuard>,
       },
       {
         path: 'maintenance/:id',
-        element: <RoleGuard roles={['mechanic', 'supervisor']}><SuspenseWrapper><MaintenanceDetail /></SuspenseWrapper></RoleGuard>,
+        element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><MaintenanceDetail /></SuspenseWrapper></RoleGuard>,
       },
       { path: 'availability', element: <SuspenseWrapper><AvailabilityBoard /></SuspenseWrapper> },
       {
