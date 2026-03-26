@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, Truck } from 'lucide-react';
+import { Modal } from '../../components/ui/Modal';
+import { createServiceOrder } from '../service-orders/useServiceOrders';
 import { AnimatedPage } from '../../components/ui/AnimatedPage';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Badge } from '../../components/ui/Badge';
@@ -14,7 +17,7 @@ import { useMachine } from '../machines/useMachines';
 import { useAuthStore } from '../auth/auth.store';
 import { useToastStore } from '../../stores/toast.store';
 import { db } from '../../db/database';
-import { formatDateTime } from '../../lib/utils';
+import { formatDateTime, today } from '../../lib/utils';
 
 const CATEGORY_LABELS: Record<string, string> = {
   engine: 'Engine',
@@ -53,7 +56,18 @@ export default function DefectDetail() {
     [defect?.reportedBy]
   );
 
+  const linkedServiceOrder = useLiveQuery(
+    () => db.serviceOrders.where('defectId').equals(defectId).first(),
+    [defectId]
+  );
+
   const canChangeStatus = currentUser?.role === 'supervisor';
+
+  const [showSendForm, setShowSendForm] = useState(false);
+  const [workshopName, setWorkshopName] = useState('');
+  const [expectedReturn, setExpectedReturn] = useState('');
+  const [serviceNotes, setServiceNotes] = useState('');
+  const [sending, setSending] = useState(false);
 
   const handleStatusChange = async (newStatus: string) => {
     try {
@@ -61,6 +75,36 @@ export default function DefectDetail() {
       addToast(`Defect marked as ${STATUS_LABELS[newStatus] ?? newStatus}`, 'success');
     } catch {
       addToast('Failed to update status', 'error');
+    }
+  };
+
+  const handleSendForService = async () => {
+    if (!workshopName.trim() || !machine || !defect) return;
+    setSending(true);
+    try {
+      await createServiceOrder({
+        machineId: defect.machineId,
+        defectId: defect.id!,
+        siteId: defect.siteId,
+        workshopName: workshopName.trim(),
+        dateSent: today(),
+        expectedReturnDate: expectedReturn || null,
+        dateReturned: null,
+        status: 'pending',
+        notes: serviceNotes,
+        repairSummary: '',
+        cost: null,
+      });
+      await updateDefectStatus(defectId, 'sent-out');
+      addToast('Service order created', 'success');
+      setShowSendForm(false);
+      setWorkshopName('');
+      setExpectedReturn('');
+      setServiceNotes('');
+    } catch {
+      addToast('Failed to create service order', 'error');
+    } finally {
+      setSending(false);
     }
   };
 
@@ -192,6 +236,27 @@ export default function DefectDetail() {
             </p>
           </Card>
 
+          {/* Linked Service Order */}
+          {linkedServiceOrder && (
+            <Card pressable onClick={() => navigate(`/service-orders/${linkedServiceOrder.id}`)}>
+              <div className="flex items-center gap-3">
+                <Truck size={18} className="text-amber-primary flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-text-primary">
+                    Service Order #{linkedServiceOrder.id}
+                  </p>
+                  <p className="text-xs text-text-secondary">
+                    {linkedServiceOrder.workshopName}
+                  </p>
+                </div>
+                <Badge variant={linkedServiceOrder.status as any}>
+                  {linkedServiceOrder.status === 'in-service' ? 'In Service' :
+                   linkedServiceOrder.status.charAt(0).toUpperCase() + linkedServiceOrder.status.slice(1)}
+                </Badge>
+              </div>
+            </Card>
+          )}
+
           {/* Status actions (supervisor only) */}
           {canChangeStatus && defect.status !== 'resolved' && (
             <div className="space-y-2">
@@ -208,14 +273,34 @@ export default function DefectDetail() {
                     Acknowledge
                   </Button>
                 )}
-                <Button
-                  variant="primary"
-                  fullWidth
-                  onClick={() => handleStatusChange('resolved')}
-                >
-                  Mark Resolved
-                </Button>
-                {defect.status !== 'deferred' && (
+                {(defect.status === 'open' || defect.status === 'acknowledged') && !linkedServiceOrder && (
+                  <Button
+                    variant="primary"
+                    fullWidth
+                    onClick={() => setShowSendForm(true)}
+                  >
+                    Send for Service
+                  </Button>
+                )}
+                {defect.status !== 'sent-out' && (
+                  <Button
+                    variant="secondary"
+                    fullWidth
+                    onClick={() => handleStatusChange('resolved')}
+                  >
+                    Mark Resolved
+                  </Button>
+                )}
+                {defect.status === 'deferred' && (
+                  <Button
+                    variant="ghost"
+                    fullWidth
+                    onClick={() => handleStatusChange('open')}
+                  >
+                    Reopen
+                  </Button>
+                )}
+                {defect.status !== 'deferred' && defect.status !== 'sent-out' && (
                   <Button
                     variant="ghost"
                     fullWidth
@@ -229,6 +314,69 @@ export default function DefectDetail() {
           )}
         </div>
       </div>
+
+      {/* Send for Service Modal */}
+      <Modal
+        isOpen={showSendForm}
+        onClose={() => setShowSendForm(false)}
+        title="Send for Service"
+      >
+        <div className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-text-secondary">
+              Workshop / Vendor <span className="text-red-400">*</span>
+            </label>
+            <input
+              type="text"
+              value={workshopName}
+              onChange={e => setWorkshopName(e.target.value)}
+              placeholder="Enter workshop name"
+              className="w-full bg-elevated border border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-amber-primary transition-colors"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-text-secondary">
+              Expected Return Date
+            </label>
+            <input
+              type="date"
+              value={expectedReturn}
+              onChange={e => setExpectedReturn(e.target.value)}
+              className="w-full bg-elevated border border-border rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-amber-primary transition-colors [color-scheme:dark]"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-text-secondary">
+              Notes <span className="text-text-muted text-xs">(optional)</span>
+            </label>
+            <textarea
+              value={serviceNotes}
+              onChange={e => setServiceNotes(e.target.value)}
+              rows={2}
+              placeholder="Additional details…"
+              className="w-full bg-elevated border border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:border-amber-primary transition-colors"
+            />
+          </div>
+          <div className="flex gap-3 pt-2">
+            <Button
+              variant="ghost"
+              fullWidth
+              onClick={() => setShowSendForm(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              fullWidth
+              disabled={!workshopName.trim() || sending}
+              loading={sending}
+              onClick={handleSendForService}
+            >
+              Create Order
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </AnimatedPage>
   );
 }
