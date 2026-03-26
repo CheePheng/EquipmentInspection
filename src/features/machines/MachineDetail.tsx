@@ -15,11 +15,13 @@ import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { StatusIndicator } from '../../components/ui/StatusIndicator';
+import { AlertBanner } from '../../components/ui/AlertBanner';
 import { db } from '../../db/database';
 import { useAuthStore } from '../auth/auth.store';
 import { MACHINE_TYPE_LABELS } from '../../lib/constants';
-import { formatMeterHours, formatTimeAgo } from '../../lib/utils';
+import { formatMeterHours, formatTimeAgo, formatDate } from '../../lib/utils';
 import { useMachine, useMachineTimeline } from './useMachines';
+import { useActiveServiceOrder } from '../service-orders/useServiceOrders';
 
 const timelineIcons = {
   inspection: ClipboardCheck,
@@ -82,6 +84,7 @@ export default function MachineDetail() {
 
   const isLoading = machine === undefined || timeline === undefined;
   const role = currentUser?.role;
+  const activeServiceOrder = useActiveServiceOrder(id);
 
   return (
     <AnimatedPage>
@@ -110,6 +113,19 @@ export default function MachineDetail() {
 
         {!isLoading && machine && (
           <div className="p-4 space-y-4">
+            {/* Out for Service banner */}
+            {activeServiceOrder && (
+              <AlertBanner
+                severity="warning"
+                title={`Out for service at ${activeServiceOrder.workshopName}`}
+                description={`Sent ${formatDate(activeServiceOrder.dateSent)}`}
+                action={{
+                  label: 'View Order',
+                  onClick: () => navigate(`/service-orders/${activeServiceOrder.id}`),
+                }}
+              />
+            )}
+
             {/* ── Hero Section ──────────────────────────────────────────── */}
             <Card tier="hero">
               <div className="flex items-start justify-between gap-3 mb-4">

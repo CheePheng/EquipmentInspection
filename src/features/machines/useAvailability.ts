@@ -15,11 +15,12 @@ export interface MachineAvailability {
 
 export function useAvailabilityBoard(siteId?: number | null) {
   return useLiveQuery(async () => {
-    const [machines, defects, downtimeEvents, schedules] = await Promise.all([
+    const [machines, defects, downtimeEvents, schedules, serviceOrders] = await Promise.all([
       siteId ? db.machines.where('siteId').equals(siteId).toArray() : db.machines.toArray(),
       db.defects.toArray(),
       db.downtimeEvents.toArray(),
       db.maintenanceSchedules.toArray(),
+      db.serviceOrders.toArray(),
     ]);
 
     const todayStr = today();
@@ -31,8 +32,15 @@ export function useAvailabilityBoard(siteId?: number | null) {
 
       let state: AvailabilityState = 'available';
 
+      // Active service order → out-for-service (highest priority)
+      const activeOrder = serviceOrders.find(
+        s => s.machineId === machine.id && (s.status === 'pending' || s.status === 'in-service')
+      );
+      if (activeOrder) {
+        state = 'out-for-service';
+      }
       // Active downtime → down
-      if (machineDowntime.some(d => !d.endTime)) {
+      else if (machineDowntime.some(d => !d.endTime)) {
         state = 'down';
       }
       // Open critical defect → down

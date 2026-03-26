@@ -6,12 +6,13 @@ export function useDashboardData() {
   return useLiveQuery(async () => {
     const todayStr = today();
 
-    const [defects, machines, inspections, downtimeEvents, maintenanceSchedules] = await Promise.all([
+    const [defects, machines, inspections, downtimeEvents, maintenanceSchedules, serviceOrders] = await Promise.all([
       db.defects.toArray(),
       db.machines.toArray(),
       db.inspections.toArray(),
       db.downtimeEvents.toArray(),
       db.maintenanceSchedules.toArray(),
+      db.serviceOrders.toArray(),
     ]);
 
     // KPI 1: Critical unresolved defects
@@ -37,6 +38,11 @@ export function useDashboardData() {
       return (s.dueDate && s.dueDate <= todayStr) ||
         (s.dueHours && s.dueHours <= machine.currentMeterHours);
     }).length;
+
+    // KPI 5: Machines out for service
+    const machinesOutForService = new Set(
+      serviceOrders.filter(o => o.status === 'pending' || o.status === 'in-service').map(o => o.machineId)
+    ).size;
 
     // Chart: Downtime by reason code
     const completedDowntime = downtimeEvents.filter(d => d.endTime);
@@ -70,6 +76,7 @@ export function useDashboardData() {
       inspectionsToday,
       activeMachines,
       overdueMaintenanceCount,
+      machinesOutForService,
       downtimeByCode,
       defectsBySeverity,
       complianceData,

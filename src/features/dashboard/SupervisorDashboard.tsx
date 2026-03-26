@@ -5,7 +5,7 @@ import {
   AlertTriangle,
   XCircle,
   ClipboardCheck,
-  Calendar,
+  Truck,
   LayoutGrid,
   Wrench,
 } from 'lucide-react';
@@ -135,11 +135,11 @@ export default function SupervisorDashboard() {
               onClick={() => navigate('/machines')}
             />
             <KpiCard
-              value={data.overdueMaintenanceCount}
-              label="Overdue Maint."
+              value={data.machinesOutForService}
+              label="Out for Service"
               color="amber"
-              icon={Calendar}
-              onClick={() => navigate('/maintenance')}
+              icon={Truck}
+              onClick={() => navigate('/service-orders')}
             />
           </div>
 
