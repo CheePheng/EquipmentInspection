@@ -3,29 +3,50 @@
 @import "@fontsource/inter/500.css";
 @import "@fontsource/inter/600.css";
 @import "@fontsource/inter/700.css";
+@import "@fontsource/jetbrains-mono/600.css";
+@import "@fontsource/jetbrains-mono/700.css";
 
 @theme {
+  /* ── Backgrounds (expanded: 3 → 6 tones for depth) ────────── */
   --color-obsidian: #0F1419;
+  --color-obsidian-light: #131A22;
   --color-slate-dark: #1A2332;
   --color-elevated: #243447;
+  --color-elevated-high: #2D3F54;
+  --color-surface: #354A61;
   --color-border: #334155;
+  --color-border-subtle: #1E293B;
 
-  --color-amber-primary: #F59E0B;
-  --color-amber-hover: #FBBF24;
-  --color-amber-pressed: #D97706;
-  --color-amber-muted: rgba(245, 158, 11, 0.2);
+  /* ── Primary Accent (refined amber/gold) ───────────────────── */
+  --color-amber-primary: #F5A623;
+  --color-amber-hover: #FFC247;
+  --color-amber-pressed: #CC8400;
+  --color-amber-muted: rgba(245, 166, 35, 0.15);
+  --color-amber-wash: rgba(245, 166, 35, 0.08);
 
+  /* ── Text ──────────────────────────────────────────────────── */
   --color-text-primary: #F8FAFC;
   --color-text-secondary: #94A3B8;
   --color-text-muted: #64748B;
 
-  --color-status-available: #10B981;
-  --color-status-critical: #EF4444;
-  --color-status-warning: #F59E0B;
-  --color-status-progress: #3B82F6;
+  /* ── Status (richer, more saturated) ───────────────────────── */
+  --color-status-available: #34D399;
+  --color-status-critical: #F87171;
+  --color-status-warning: #FBBF24;
+  --color-status-progress: #60A5FA;
   --color-status-deferred: #6B7280;
 
+  /* ── Shadows ───────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-glow-critical: 0 0 20px rgba(248, 113, 113, 0.15);
+  --shadow-glow-gold: 0 0 20px rgba(245, 166, 35, 0.15);
+  --shadow-glow-available: 0 0 20px rgba(52, 211, 153, 0.15);
+
+  /* ── Typography ────────────────────────────────────────────── */
   --font-family-sans: "Inter", system-ui, sans-serif;
+  --font-family-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 body {
