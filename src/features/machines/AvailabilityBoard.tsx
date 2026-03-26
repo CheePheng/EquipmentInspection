@@ -139,8 +139,8 @@ export default function AvailabilityBoard() {
 
           {!isLoading && hasMachines && counts && (
             <>
-              {/* Summary strip */}
-              <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
+              {/* Summary strip — sticky */}
+              <div className="sticky top-0 z-10 bg-obsidian -mx-4 px-4 pb-2 pt-1 border-b border-border/50 flex gap-2 overflow-x-auto scrollbar-hide">
                 {GROUP_ORDER.filter(s => counts[s] > 0).map(state => {
                   const colors = AVAILABILITY_STATE_COLORS[state];
                   return (
@@ -152,7 +152,7 @@ export default function AvailabilityBoard() {
                         'min-w-[80px]',
                       ].join(' ')}
                     >
-                      <span className={`text-xl font-bold tabular-nums ${colors.text}`}>
+                      <span className={`text-xl font-mono font-bold tabular-nums ${colors.text}`}>
                         {counts[state]}
                       </span>
                       <span className="text-[10px] text-text-secondary text-center leading-tight mt-0.5">
@@ -199,6 +199,7 @@ export default function AvailabilityBoard() {
                         {group.map(machine => (
                           <motion.div key={machine.id} variants={cardVariants}>
                             <Card
+                              tier="status"
                               pressable
                               onClick={() => navigate(`/machines/${machine.id}`)}
                               className={[
@@ -227,7 +228,7 @@ export default function AvailabilityBoard() {
 
                               <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
                                 <span className="text-xs text-text-muted">Meter Hours</span>
-                                <span className="text-xs font-semibold text-text-secondary tabular-nums">
+                                <span className="text-xs font-mono font-semibold text-text-secondary tabular-nums">
                                   {formatMeterHours(machine.currentMeterHours)}
                                 </span>
                               </div>
