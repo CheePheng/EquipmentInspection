@@ -36,7 +36,7 @@ export function useAvailabilityBoard(siteId?: number | null) {
         state = 'down';
       }
       // Open critical defect → down
-      else if (machineDefects.some(d => d.severity === 'critical' && (d.status === 'open' || d.status === 'in-progress'))) {
+      else if (machineDefects.some(d => d.severity === 'critical' && (d.status === 'open' || d.status === 'acknowledged'))) {
         state = 'down';
       }
       // Overdue maintenance → service-due

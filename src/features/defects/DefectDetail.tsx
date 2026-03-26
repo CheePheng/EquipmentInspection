@@ -31,8 +31,9 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const STATUS_LABELS: Record<string, string> = {
   open: 'Open',
-  'in-progress': 'In Progress',
-  fixed: 'Fixed',
+  acknowledged: 'Acknowledged',
+  'sent-out': 'Sent for Service',
+  resolved: 'Resolved',
   deferred: 'Deferred',
 };
 
@@ -192,27 +193,27 @@ export default function DefectDetail() {
           </Card>
 
           {/* Status actions (supervisor only) */}
-          {canChangeStatus && defect.status !== 'fixed' && (
+          {canChangeStatus && defect.status !== 'resolved' && (
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
                 Update Status
               </p>
               <div className="flex flex-col gap-2">
-                {defect.status !== 'in-progress' && (
+                {defect.status === 'open' && (
                   <Button
                     variant="secondary"
                     fullWidth
-                    onClick={() => handleStatusChange('in-progress')}
+                    onClick={() => handleStatusChange('acknowledged')}
                   >
-                    Mark In Progress
+                    Acknowledge
                   </Button>
                 )}
                 <Button
                   variant="primary"
                   fullWidth
-                  onClick={() => handleStatusChange('fixed')}
+                  onClick={() => handleStatusChange('resolved')}
                 >
-                  Mark Fixed
+                  Mark Resolved
                 </Button>
                 {defect.status !== 'deferred' && (
                   <Button

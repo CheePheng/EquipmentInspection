@@ -1,7 +1,7 @@
 export const SEVERITY_LEVELS = ['low', 'medium', 'high', 'critical'] as const;
 export type Severity = typeof SEVERITY_LEVELS[number];
 
-export const DEFECT_STATUSES = ['open', 'in-progress', 'fixed', 'deferred'] as const;
+export const DEFECT_STATUSES = ['open', 'acknowledged', 'sent-out', 'resolved', 'deferred'] as const;
 export type DefectStatus = typeof DEFECT_STATUSES[number];
 
 export const AVAILABILITY_STATES = [
@@ -14,9 +14,7 @@ export type InspectionStatus = typeof INSPECTION_STATUSES[number];
 
 export const DOWNTIME_CODES = [
   'mechanical', 'hydraulic', 'electrical', 'tire-track',
-  'waiting-for-parts', 'operator-issue', 'fuel-fluid',
-  'safety-hold', 'scheduled-maintenance', 'weather',
-  'access-road', 'other'
+  'waiting-parts', 'scheduled-service', 'weather-access', 'other'
 ] as const;
 export type DowntimeCode = typeof DOWNTIME_CODES[number];
 
@@ -44,13 +42,9 @@ export const DOWNTIME_CODE_LABELS: Record<DowntimeCode, string> = {
   'hydraulic': 'Hydraulic',
   'electrical': 'Electrical',
   'tire-track': 'Tire / Track',
-  'waiting-for-parts': 'Waiting for Parts',
-  'operator-issue': 'Operator Issue',
-  'fuel-fluid': 'Fuel / Fluid',
-  'safety-hold': 'Safety Hold',
-  'scheduled-maintenance': 'Scheduled Maintenance',
-  'weather': 'Weather',
-  'access-road': 'Access / Road Issue',
+  'waiting-parts': 'Waiting for Parts',
+  'scheduled-service': 'Scheduled Service',
+  'weather-access': 'Weather / Access',
   'other': 'Other',
 };
 

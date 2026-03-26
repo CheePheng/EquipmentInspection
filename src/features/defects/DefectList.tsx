@@ -31,8 +31,9 @@ const FILTER_SECTIONS: FilterSection[] = [
     label: 'Status',
     options: [
       { value: 'open', label: 'Open' },
-      { value: 'in-progress', label: 'In Progress' },
-      { value: 'fixed', label: 'Fixed' },
+      { value: 'acknowledged', label: 'Acknowledged' },
+      { value: 'sent-out', label: 'Sent for Service' },
+      { value: 'resolved', label: 'Resolved' },
       { value: 'deferred', label: 'Deferred' },
     ],
   },
@@ -53,8 +54,9 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const STATUS_LABELS: Record<string, string> = {
   open: 'Open',
-  'in-progress': 'In Progress',
-  fixed: 'Fixed',
+  acknowledged: 'Acknowledged',
+  'sent-out': 'Sent for Service',
+  resolved: 'Resolved',
   deferred: 'Deferred',
 };
 

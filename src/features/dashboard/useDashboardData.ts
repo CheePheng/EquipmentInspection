@@ -16,7 +16,7 @@ export function useDashboardData() {
 
     // KPI 1: Critical unresolved defects
     const criticalDefects = defects.filter(d =>
-      d.severity === 'critical' && (d.status === 'open' || d.status === 'in-progress')
+      d.severity === 'critical' && (d.status === 'open' || d.status === 'acknowledged')
     ).length;
 
     // KPI 2: Machines down (active downtime)

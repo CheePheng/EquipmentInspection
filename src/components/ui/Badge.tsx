@@ -4,8 +4,9 @@ type BadgeVariant =
   | 'high'
   | 'critical'
   | 'open'
-  | 'in-progress'
-  | 'fixed'
+  | 'acknowledged'
+  | 'sent-out'
+  | 'resolved'
   | 'deferred'
   | 'available'
   | 'service-due'
@@ -25,8 +26,9 @@ const variantClasses: Record<BadgeVariant, string> = {
   high: 'bg-orange-900/50 text-orange-300',
   critical: 'bg-red-900/50 text-red-300 shadow-[0_0_8px_rgba(239,68,68,0.3)]',
   open: 'bg-red-900/40 text-red-300',
-  'in-progress': 'bg-blue-900/40 text-blue-300',
-  fixed: 'bg-emerald-900/40 text-emerald-300',
+  acknowledged: 'bg-blue-900/40 text-blue-300',
+  'sent-out': 'bg-orange-900/40 text-orange-300',
+  resolved: 'bg-emerald-900/40 text-emerald-300',
   deferred: 'bg-gray-700/60 text-gray-400',
   available: 'bg-emerald-900/40 text-emerald-300',
   'service-due': 'bg-amber-primary/20 text-amber-primary',

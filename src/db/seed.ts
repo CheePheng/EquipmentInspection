@@ -636,11 +636,11 @@ export async function seedDatabase(): Promise<void> {
         createdAt: daysAgo(14), updatedAt: daysAgo(14),
       });
 
-      // [D4] HIGH — DZ-001 engine oil low / consumption — in-progress (from insp15)
+      // [D4] HIGH — DZ-001 engine oil low / consumption — acknowledged (from insp15)
       const def4Id = await db.defects.add({
         machineId: dz001Id as number, siteId: site1Id as number,
         inspectionId: insp15Id as number,
-        category: 'engine', severity: 'high', status: 'in-progress',
+        category: 'engine', severity: 'high', status: 'acknowledged',
         description: 'Engine oil level below minimum on dipstick. Excessive consumption suspected. Machine scheduled for service.',
         safeToOperate: true, priority: false,
         reportedBy: johanId as number,
@@ -648,11 +648,11 @@ export async function seedDatabase(): Promise<void> {
       });
       void def4Id;
 
-      // [D5] HIGH — TK-001 tire damage — fixed (from insp7)
+      // [D5] HIGH — TK-001 tire damage — resolved (from insp7)
       const def5Id = await db.defects.add({
         machineId: tk001Id as number, siteId: site3Id as number,
         inspectionId: insp7Id as number,
-        category: 'tires-tracks', severity: 'high', status: 'fixed',
+        category: 'tires-tracks', severity: 'high', status: 'resolved',
         description: 'Right rear steer axle tire showing deep sidewall cut — risk of blowout under load.',
         safeToOperate: false, priority: true,
         reportedBy: siphoId as number,
@@ -670,22 +670,22 @@ export async function seedDatabase(): Promise<void> {
         createdAt: daysAgo(10), updatedAt: daysAgo(10),
       });
 
-      // [D7] MEDIUM — GN-001 voltage fluctuation — in-progress (from insp26)
+      // [D7] MEDIUM — GN-001 voltage fluctuation — acknowledged (from insp26)
       const def7Id = await db.defects.add({
         machineId: gn001Id as number, siteId: site1Id as number,
         inspectionId: insp26Id as number,
-        category: 'electrical', severity: 'medium', status: 'in-progress',
+        category: 'electrical', severity: 'medium', status: 'acknowledged',
         description: 'Output voltage fluctuating ±8V under load. AVR may require adjustment or replacement.',
         safeToOperate: true, priority: false,
         reportedBy: willemId as number,
         createdAt: daysAgo(2), updatedAt: daysAgo(1),
       });
 
-      // [D8] MEDIUM — CS-001 chain tension loose — fixed (from insp14)
+      // [D8] MEDIUM — CS-001 chain tension loose — resolved (from insp14)
       const def8Id = await db.defects.add({
         machineId: cs001Id as number, siteId: site1Id as number,
         inspectionId: insp14Id as number,
-        category: 'structural', severity: 'medium', status: 'fixed',
+        category: 'structural', severity: 'medium', status: 'resolved',
         description: 'Chain tension out of spec — excessive sag on bar. Chain adjusted and re-tensioned.',
         safeToOperate: false, priority: false,
         reportedBy: siphoId as number,
@@ -704,22 +704,22 @@ export async function seedDatabase(): Promise<void> {
       });
       void def9Id;
 
-      // [D10] LOW — FW-003 cab condition — fixed (from insp8)
+      // [D10] LOW — FW-003 cab condition — resolved (from insp8)
       void await db.defects.add({
         machineId: fw003Id as number, siteId: site2Id as number,
         inspectionId: insp8Id as number,
-        category: 'cab-controls', severity: 'low', status: 'fixed',
+        category: 'cab-controls', severity: 'low', status: 'resolved',
         description: 'Door seal worn on operator cab — minor noise intrusion and dust ingress.',
         safeToOperate: true, priority: false,
         reportedBy: thaboId as number,
         createdAt: daysAgo(11), updatedAt: daysAgo(5),
       });
 
-      // [D11] LOW — TK-028 brake indicator light — fixed (from insp28)
+      // [D11] LOW — TK-028 brake indicator light — resolved (from insp28)
       void await db.defects.add({
         machineId: tk001Id as number, siteId: site3Id as number,
         inspectionId: insp28Id as number,
-        category: 'lights-signals', severity: 'low', status: 'fixed',
+        category: 'lights-signals', severity: 'low', status: 'resolved',
         description: 'Brake warning indicator lamp intermittent — confirmed bulb failure, not brake fault.',
         safeToOperate: true, priority: false,
         reportedBy: siphoId as number,
@@ -763,7 +763,7 @@ export async function seedDatabase(): Promise<void> {
       await db.downtimeEvents.add({
         machineId: dz001Id as number, defectId: null,
         startTime: daysAgo(7), endTime: daysAgo(6),
-        reasonCode: 'scheduled-maintenance', notes: '1000-hour major service. Machine back in service after service.',
+        reasonCode: 'scheduled-service', notes: '1000-hour major service. Machine back in service after service.',
         siteId: site1Id as number, loggedBy: willemId as number,
       });
 
@@ -787,7 +787,7 @@ export async function seedDatabase(): Promise<void> {
       await db.downtimeEvents.add({
         machineId: fw002Id as number, defectId: null,
         startTime: daysAgo(12), endTime: daysAgo(10),
-        reasonCode: 'waiting-for-parts', notes: 'Hydraulic pump seal kit on back-order. Machine stood down.',
+        reasonCode: 'waiting-parts', notes: 'Hydraulic pump seal kit on back-order. Machine stood down.',
         siteId: site1Id as number, loggedBy: willemId as number,
       });
 
@@ -811,7 +811,7 @@ export async function seedDatabase(): Promise<void> {
       await db.downtimeEvents.add({
         machineId: tk002Id as number, defectId: null,
         startTime: daysAgo(4), endTime: daysAgo(4),
-        reasonCode: 'weather', notes: 'Severe thunderstorm — all haulage suspended for 2 hours per site safety protocol.',
+        reasonCode: 'weather-access', notes: 'Severe thunderstorm — all haulage suspended for 2 hours per site safety protocol.',
         siteId: site3Id as number, loggedBy: siphoId as number,
       });
 
@@ -819,7 +819,7 @@ export async function seedDatabase(): Promise<void> {
       await db.downtimeEvents.add({
         machineId: sk002Id as number, defectId: null,
         startTime: daysAgo(6), endTime: daysAgo(6),
-        reasonCode: 'fuel-fluid', notes: 'Machine ran low on fuel mid-shift in remote block. Fuel delivery took 1.5 hours.',
+        reasonCode: 'other', notes: 'Machine ran low on fuel mid-shift in remote block. Fuel delivery took 1.5 hours.',
         siteId: site2Id as number, loggedBy: thaboId as number,
       });
 
@@ -827,7 +827,7 @@ export async function seedDatabase(): Promise<void> {
       await db.downtimeEvents.add({
         machineId: ex001Id as number, defectId: null,
         startTime: daysAgo(9), endTime: daysAgo(9),
-        reasonCode: 'access-road', notes: 'Harvest road washed out after rain. Excavator used to re-cut road — 3hr delay to production.',
+        reasonCode: 'weather-access', notes: 'Harvest road washed out after rain. Excavator used to re-cut road — 3hr delay to production.',
         siteId: site1Id as number, loggedBy: johanId as number,
       });
 
@@ -835,7 +835,7 @@ export async function seedDatabase(): Promise<void> {
       await db.downtimeEvents.add({
         machineId: cs001Id as number, defectId: def8Id as number,
         startTime: daysAgo(8), endTime: daysAgo(7),
-        reasonCode: 'safety-hold', notes: 'Chain tension out of spec — chainsaw withdrawn from use until adjusted by mechanic.',
+        reasonCode: 'mechanical', notes: 'Chain tension out of spec — chainsaw withdrawn from use until adjusted by mechanic.',
         siteId: site1Id as number, loggedBy: siphoId as number,
       });
 
@@ -851,7 +851,7 @@ export async function seedDatabase(): Promise<void> {
       await db.downtimeEvents.add({
         machineId: ld002Id as number, defectId: null,
         startTime: daysAgo(14), endTime: daysAgo(14),
-        reasonCode: 'scheduled-maintenance', notes: '250-hour oil service completed in field. Machine returned same day.',
+        reasonCode: 'scheduled-service', notes: '250-hour oil service completed in field. Machine returned same day.',
         siteId: site3Id as number, loggedBy: davidId as number,
       });
 
@@ -859,7 +859,7 @@ export async function seedDatabase(): Promise<void> {
       await db.downtimeEvents.add({
         machineId: tk003Id as number, defectId: null,
         startTime: daysAgo(3), endTime: daysAgo(3),
-        reasonCode: 'operator-issue', notes: 'Operator reported unfamiliar cab warning light — supervisor called. Confirmed low washer fluid only.',
+        reasonCode: 'other', notes: 'Operator reported unfamiliar cab warning light — supervisor called. Confirmed low washer fluid only.',
         siteId: site2Id as number, loggedBy: thaboId as number,
       });
 
