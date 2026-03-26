@@ -10,6 +10,7 @@ import type {
 import type { Defect, DefectPhoto } from './schemas/defect.schema';
 import type { MaintenanceSchedule, MaintenanceEvent } from './schemas/maintenance.schema';
 import type { DowntimeEvent } from './schemas/downtime.schema';
+import type { ServiceOrder } from './schemas/service-order.schema';
 
 export interface StatusHistoryEntry {
   id?: number;
@@ -40,6 +41,7 @@ export class FieldOpsDB extends Dexie {
   downtimeEvents!: Table<DowntimeEvent>;
   statusHistory!: Table<StatusHistoryEntry>;
   meta!: Table<MetaEntry>;
+  serviceOrders!: Table<ServiceOrder>;
 
   constructor() {
     super('cct-fieldops');
@@ -58,6 +60,10 @@ export class FieldOpsDB extends Dexie {
       downtimeEvents: '++id, machineId, defectId, startTime, endTime, reasonCode, siteId, loggedBy',
       statusHistory: '++id, machineId, changedAt',
       meta: '&key',
+    });
+
+    this.version(2).stores({
+      serviceOrders: '++id, machineId, defectId, siteId, status, createdAt',
     });
   }
 }
