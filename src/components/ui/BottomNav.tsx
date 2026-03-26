@@ -4,9 +4,9 @@ import {
   AlertTriangle,
   Clock,
   User,
-  Calendar,
   BarChart3,
   Grid3X3,
+  Truck,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuthStore } from '../../features/auth/auth.store';
@@ -28,7 +28,7 @@ const TABS_BY_ROLE: Record<UserRole, TabConfig[]> = {
   supervisor: [
     { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
     { path: '/availability', label: 'Availability', icon: Grid3X3 },
-    { path: '/maintenance', label: 'Maintenance', icon: Calendar },
+    { path: '/service-orders', label: 'Service', icon: Truck },
     { path: '/defects', label: 'Defects', icon: AlertTriangle },
     { path: '/profile', label: 'Profile', icon: User },
   ],

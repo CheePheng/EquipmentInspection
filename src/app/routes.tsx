@@ -20,6 +20,8 @@ const AvailabilityBoard = lazy(() => import('../features/machines/AvailabilityBo
 const SupervisorDashboard = lazy(() => import('../features/dashboard/SupervisorDashboard'));
 const ProfilePage = lazy(() => import('../features/profile/ProfilePage'));
 const SettingsPage = lazy(() => import('../features/settings/SettingsPage'));
+const ServiceOrderList = lazy(() => import('../features/service-orders/ServiceOrderList'));
+const ServiceOrderDetail = lazy(() => import('../features/service-orders/ServiceOrderDetail'));
 
 function PageLoader() {
   return (
@@ -67,6 +69,14 @@ export const router = createBrowserRouter([
       {
         path: 'maintenance/:id',
         element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><MaintenanceDetail /></SuspenseWrapper></RoleGuard>,
+      },
+      {
+        path: 'service-orders',
+        element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><ServiceOrderList /></SuspenseWrapper></RoleGuard>,
+      },
+      {
+        path: 'service-orders/:id',
+        element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><ServiceOrderDetail /></SuspenseWrapper></RoleGuard>,
       },
       { path: 'availability', element: <SuspenseWrapper><AvailabilityBoard /></SuspenseWrapper> },
       {
