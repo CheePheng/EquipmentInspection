@@ -1,12 +1,14 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ClipboardList } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ClipboardList, CheckCircle2 } from 'lucide-react';
 import { AnimatedPage } from '../../components/ui/AnimatedPage';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { MeterInput } from '../../components/ui/MeterInput';
 import { Button } from '../../components/ui/Button';
 import { Spinner } from '../../components/ui/Spinner';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { ProgressBar } from '../../components/ui/ProgressBar';
 import { ChecklistItem } from './ChecklistItem';
 import { useInspectionTemplate, createInspection, getExistingTodayInspection } from './useInspections';
 import { useMachine } from '../machines/useMachines';
@@ -32,7 +34,9 @@ export default function InspectionForm() {
   const [itemValues, setItemValues] = useState<Record<string, ItemValue>>({});
   const [submitting, setSubmitting] = useState(false);
   const [showFailPrompt, setShowFailPrompt] = useState(false);
+  const [showCompletion, setShowCompletion] = useState(false);
   const [savedInspectionId, setSavedInspectionId] = useState<number | undefined>(undefined);
+  const autoRedirectRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // Pre-fill meter reading from machine
   useEffect(() => {
@@ -114,8 +118,10 @@ export default function InspectionForm() {
       if (failCount > 0) {
         setShowFailPrompt(true);
       } else {
-        addToast('Inspection completed successfully', 'success');
-        navigate(`/machines/${machineId}`);
+        setShowCompletion(true);
+        autoRedirectRef.current = setTimeout(() => {
+          navigate(`/machines/${machineId}`);
+        }, 3000);
       }
     } catch (err) {
       console.error('Failed to save inspection', err);
@@ -183,17 +189,16 @@ export default function InspectionForm() {
           {/* Progress bar */}
           <div className="px-4 pt-4 pb-2">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs text-text-secondary">
-                {answeredCount}/{totalCount} items completed
+              <span className="text-xs text-text-secondary font-medium">
+                {answeredCount} of {totalCount} items
               </span>
-              <span className="text-xs text-text-muted">{Math.round(progressPct)}%</span>
             </div>
-            <div className="h-1.5 bg-elevated rounded-full overflow-hidden">
-              <div
-                className="h-full bg-amber-primary rounded-full transition-all duration-300"
-                style={{ width: `${progressPct}%` }}
-              />
-            </div>
+            <ProgressBar
+              value={progressPct}
+              color={progressPct === 100 ? 'green' : 'gold'}
+              size="sm"
+              showLabel
+            />
           </div>
 
           <div className="px-4 py-3 space-y-4">
@@ -234,6 +239,73 @@ export default function InspectionForm() {
           </Button>
         </div>
       </div>
+
+      {/* ── Completion celebration screen ──────────────────────────── */}
+      <AnimatePresence>
+        {showCompletion && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-obsidian/95 p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="flex flex-col items-center text-center max-w-xs">
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
+              >
+                <div className="w-20 h-20 rounded-full bg-emerald-950/40 flex items-center justify-center mb-5">
+                  <CheckCircle2 size={48} className="text-status-available" />
+                </div>
+              </motion.div>
+              <motion.h2
+                className="text-text-primary font-semibold text-xl mb-1"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+              >
+                Inspection Complete
+              </motion.h2>
+              <motion.div
+                className="space-y-1 mb-6"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35 }}
+              >
+                <p className="text-text-secondary text-sm">{machine?.name}</p>
+                <p className="text-text-muted text-xs font-mono tabular-nums">
+                  {answeredCount} items passed · {meterReading} hrs
+                </p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <Button
+                  variant="primary"
+                  size="md"
+                  onClick={() => {
+                    if (autoRedirectRef.current) clearTimeout(autoRedirectRef.current);
+                    navigate(`/machines/${machineId}`);
+                  }}
+                >
+                  Back to Machine
+                </Button>
+              </motion.div>
+              <motion.p
+                className="text-text-muted text-[11px] mt-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                Auto-redirecting in 3 seconds…
+              </motion.p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Failed items prompt modal */}
       {showFailPrompt && (
