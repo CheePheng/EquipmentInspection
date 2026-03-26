@@ -8,6 +8,7 @@ import { Spinner } from '../../components/ui/Spinner';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { Card } from '../../components/ui/Card';
 import { StatusIndicator } from '../../components/ui/StatusIndicator';
+import { SiteFilterBar } from '../../components/ui/SiteFilterBar';
 import { useAvailabilityBoard } from './useAvailability';
 import { useSites } from './useMachines';
 import {
@@ -15,6 +16,7 @@ import {
   type AvailabilityState,
 } from '../../lib/constants';
 import { formatMeterHours } from '../../lib/utils';
+import { listVariants, cardVariants } from '../../lib/motion';
 
 // Display order: most critical first
 const GROUP_ORDER: AvailabilityState[] = [
@@ -65,15 +67,7 @@ const STATE_SECTION_BG: Record<AvailabilityState, string> = {
   'out-of-service': 'bg-gray-950/20',
 };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0 },
-};
-
-const listVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.06 } },
-};
+// cardVariants and listVariants imported from src/lib/motion.ts
 
 export default function AvailabilityBoard() {
   const navigate = useNavigate();
@@ -115,34 +109,12 @@ export default function AvailabilityBoard() {
 
         <div className="p-4 space-y-4">
           {/* Site filter chips */}
-          {sites !== undefined && sites.length > 0 && (
-            <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
-              <button
-                onClick={() => setSelectedSiteId(null)}
-                className={[
-                  'flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-150',
-                  selectedSiteId === null
-                    ? 'bg-amber-primary text-obsidian'
-                    : 'bg-elevated text-text-secondary hover:text-text-primary',
-                ].join(' ')}
-              >
-                All Sites
-              </button>
-              {sites.map(site => (
-                <button
-                  key={site.id}
-                  onClick={() => setSelectedSiteId(site.id!)}
-                  className={[
-                    'flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-150 whitespace-nowrap',
-                    selectedSiteId === site.id
-                      ? 'bg-amber-primary text-obsidian'
-                      : 'bg-elevated text-text-secondary hover:text-text-primary',
-                  ].join(' ')}
-                >
-                  {site.name}
-                </button>
-              ))}
-            </div>
+          {sites !== undefined && (
+            <SiteFilterBar
+              sites={sites}
+              selectedSiteId={selectedSiteId}
+              onSelectSite={setSelectedSiteId}
+            />
           )}
 
           {/* Loading state */}

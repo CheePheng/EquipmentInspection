@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import RoleGuard from './guards/RoleGuard';
 import AppShell from './AppShell';
+import { ErrorBoundary } from '../components/ui/ErrorBoundary';
 
 // Lazy load all feature pages
 const PinLogin = lazy(() => import('../features/auth/PinLogin'));
@@ -31,7 +32,7 @@ function PageLoader() {
 }
 
 function SuspenseWrapper({ children }: { children: React.ReactNode }) {
-  return <Suspense fallback={<PageLoader />}>{children}</Suspense>;
+  return <ErrorBoundary><Suspense fallback={<PageLoader />}>{children}</Suspense></ErrorBoundary>;
 }
 
 export const router = createBrowserRouter([

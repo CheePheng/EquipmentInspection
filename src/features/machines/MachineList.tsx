@@ -5,18 +5,11 @@ import { AnimatedPage } from '../../components/ui/AnimatedPage';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Spinner } from '../../components/ui/Spinner';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { SiteFilterBar } from '../../components/ui/SiteFilterBar';
 import { MachineCard } from './MachineCard';
 import { TodaysMachine } from './TodaysMachine';
 import { useMachines, useSites } from './useMachines';
-
-const listVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.05,
-    },
-  },
-};
+import { listVariants } from '../../lib/motion';
 
 export default function MachineList() {
   const [selectedSiteId, setSelectedSiteId] = useState<number | null>(null);
@@ -39,34 +32,12 @@ export default function MachineList() {
           <TodaysMachine />
 
           {/* Site filter chips */}
-          {sites !== undefined && sites.length > 0 && (
-            <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
-              <button
-                onClick={() => setSelectedSiteId(null)}
-                className={[
-                  'flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-150',
-                  selectedSiteId === null
-                    ? 'bg-amber-primary text-obsidian'
-                    : 'bg-elevated text-text-secondary hover:text-text-primary',
-                ].join(' ')}
-              >
-                All Sites
-              </button>
-              {sites.map((site) => (
-                <button
-                  key={site.id}
-                  onClick={() => setSelectedSiteId(site.id!)}
-                  className={[
-                    'flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-150 whitespace-nowrap',
-                    selectedSiteId === site.id
-                      ? 'bg-amber-primary text-obsidian'
-                      : 'bg-elevated text-text-secondary hover:text-text-primary',
-                  ].join(' ')}
-                >
-                  {site.name}
-                </button>
-              ))}
-            </div>
+          {sites !== undefined && (
+            <SiteFilterBar
+              sites={sites}
+              selectedSiteId={selectedSiteId}
+              onSelectSite={setSelectedSiteId}
+            />
           )}
 
           {/* Loading state */}
