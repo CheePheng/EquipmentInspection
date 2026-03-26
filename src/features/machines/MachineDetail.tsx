@@ -4,7 +4,6 @@ import { format, parseISO, isToday, isYesterday } from 'date-fns';
 import {
   ClipboardCheck,
   AlertTriangle,
-  Wrench,
   Clock,
   Cpu,
 } from 'lucide-react';
@@ -25,21 +24,18 @@ import { useMachine, useMachineTimeline } from './useMachines';
 const timelineIcons = {
   inspection: ClipboardCheck,
   defect: AlertTriangle,
-  repair: Wrench,
   downtime: Clock,
 };
 
 const timelineColors = {
   inspection: 'text-emerald-400',
   defect: 'text-orange-400',
-  repair: 'text-blue-400',
   downtime: 'text-red-400',
 };
 
 const timelineLabels = {
   inspection: 'Inspection',
   defect: 'Defect reported',
-  repair: 'Repair logged',
   downtime: 'Downtime event',
 };
 
@@ -47,7 +43,6 @@ function timelineRoute(type: string, id: number): string {
   switch (type) {
     case 'inspection': return `/inspections/${id}`;
     case 'defect': return `/defects/${id}`;
-    case 'repair': return `/repairs/${id}`;
     case 'downtime': return `/downtime/${id}`;
     default: return '/';
   }
@@ -253,11 +248,6 @@ export default function MachineDetail() {
                                         </p>
                                       )}
                                       {item.type === 'inspection' && (
-                                        <p className="text-text-muted text-xs mt-0.5 capitalize">
-                                          {item.data.status}
-                                        </p>
-                                      )}
-                                      {item.type === 'repair' && (
                                         <p className="text-text-muted text-xs mt-0.5 capitalize">
                                           {item.data.status}
                                         </p>

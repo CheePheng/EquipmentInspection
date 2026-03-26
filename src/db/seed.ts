@@ -44,7 +44,6 @@ export async function seedDatabase(): Promise<void> {
       db.inspections,
       db.inspectionItems,
       db.defects,
-      db.repairs,
       db.maintenanceSchedules,
       db.maintenanceEvents,
       db.downtimeEvents,
@@ -647,6 +646,7 @@ export async function seedDatabase(): Promise<void> {
         reportedBy: johanId as number,
         createdAt: daysAgo(7), updatedAt: daysAgo(3),
       });
+      void def4Id;
 
       // [D5] HIGH — TK-001 tire damage — fixed (from insp7)
       const def5Id = await db.defects.add({
@@ -702,6 +702,7 @@ export async function seedDatabase(): Promise<void> {
         reportedBy: mariaId as number,
         createdAt: daysAgo(5), updatedAt: daysAgo(5),
       });
+      void def9Id;
 
       // [D10] LOW — FW-003 cab condition — fixed (from insp8)
       void await db.defects.add({
@@ -734,96 +735,6 @@ export async function seedDatabase(): Promise<void> {
         safeToOperate: true, priority: false,
         reportedBy: willemId as number,
         createdAt: daysAgo(6), updatedAt: daysAgo(6),
-      });
-
-      // -----------------------------------------------------------------------
-      // REPAIRS — 8 total
-      // -----------------------------------------------------------------------
-
-      // [R1] Pending — D1 (EX-002 engine oil leak, critical)
-      await db.repairs.add({
-        defectId: def1Id as number, machineId: ex002Id as number, siteId: site2Id as number,
-        mechanicId: null, status: 'pending', priority: 'critical',
-        partsNeeded: 'Engine oil, main crankshaft front seal, gasket set',
-        actionsTaken: [], completedAt: null,
-        createdAt: daysAgo(9),
-      });
-
-      // [R2] Pending — D9 (LD-002 hydraulic leak, medium)
-      await db.repairs.add({
-        defectId: def9Id as number, machineId: ld002Id as number, siteId: site3Id as number,
-        mechanicId: null, status: 'pending', priority: 'medium',
-        partsNeeded: 'Tilt cylinder base seal kit',
-        actionsTaken: [], completedAt: null,
-        createdAt: daysAgo(5),
-      });
-
-      // [R3] Assigned — D2 (SK-001 hydraulic burst, critical)
-      await db.repairs.add({
-        defectId: def2Id as number, machineId: sk001Id as number, siteId: site1Id as number,
-        mechanicId: willemId as number, status: 'assigned', priority: 'critical',
-        partsNeeded: 'Hydraulic hose 2" × 1.2m, crimp fittings, hydraulic fluid 20L',
-        actionsTaken: [], completedAt: null,
-        createdAt: daysAgo(13),
-      });
-
-      // [R4] Assigned — D7 (GN-001 voltage, medium)
-      await db.repairs.add({
-        defectId: def7Id as number, machineId: gn001Id as number, siteId: site1Id as number,
-        mechanicId: willemId as number, status: 'assigned', priority: 'medium',
-        partsNeeded: 'AVR module — Stamford AS480 compatible',
-        actionsTaken: [], completedAt: null,
-        createdAt: daysAgo(2),
-      });
-
-      // [R5] In-progress — D3 (FW-001 hydraulic, high)
-      await db.repairs.add({
-        defectId: def3Id as number, machineId: fw001Id as number, siteId: site1Id as number,
-        mechanicId: willemId as number, status: 'in-progress', priority: 'high',
-        partsNeeded: 'Boom cylinder rod seal kit, hydraulic fluid 5L',
-        actionsTaken: [
-          { note: 'Boom cylinder depressurised and boom pinned in rest position. Old seal removed — confirms seal failure.', timestamp: daysAgo(3), mechanicId: willemId as number },
-        ],
-        completedAt: null,
-        createdAt: daysAgo(14),
-      });
-
-      // [R6] In-progress — D4 (DZ-001 engine oil, high)
-      await db.repairs.add({
-        defectId: def4Id as number, machineId: dz001Id as number, siteId: site1Id as number,
-        mechanicId: willemId as number, status: 'in-progress', priority: 'high',
-        partsNeeded: 'Engine oil 15W-40 20L, oil filter, valve cover gasket',
-        actionsTaken: [
-          { note: 'Ran compression test — cylinder 4 low at 320 psi vs 380 psi spec. Oil analysis sample sent to lab.', timestamp: daysAgo(5), mechanicId: willemId as number },
-          { note: 'Lab results received — elevated iron particles. Valve stem seals suspect. Parts ordered.', timestamp: daysAgo(2), mechanicId: willemId as number },
-        ],
-        completedAt: null,
-        createdAt: daysAgo(7),
-      });
-
-      // [R7] Completed — D5 (TK-001 tire, high)
-      await db.repairs.add({
-        defectId: def5Id as number, machineId: tk001Id as number, siteId: site3Id as number,
-        mechanicId: davidId as number, status: 'completed', priority: 'high',
-        partsNeeded: 'Michelin XZY-3 11R22.5 tire, wheel nuts',
-        actionsTaken: [
-          { note: 'Vehicle jacked and suspect tire removed. Damage confirmed — sidewall cut 60mm deep, not repairable.', timestamp: daysAgo(9), mechanicId: davidId as number },
-          { note: 'New tire fitted and torqued to spec. Tyre pressure set to 105 psi. Vehicle returned to service.', timestamp: daysAgo(8), mechanicId: davidId as number },
-        ],
-        completedAt: daysAgo(8),
-        createdAt: daysAgo(11),
-      });
-
-      // [R8] Completed — D8 (CS-001 chain tension, medium)
-      await db.repairs.add({
-        defectId: def8Id as number, machineId: cs001Id as number, siteId: site1Id as number,
-        mechanicId: willemId as number, status: 'completed', priority: 'medium',
-        partsNeeded: '',
-        actionsTaken: [
-          { note: 'Chain tension checked — slack measured at 28mm (max 15mm). Adjusted tension screw and bar clamping bolts re-torqued.', timestamp: daysAgo(7), mechanicId: willemId as number },
-        ],
-        completedAt: daysAgo(7),
-        createdAt: daysAgo(8),
       });
 
       // -----------------------------------------------------------------------

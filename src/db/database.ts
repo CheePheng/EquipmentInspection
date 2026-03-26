@@ -8,7 +8,6 @@ import type {
   InspectionItem,
 } from './schemas/inspection.schema';
 import type { Defect, DefectPhoto } from './schemas/defect.schema';
-import type { Repair } from './schemas/repair.schema';
 import type { MaintenanceSchedule, MaintenanceEvent } from './schemas/maintenance.schema';
 import type { DowntimeEvent } from './schemas/downtime.schema';
 
@@ -36,7 +35,6 @@ export class FieldOpsDB extends Dexie {
   inspectionItems!: Table<InspectionItem>;
   defects!: Table<Defect>;
   defectPhotos!: Table<DefectPhoto>;
-  repairs!: Table<Repair>;
   maintenanceSchedules!: Table<MaintenanceSchedule>;
   maintenanceEvents!: Table<MaintenanceEvent>;
   downtimeEvents!: Table<DowntimeEvent>;
@@ -55,7 +53,6 @@ export class FieldOpsDB extends Dexie {
       inspectionItems: '++id, inspectionId, templateItemId, result',
       defects: '++id, machineId, siteId, inspectionId, severity, status, reportedBy, createdAt',
       defectPhotos: '++id, defectId',
-      repairs: '++id, defectId, machineId, siteId, mechanicId, status, priority, createdAt',
       maintenanceSchedules: '++id, machineId, serviceType, dueDate, dueHours, isActive',
       maintenanceEvents: '++id, scheduleId, machineId, completedBy, completedAt',
       downtimeEvents: '++id, machineId, defectId, startTime, endTime, reasonCode, siteId, loggedBy',

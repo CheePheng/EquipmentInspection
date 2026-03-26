@@ -14,8 +14,6 @@ const DefectReport = lazy(() => import('../features/defects/DefectReport'));
 const DefectDetail = lazy(() => import('../features/defects/DefectDetail'));
 const DowntimeHistory = lazy(() => import('../features/downtime/DowntimeHistory'));
 const DowntimeLogger = lazy(() => import('../features/downtime/DowntimeLogger'));
-const WorkQueue = lazy(() => import('../features/repairs/WorkQueue'));
-const RepairDetail = lazy(() => import('../features/repairs/RepairDetail'));
 const MaintenanceList = lazy(() => import('../features/maintenance/MaintenanceList'));
 const MaintenanceDetail = lazy(() => import('../features/maintenance/MaintenanceDetail'));
 const AvailabilityBoard = lazy(() => import('../features/machines/AvailabilityBoard'));
@@ -61,14 +59,6 @@ export const router = createBrowserRouter([
       {
         path: 'downtime/log',
         element: <RoleGuard roles={['worker', 'supervisor']}><SuspenseWrapper><DowntimeLogger /></SuspenseWrapper></RoleGuard>,
-      },
-      {
-        path: 'repairs',
-        element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><WorkQueue /></SuspenseWrapper></RoleGuard>,
-      },
-      {
-        path: 'repairs/:id',
-        element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><RepairDetail /></SuspenseWrapper></RoleGuard>,
       },
       {
         path: 'maintenance',

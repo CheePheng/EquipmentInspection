@@ -8,6 +8,5 @@ export type {
   InspectionItem,
 } from '../db/schemas/inspection.schema';
 export type { Defect, DefectPhoto } from '../db/schemas/defect.schema';
-export type { Repair, RepairAction } from '../db/schemas/repair.schema';
 export type { MaintenanceSchedule, MaintenanceEvent } from '../db/schemas/maintenance.schema';
 export type { DowntimeEvent } from '../db/schemas/downtime.schema';

@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { CheckCircle, XCircle, Wrench, AlertTriangle } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 import { AnimatedPage } from '../../components/ui/AnimatedPage';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Badge } from '../../components/ui/Badge';
@@ -52,13 +52,7 @@ export default function DefectDetail() {
     [defect?.reportedBy]
   );
 
-  const repair = useLiveQuery(
-    () => db.repairs.where('defectId').equals(defectId).first(),
-    [defectId]
-  );
-
-  const canChangeStatus =
-    currentUser?.role === 'worker' || currentUser?.role === 'supervisor';
+  const canChangeStatus = currentUser?.role === 'supervisor';
 
   const handleStatusChange = async (newStatus: string) => {
     try {
@@ -197,21 +191,7 @@ export default function DefectDetail() {
             </p>
           </Card>
 
-          {/* Linked repair */}
-          {repair && (
-            <Card pressable onClick={() => navigate(`/repairs/${repair.id}`)}>
-              <div className="flex items-center gap-3">
-                <Wrench size={18} className="text-amber-primary flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-text-primary">Repair #{repair.id}</p>
-                  <p className="text-xs text-text-secondary capitalize">{repair.status}</p>
-                </div>
-                <Badge variant={repair.status as any}>{repair.status}</Badge>
-              </div>
-            </Card>
-          )}
-
-          {/* Status actions (mechanic/supervisor only) */}
+          {/* Status actions (supervisor only) */}
           {canChangeStatus && defect.status !== 'fixed' && (
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">

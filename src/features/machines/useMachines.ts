@@ -18,15 +18,14 @@ export function useSites() {
 
 export function useMachineTimeline(machineId: number) {
   return useLiveQuery(async () => {
-    const [inspections, defects, repairs, downtime] = await Promise.all([
+    const [inspections, defects, downtime] = await Promise.all([
       db.inspections.where('machineId').equals(machineId).toArray(),
       db.defects.where('machineId').equals(machineId).toArray(),
-      db.repairs.where('machineId').equals(machineId).toArray(),
       db.downtimeEvents.where('machineId').equals(machineId).toArray(),
     ]);
 
     type TimelineItem = {
-      type: 'inspection' | 'defect' | 'repair' | 'downtime';
+      type: 'inspection' | 'defect' | 'downtime';
       date: string;
       id: number;
       data: any;
@@ -44,12 +43,6 @@ export function useMachineTimeline(machineId: number) {
         date: d.createdAt,
         id: d.id!,
         data: d,
-      })),
-      ...repairs.map((r) => ({
-        type: 'repair' as const,
-        date: r.createdAt,
-        id: r.id!,
-        data: r,
       })),
       ...downtime.map((dt) => ({
         type: 'downtime' as const,

@@ -15,11 +15,10 @@ export interface MachineAvailability {
 
 export function useAvailabilityBoard(siteId?: number | null) {
   return useLiveQuery(async () => {
-    const [machines, defects, downtimeEvents, repairs, schedules] = await Promise.all([
+    const [machines, defects, downtimeEvents, schedules] = await Promise.all([
       siteId ? db.machines.where('siteId').equals(siteId).toArray() : db.machines.toArray(),
       db.defects.toArray(),
       db.downtimeEvents.toArray(),
-      db.repairs.toArray(),
       db.maintenanceSchedules.toArray(),
     ]);
 
@@ -28,7 +27,6 @@ export function useAvailabilityBoard(siteId?: number | null) {
     return machines.map(machine => {
       const machineDefects = defects.filter(d => d.machineId === machine.id);
       const machineDowntime = downtimeEvents.filter(d => d.machineId === machine.id);
-      const machineRepairs = repairs.filter(r => r.machineId === machine.id);
       const machineSchedules = schedules.filter(s => s.machineId === machine.id);
 
       let state: AvailabilityState = 'available';
@@ -40,10 +38,6 @@ export function useAvailabilityBoard(siteId?: number | null) {
       // Open critical defect → needs-repair
       else if (machineDefects.some(d => d.status === 'open' && d.severity === 'critical')) {
         state = 'needs-repair';
-      }
-      // Active repair in-progress → under-maintenance
-      else if (machineRepairs.some(r => r.status === 'in-progress')) {
-        state = 'under-maintenance';
       }
       // Overdue maintenance → inspection-due
       else if (machineSchedules.some(s =>

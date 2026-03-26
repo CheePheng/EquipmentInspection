@@ -50,7 +50,7 @@ export async function createDefect(
   },
   photos: Blob[]
 ) {
-  return db.transaction('rw', [db.defects, db.defectPhotos, db.repairs], async () => {
+  return db.transaction('rw', [db.defects, db.defectPhotos], async () => {
     const defectId = await db.defects.add({
       ...data,
       status: 'open',
@@ -71,20 +71,6 @@ export async function createDefect(
         }))
       );
     }
-
-    // Auto-create pending repair
-    await db.repairs.add({
-      defectId: defectId as number,
-      machineId: data.machineId,
-      siteId: data.siteId,
-      mechanicId: null,
-      status: 'pending',
-      priority: data.severity as any,
-      partsNeeded: '',
-      actionsTaken: [],
-      completedAt: null,
-      createdAt: now(),
-    });
 
     return defectId;
   });
