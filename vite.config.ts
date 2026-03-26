@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  base: '/EquipmentInspection/',
   plugins: [
     react(),
     tailwindcss(),
@@ -19,6 +20,8 @@ export default defineConfig({
         theme_color: '#F59E0B',
         background_color: '#0F1419',
         display: 'standalone',
+        start_url: '/EquipmentInspection/',
+        scope: '/EquipmentInspection/',
         orientation: 'portrait',
         icons: [
           {

@@ -89,4 +89,4 @@ export const router = createBrowserRouter([
       },
     ],
   },
-]);
+], { basename: '/EquipmentInspection' });
