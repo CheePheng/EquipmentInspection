@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { format, parseISO, isToday, isYesterday } from 'date-fns';
 import {
   ClipboardCheck,
   AlertTriangle,
@@ -52,6 +53,24 @@ function timelineRoute(type: string, id: number): string {
   }
 }
 
+function formatDateHeader(iso: string): string {
+  const date = parseISO(iso);
+  if (isToday(date)) return 'Today';
+  if (isYesterday(date)) return 'Yesterday';
+  return format(date, 'EEE, dd MMM');
+}
+
+function groupByDate<T extends { date: string }>(items: T[]): Map<string, T[]> {
+  const groups = new Map<string, T[]>();
+  for (const item of items) {
+    const key = item.date.slice(0, 10); // YYYY-MM-DD
+    const existing = groups.get(key);
+    if (existing) existing.push(item);
+    else groups.set(key, [item]);
+  }
+  return groups;
+}
+
 export default function MachineDetail() {
   const { id: idParam } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -96,50 +115,58 @@ export default function MachineDetail() {
 
         {!isLoading && machine && (
           <div className="p-4 space-y-4">
-            {/* Machine info card */}
-            <Card>
+            {/* ── Hero Section ──────────────────────────────────────────── */}
+            <Card tier="hero">
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div className="min-w-0 flex-1">
-                  <p className="text-text-primary font-semibold text-lg leading-tight truncate">
-                    {machine.name}
-                  </p>
-                  <p className="font-mono text-amber-primary font-bold text-base mt-0.5">
+                  <p className="font-mono text-amber-primary font-bold text-xs uppercase tracking-widest">
                     {machine.code}
                   </p>
+                  <p className="text-text-primary font-semibold text-xl leading-tight mt-1 truncate">
+                    {machine.name}
+                  </p>
+                  <Badge variant="default" className="mt-2">{MACHINE_TYPE_LABELS[machine.type]}</Badge>
                 </div>
-                <div className="flex-shrink-0 pt-0.5">
+                <div className="flex-shrink-0 pt-1">
                   <StatusIndicator state={machine.availabilityState} size="md" />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-0.5">
-                  <p className="text-text-muted text-xs uppercase tracking-wide font-medium">Type</p>
-                  <Badge variant="default">{MACHINE_TYPE_LABELS[machine.type]}</Badge>
-                </div>
-                <div className="space-y-0.5">
-                  <p className="text-text-muted text-xs uppercase tracking-wide font-medium">Meter Hours</p>
-                  <p className="text-text-primary font-mono text-sm font-semibold">
+              {/* Stat strip */}
+              <div className="grid grid-cols-3 gap-3 pt-3 border-t border-border">
+                <div>
+                  <p className="text-text-muted text-[10px] uppercase tracking-wide font-medium">Meter Hours</p>
+                  <p className="text-text-primary font-mono text-sm font-bold tabular-nums mt-0.5">
                     {formatMeterHours(machine.currentMeterHours)}
                   </p>
                 </div>
-                {site && (
-                  <div className="col-span-2 space-y-0.5">
-                    <p className="text-text-muted text-xs uppercase tracking-wide font-medium">Site</p>
-                    <p className="text-text-primary text-sm">{site.name}</p>
-                  </div>
-                )}
+                <div>
+                  <p className="text-text-muted text-[10px] uppercase tracking-wide font-medium">
+                    {timeline.length > 0 ? 'Last Activity' : 'Activity'}
+                  </p>
+                  <p className="text-text-primary text-sm font-semibold mt-0.5">
+                    {timeline.length > 0 ? formatTimeAgo(timeline[0].date) : '—'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-text-muted text-[10px] uppercase tracking-wide font-medium">Site</p>
+                  <p className="text-text-primary text-sm font-semibold mt-0.5 truncate">
+                    {site?.name ?? '—'}
+                  </p>
+                </div>
               </div>
             </Card>
 
-            {/* Action buttons — contextual by role */}
-            <div className="flex flex-wrap gap-2">
+            {/* ── Action Buttons (2-column grid) ───────────────────────── */}
+            <div className="grid grid-cols-2 gap-3">
               {(role === 'operator' || role === 'supervisor') && (
                 <Button
                   variant="primary"
                   size="sm"
                   onClick={() => navigate(`/machines/${machine.id}/inspect`)}
+                  className="w-full"
                 >
+                  <ClipboardCheck size={16} className="mr-1.5" />
                   Start Inspection
                 </Button>
               )}
@@ -148,7 +175,9 @@ export default function MachineDetail() {
                   variant="secondary"
                   size="sm"
                   onClick={() => navigate(`/defects/new?machineId=${machine.id}`)}
+                  className="w-full"
                 >
+                  <AlertTriangle size={16} className="mr-1.5" />
                   Report Defect
                 </Button>
               )}
@@ -157,15 +186,19 @@ export default function MachineDetail() {
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate(`/downtime/new?machineId=${machine.id}`)}
+                  className="w-full"
                 >
+                  <Clock size={16} className="mr-1.5" />
                   Log Downtime
                 </Button>
               )}
             </div>
 
-            {/* Timeline */}
+            {/* ── Timeline (date-grouped) ──────────────────────────────── */}
             <div>
-              <h2 className="text-text-primary font-semibold text-base mb-3">Recent Activity</h2>
+              <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-widest mb-3">
+                Recent Activity
+              </h2>
 
               {timeline.length === 0 ? (
                 <EmptyState
@@ -174,58 +207,79 @@ export default function MachineDetail() {
                   description="Inspections, defects, repairs and downtime will appear here."
                 />
               ) : (
-                <div className="space-y-2">
-                  {timeline.map((item) => {
-                    const Icon = timelineIcons[item.type];
-                    const color = timelineColors[item.type];
-                    const label = timelineLabels[item.type];
+                <div className="space-y-4">
+                  {[...groupByDate(timeline)].map(([dateKey, items]) => (
+                    <div key={dateKey}>
+                      {/* Date header */}
+                      <p className="text-text-muted text-xs font-medium uppercase tracking-wide mb-2">
+                        {formatDateHeader(items[0].date)}
+                      </p>
 
-                    return (
-                      <Card
-                        key={`${item.type}-${item.id}`}
-                        pressable
-                        onClick={() => navigate(timelineRoute(item.type, item.id))}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={[
-                              'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0',
-                              'bg-slate-800',
-                              color,
-                            ].join(' ')}
-                          >
-                            <Icon size={16} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-text-primary text-sm font-medium">{label}</p>
-                            {item.type === 'defect' && item.data.description && (
-                              <p className="text-text-muted text-xs truncate mt-0.5">
-                                {item.data.description}
-                              </p>
-                            )}
-                            {item.type === 'inspection' && (
-                              <p className="text-text-muted text-xs mt-0.5 capitalize">
-                                {item.data.status}
-                              </p>
-                            )}
-                            {item.type === 'repair' && (
-                              <p className="text-text-muted text-xs mt-0.5 capitalize">
-                                {item.data.status}
-                              </p>
-                            )}
-                            {item.type === 'downtime' && item.data.reasonCode && (
-                              <p className="text-text-muted text-xs mt-0.5">
-                                {item.data.reasonCode}
-                              </p>
-                            )}
-                          </div>
-                          <span className="text-text-muted text-xs flex-shrink-0">
-                            {formatTimeAgo(item.date)}
-                          </span>
+                      {/* Timeline items with connecting line */}
+                      <div className="relative pl-5">
+                        {/* Vertical connector */}
+                        <div className="absolute left-[9px] top-2 bottom-2 w-px bg-border" />
+
+                        <div className="space-y-2">
+                          {items.map((item) => {
+                            const Icon = timelineIcons[item.type];
+                            const color = timelineColors[item.type];
+                            const label = timelineLabels[item.type];
+
+                            return (
+                              <div key={`${item.type}-${item.id}`} className="relative">
+                                {/* Dot on the line */}
+                                <div className={`absolute -left-5 top-3 w-[7px] h-[7px] rounded-full ring-2 ring-obsidian ${color.replace('text-', 'bg-')}`} />
+
+                                <Card
+                                  pressable
+                                  onClick={() => navigate(timelineRoute(item.type, item.id))}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div
+                                      className={[
+                                        'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0',
+                                        'bg-elevated-high',
+                                        color,
+                                      ].join(' ')}
+                                    >
+                                      <Icon size={16} />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-text-primary text-sm font-medium">{label}</p>
+                                      {item.type === 'defect' && item.data.description && (
+                                        <p className="text-text-muted text-xs truncate mt-0.5">
+                                          {item.data.description}
+                                        </p>
+                                      )}
+                                      {item.type === 'inspection' && (
+                                        <p className="text-text-muted text-xs mt-0.5 capitalize">
+                                          {item.data.status}
+                                        </p>
+                                      )}
+                                      {item.type === 'repair' && (
+                                        <p className="text-text-muted text-xs mt-0.5 capitalize">
+                                          {item.data.status}
+                                        </p>
+                                      )}
+                                      {item.type === 'downtime' && item.data.reasonCode && (
+                                        <p className="text-text-muted text-xs mt-0.5">
+                                          {item.data.reasonCode}
+                                        </p>
+                                      )}
+                                    </div>
+                                    <span className="text-text-muted text-xs flex-shrink-0 font-mono tabular-nums">
+                                      {formatTimeAgo(item.date)}
+                                    </span>
+                                  </div>
+                                </Card>
+                              </div>
+                            );
+                          })}
                         </div>
-                      </Card>
-                    );
-                  })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
