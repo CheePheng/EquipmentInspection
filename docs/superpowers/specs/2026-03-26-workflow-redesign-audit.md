@@ -425,16 +425,13 @@ The current deployment setup is clean. No changes needed for the workflow redesi
 
 ## J. Proposed Status & Terminology
 
-### Machine Status (6 states → 7 states)
+### Machine Status (4 states — confirmed by user)
 | Status | Label (EN) | Label (中文) | Color | Meaning |
 |--------|-----------|-------------|-------|---------|
 | `available` | Available | 可用 | Green | Ready for operation |
-| `restricted` | Restricted | 限制使用 | Amber | Can operate with caution |
-| `inspection-due` | Service Due | 待保养 | Amber | Preventive maintenance upcoming |
-| `unavailable` | Unavailable | 不可用 | Red | Cannot operate, on-site |
+| `service-due` | Service Due | 待保养 | Amber | Preventive maintenance upcoming |
+| `down` | Down | 停机 | Red | Not operational (breakdown, active downtime, needs repair) |
 | `out-for-service` | Out for Service | 外修中 | Orange | Sent to external workshop |
-| `down` | Down | 停机 | Red | Active downtime event |
-| `decommissioned` | Decommissioned | 已报废 | Gray | Permanently removed |
 
 ### Issue Severity (keep current 4)
 | Level | EN | 中文 |
@@ -497,8 +494,10 @@ It's already 70-80% there visually. The dark theme, card tiers, KPI animations, 
 3. Feature gaps (service orders, worker history, restricted status)
 4. Remaining polish (login branding, settings hierarchy, seed data)
 
-### Best Next Step Before Coding
-1. **Approve this audit** — confirm the workflow changes make sense for CCT PGL
-2. **Confirm Simplified Chinese** — vs Traditional, based on your workforce
-3. **Write implementation plan** — prioritized task list based on the roadmap above
-4. **Execute Phase 1 first** — quick wins that immediately fix the role model and add visible features
+### Confirmed Decisions
+- **Language:** Simplified Chinese (简体中文)
+- **Machine statuses:** 4 only — Available, Service Due, Down, Out for Service
+- **Roadmap priority:** As proposed (Phases 1→2→3→4)
+
+### Next Step
+Write implementation plan via /writing-plans
