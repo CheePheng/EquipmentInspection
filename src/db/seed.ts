@@ -48,6 +48,7 @@ export async function seedDatabase(): Promise<void> {
       db.maintenanceEvents,
       db.downtimeEvents,
       db.statusHistory,
+      db.serviceOrders,
       db.meta,
     ],
     async () => {
@@ -55,34 +56,32 @@ export async function seedDatabase(): Promise<void> {
       // SITES
       // -----------------------------------------------------------------------
       const site1Id = await db.sites.add({
-        name: 'Compartment 14 - Pine Plantation',
-        location: 'Mpumalanga, South Africa',
+        name: 'Compartment 14 - Acacia Block',
+        location: 'Sabah, Malaysia',
         isActive: true,
       });
       const site2Id = await db.sites.add({
         name: 'Block 7 - Eucalyptus',
-        location: 'KwaZulu-Natal, South Africa',
+        location: 'Sarawak, Malaysia',
         isActive: true,
       });
       const site3Id = await db.sites.add({
-        name: 'Mill Yard Operations',
-        location: 'Richards Bay, South Africa',
+        name: 'Equipment Yard - Mill',
+        location: 'Sandakan, Sabah',
         isActive: true,
       });
 
       // -----------------------------------------------------------------------
       // USERS
-      // Workers: 1-Johan, 2-Sipho, 3-Maria, 4-Thabo, 5-Willem, 6-David
-      // Supervisors: 7-Pieter, 8-Sarah
+      // Workers: 1-Ahmad, 2-Lim Wei Jie, 3-Siti, 4-Tan Chee Keong
+      // Supervisors: 5-Razak, 6-Chen Mei Ling
       // -----------------------------------------------------------------------
-      const johanId = await db.users.add({ pin: '1111', name: 'Johan van der Merwe', role: 'worker', siteId: site1Id as number });
-      const siphoId = await db.users.add({ pin: '1112', name: 'Sipho Nkosi', role: 'worker', siteId: site1Id as number });
-      const mariaId = await db.users.add({ pin: '1113', name: 'Maria Dlamini', role: 'worker', siteId: site2Id as number });
-      const thaboId = await db.users.add({ pin: '1114', name: 'Thabo Mokoena', role: 'worker', siteId: site2Id as number });
-      const willemId = await db.users.add({ pin: '2222', name: 'Willem Botha', role: 'worker', siteId: site1Id as number });
-      const davidId = await db.users.add({ pin: '2223', name: 'David Sithole', role: 'worker', siteId: site2Id as number });
-      await db.users.add({ pin: '3333', name: 'Pieter Joubert', role: 'supervisor', siteId: site1Id as number });
-      await db.users.add({ pin: '3334', name: 'Sarah Mthembu', role: 'supervisor', siteId: site2Id as number });
+      const johanId = await db.users.add({ pin: '1111', name: 'Ahmad bin Ismail', role: 'worker', siteId: site1Id as number });
+      const siphoId = await db.users.add({ pin: '1112', name: 'Lim Wei Jie', role: 'worker', siteId: site1Id as number });
+      const mariaId = await db.users.add({ pin: '1113', name: 'Siti Nurhaliza', role: 'worker', siteId: site2Id as number });
+      const thaboId = await db.users.add({ pin: '1114', name: 'Tan Chee Keong', role: 'worker', siteId: site2Id as number });
+      await db.users.add({ pin: '3333', name: 'Razak bin Osman', role: 'supervisor', siteId: site1Id as number });
+      await db.users.add({ pin: '3334', name: 'Chen Mei Ling', role: 'supervisor', siteId: site2Id as number });
 
       // -----------------------------------------------------------------------
       // MACHINES  (18 total)
@@ -458,7 +457,7 @@ export async function seedDatabase(): Promise<void> {
       await addItems(insp11Id as number, tplExcavatorId as number, [0, 1], []);
 
       const insp12Id = await db.inspections.add({
-        machineId: gn001Id as number, operatorId: willemId as number,
+        machineId: gn001Id as number, operatorId: siphoId as number,
         date: dateStrDaysAgo(9), meterReading: 1188, status: 'completed',
         completedAt: daysAgo(9), siteId: site1Id as number,
       });
@@ -563,7 +562,7 @@ export async function seedDatabase(): Promise<void> {
       await addItems(insp25Id as number, tplExcavatorId as number, [], []);
 
       const insp26Id = await db.inspections.add({
-        machineId: gn001Id as number, operatorId: willemId as number,
+        machineId: gn001Id as number, operatorId: siphoId as number,
         date: dateStrDaysAgo(2), meterReading: 1196, status: 'completed',
         completedAt: daysAgo(2), siteId: site1Id as number,
       });
@@ -677,7 +676,7 @@ export async function seedDatabase(): Promise<void> {
         category: 'electrical', severity: 'medium', status: 'acknowledged',
         description: 'Output voltage fluctuating ±8V under load. AVR may require adjustment or replacement.',
         safeToOperate: true, priority: false,
-        reportedBy: willemId as number,
+        reportedBy: siphoId as number,
         createdAt: daysAgo(2), updatedAt: daysAgo(1),
       });
 
@@ -733,7 +732,7 @@ export async function seedDatabase(): Promise<void> {
         category: 'structural', severity: 'low', status: 'open',
         description: 'Minor surface crack on rear chassis cross-member. Monitoring required — not structurally critical.',
         safeToOperate: true, priority: false,
-        reportedBy: willemId as number,
+        reportedBy: siphoId as number,
         createdAt: daysAgo(6), updatedAt: daysAgo(6),
       });
 
@@ -764,7 +763,7 @@ export async function seedDatabase(): Promise<void> {
         machineId: dz001Id as number, defectId: null,
         startTime: daysAgo(7), endTime: daysAgo(6),
         reasonCode: 'scheduled-service', notes: '1000-hour major service. Machine back in service after service.',
-        siteId: site1Id as number, loggedBy: willemId as number,
+        siteId: site1Id as number, loggedBy: siphoId as number,
       });
 
       // [DT4] Completed — TK-001 tire repair
@@ -788,7 +787,7 @@ export async function seedDatabase(): Promise<void> {
         machineId: fw002Id as number, defectId: null,
         startTime: daysAgo(12), endTime: daysAgo(10),
         reasonCode: 'waiting-parts', notes: 'Hydraulic pump seal kit on back-order. Machine stood down.',
-        siteId: site1Id as number, loggedBy: willemId as number,
+        siteId: site1Id as number, loggedBy: siphoId as number,
       });
 
       // [DT7] Completed — HV-002 electrical fault
@@ -804,7 +803,7 @@ export async function seedDatabase(): Promise<void> {
         machineId: gn001Id as number, defectId: def7Id as number,
         startTime: daysAgo(2), endTime: daysAgo(1),
         reasonCode: 'electrical', notes: 'AVR failure causing voltage fluctuation — generator isolated while AVR sourced.',
-        siteId: site1Id as number, loggedBy: willemId as number,
+        siteId: site1Id as number, loggedBy: siphoId as number,
       });
 
       // [DT9] Completed — TK-002 weather hold
@@ -852,7 +851,7 @@ export async function seedDatabase(): Promise<void> {
         machineId: ld002Id as number, defectId: null,
         startTime: daysAgo(14), endTime: daysAgo(14),
         reasonCode: 'scheduled-service', notes: '250-hour oil service completed in field. Machine returned same day.',
-        siteId: site3Id as number, loggedBy: davidId as number,
+        siteId: site3Id as number, loggedBy: thaboId as number,
       });
 
       // [DT15] Completed — TK-003 operator issue
@@ -967,7 +966,7 @@ export async function seedDatabase(): Promise<void> {
       // HV-001 oil change (schedule index 1 = hydraulic filter, done ~45 days ago)
       await db.maintenanceEvents.add({
         scheduleId: scheduleIds[1], machineId: hv001Id as number,
-        completedBy: willemId as number, completedAt: daysAgo(45),
+        completedBy: siphoId as number, completedAt: daysAgo(45),
         meterReading: 3950, notes: 'Hydraulic filter replaced. System flushed and refilled with Mobil DTE 25 fluid.',
         serviceType: 'Hydraulic Filter',
       });
@@ -975,7 +974,7 @@ export async function seedDatabase(): Promise<void> {
       // HV-002 full service (schedule index 5, done ~80 days ago)
       await db.maintenanceEvents.add({
         scheduleId: scheduleIds[5], machineId: hv002Id as number,
-        completedBy: davidId as number, completedAt: daysAgo(80),
+        completedBy: thaboId as number, completedAt: daysAgo(80),
         meterReading: 3400, notes: '1000-hour major service completed. All filters, belts and wear items replaced.',
         serviceType: 'Full Service',
       });
@@ -983,7 +982,7 @@ export async function seedDatabase(): Promise<void> {
       // FW-001 oil change (overdue — last done 35 days ago, schedule index 6)
       await db.maintenanceEvents.add({
         scheduleId: scheduleIds[6], machineId: fw001Id as number,
-        completedBy: willemId as number, completedAt: daysAgo(35),
+        completedBy: siphoId as number, completedAt: daysAgo(35),
         meterReading: 4920, notes: 'Engine oil and filter changed. Used Shell Rimula R4X 15W-40.',
         serviceType: 'Engine Oil Change',
       });
@@ -991,7 +990,7 @@ export async function seedDatabase(): Promise<void> {
       // DZ-001 oil change (done 7 days ago as part of scheduled maintenance)
       await db.maintenanceEvents.add({
         scheduleId: scheduleIds[27], machineId: dz001Id as number,
-        completedBy: willemId as number, completedAt: daysAgo(7),
+        completedBy: siphoId as number, completedAt: daysAgo(7),
         meterReading: 7183, notes: 'Engine oil change completed as part of 1000-hour major service.',
         serviceType: 'Engine Oil Change',
       });
@@ -999,7 +998,7 @@ export async function seedDatabase(): Promise<void> {
       // DZ-001 hydraulic filter (done 7 days ago)
       await db.maintenanceEvents.add({
         scheduleId: scheduleIds[28], machineId: dz001Id as number,
-        completedBy: willemId as number, completedAt: daysAgo(7),
+        completedBy: siphoId as number, completedAt: daysAgo(7),
         meterReading: 7183, notes: 'Hydraulic filter replaced. Charge filter and return filter both replaced.',
         serviceType: 'Hydraulic Filter',
       });
@@ -1007,7 +1006,7 @@ export async function seedDatabase(): Promise<void> {
       // DZ-001 full service (done 7 days ago)
       await db.maintenanceEvents.add({
         scheduleId: scheduleIds[29], machineId: dz001Id as number,
-        completedBy: willemId as number, completedAt: daysAgo(7),
+        completedBy: siphoId as number, completedAt: daysAgo(7),
         meterReading: 7183, notes: '1000-hour full service. All fluids, filters, track tension and pivot pins inspected and serviced.',
         serviceType: 'Full Service',
       });
@@ -1015,7 +1014,7 @@ export async function seedDatabase(): Promise<void> {
       // TK-001 oil change (done 20 days ago, schedule index 30)
       await db.maintenanceEvents.add({
         scheduleId: scheduleIds[30], machineId: tk001Id as number,
-        completedBy: davidId as number, completedAt: daysAgo(20),
+        completedBy: thaboId as number, completedAt: daysAgo(20),
         meterReading: 3250, notes: 'Engine oil and filter changed. Cab filters also replaced.',
         serviceType: 'Engine Oil Change',
       });
@@ -1023,7 +1022,7 @@ export async function seedDatabase(): Promise<void> {
       // LD-002 oil change (done 14 days ago, schedule index 25)
       await db.maintenanceEvents.add({
         scheduleId: scheduleIds[25], machineId: ld002Id as number,
-        completedBy: davidId as number, completedAt: daysAgo(14),
+        completedBy: thaboId as number, completedAt: daysAgo(14),
         meterReading: 3990, notes: '250-hour oil service. Engine oil, filter and air cleaner replaced.',
         serviceType: 'Engine Oil Change',
       });
@@ -1031,7 +1030,7 @@ export async function seedDatabase(): Promise<void> {
       // SK-001 hydraulic filter (done 56 days ago, schedule index 15)
       await db.maintenanceEvents.add({
         scheduleId: scheduleIds[15], machineId: sk001Id as number,
-        completedBy: willemId as number, completedAt: daysAgo(56),
+        completedBy: siphoId as number, completedAt: daysAgo(56),
         meterReading: 5900, notes: 'Hydraulic return filter and breather replaced.',
         serviceType: 'Hydraulic Filter',
       });
@@ -1039,9 +1038,44 @@ export async function seedDatabase(): Promise<void> {
       // EX-001 full service (done 70 days ago, schedule index 20)
       await db.maintenanceEvents.add({
         scheduleId: scheduleIds[20], machineId: ex001Id as number,
-        completedBy: willemId as number, completedAt: daysAgo(70),
+        completedBy: siphoId as number, completedAt: daysAgo(70),
         meterReading: 4400, notes: 'Full 1000-hour service. Swing bearing greased, boom and stick pin clearances checked.',
         serviceType: 'Full Service',
+      });
+
+      // -----------------------------------------------------------------------
+      // SERVICE ORDERS
+      // -----------------------------------------------------------------------
+      await db.serviceOrders.add({
+        machineId: dz001Id as number,
+        defectId: null,
+        siteId: site1Id as number,
+        workshopName: 'Sandakan Heavy Equipment Services',
+        dateSent: dateStrDaysAgo(5),
+        expectedReturnDate: dateStrDaysFromNow(3),
+        dateReturned: null,
+        status: 'in-service',
+        notes: 'Full undercarriage rebuild and track replacement.',
+        repairSummary: '',
+        cost: null,
+        createdAt: daysAgo(5),
+        completedAt: null,
+      });
+
+      await db.serviceOrders.add({
+        machineId: tk002Id as number,
+        defectId: null,
+        siteId: site2Id as number,
+        workshopName: 'KK Diesel & Hydraulics',
+        dateSent: dateStrDaysAgo(12),
+        expectedReturnDate: dateStrDaysAgo(2),
+        dateReturned: dateStrDaysAgo(1),
+        status: 'returned',
+        notes: 'Hydraulic pump seal replacement.',
+        repairSummary: 'Replaced main hydraulic pump seals and flushed system. All pressure tests passed.',
+        cost: 4500,
+        createdAt: daysAgo(12),
+        completedAt: null,
       });
 
       // -----------------------------------------------------------------------
