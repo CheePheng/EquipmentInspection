@@ -12,15 +12,8 @@ import { EmptyState } from '../../components/ui/EmptyState';
 import { useServiceOrder, updateServiceOrderStatus } from './useServiceOrders';
 import { useMachine } from '../machines/useMachines';
 import { useToastStore } from '../../stores/toast.store';
+import { useTranslation } from '../../i18n/useTranslation';
 import { formatDate } from '../../lib/utils';
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: 'Pending',
-  'in-service': 'In Service',
-  returned: 'Returned',
-  completed: 'Completed',
-  cancelled: 'Cancelled',
-};
 
 const STATUS_VARIANTS: Record<string, string> = {
   pending: 'open',
@@ -34,6 +27,15 @@ export default function ServiceOrderDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToast } = useToastStore();
+  const { t } = useTranslation();
+
+  const STATUS_LABELS: Record<string, string> = {
+    pending: t('serviceOrder.pending'),
+    'in-service': t('serviceOrder.inService'),
+    returned: t('serviceOrder.returned'),
+    completed: t('serviceOrder.completed'),
+    cancelled: t('serviceOrder.cancelled'),
+  };
 
   const orderId = id ? parseInt(id, 10) : 0;
   const order = useServiceOrder(orderId);
@@ -50,7 +52,7 @@ export default function ServiceOrderDetail() {
     setLoading(true);
     try {
       await updateServiceOrderStatus(orderId, newStatus as any, extra as any);
-      addToast(`Order marked as ${STATUS_LABELS[newStatus] ?? newStatus}`, 'success');
+      addToast(`${STATUS_LABELS[newStatus] ?? newStatus}`, 'success');
     } catch {
       addToast('Failed to update service order', 'error');
     } finally {
@@ -80,12 +82,12 @@ export default function ServiceOrderDetail() {
     return (
       <AnimatedPage>
         <div className="min-h-screen bg-obsidian">
-          <PageHeader title="Service Order Not Found" showBack />
+          <PageHeader title={t('empty.orderNotFound')} showBack />
           <EmptyState
             icon={AlertTriangle}
-            title="Service order not found"
+            title={t('empty.orderNotFound')}
             description="This service order may have been removed."
-            action={{ label: 'Go Back', onClick: () => navigate(-1) }}
+            action={{ label: t('action.goBack'), onClick: () => navigate(-1) }}
           />
         </div>
       </AnimatedPage>
@@ -98,13 +100,13 @@ export default function ServiceOrderDetail() {
   return (
     <AnimatedPage>
       <div className="min-h-screen bg-obsidian pb-20">
-        <PageHeader title={`Service Order #${order.id}`} showBack />
+        <PageHeader title={`${t('page.serviceOrderDetail')} #${order.id}`} showBack />
 
         <div className="px-4 py-4 space-y-4">
           {/* Machine info */}
           <Card>
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-1">
-              Machine
+              {t('label.machine')}
             </p>
             {machine ? (
               <p className="text-text-primary font-medium">
@@ -124,13 +126,13 @@ export default function ServiceOrderDetail() {
           <Card>
             <div className="flex items-start gap-6 flex-wrap">
               <div className="flex flex-col gap-1">
-                <p className="text-xs text-text-muted">Status</p>
+                <p className="text-xs text-text-muted">{t('label.status')}</p>
                 <Badge variant={STATUS_VARIANTS[order.status] as any} className="text-sm px-3 py-1">
                   {STATUS_LABELS[order.status] ?? order.status}
                 </Badge>
               </div>
               <div className="flex flex-col gap-1">
-                <p className="text-xs text-text-muted">Workshop</p>
+                <p className="text-xs text-text-muted">{t('label.workshop')}</p>
                 <p className="text-sm text-text-primary font-medium">{order.workshopName}</p>
               </div>
             </div>
@@ -139,18 +141,18 @@ export default function ServiceOrderDetail() {
           {/* Timeline dates */}
           <Card>
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
-              Timeline
+              {t('label.timeline')}
             </p>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-xs text-text-muted">Date Sent</span>
+                <span className="text-xs text-text-muted">{t('label.dateSent')}</span>
                 <span className="text-sm text-text-primary font-mono">
                   {formatDate(order.dateSent)}
                 </span>
               </div>
               {order.expectedReturnDate && (
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-text-muted">Expected Return</span>
+                  <span className="text-xs text-text-muted">{t('label.expectedReturn')}</span>
                   <span className="text-sm text-text-primary font-mono">
                     {formatDate(order.expectedReturnDate)}
                   </span>
@@ -158,7 +160,7 @@ export default function ServiceOrderDetail() {
               )}
               {order.dateReturned && (
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-text-muted">Date Returned</span>
+                  <span className="text-xs text-text-muted">{t('label.dateReturned')}</span>
                   <span className="text-sm text-text-primary font-mono">
                     {formatDate(order.dateReturned)}
                   </span>
@@ -166,7 +168,7 @@ export default function ServiceOrderDetail() {
               )}
               {order.completedAt && (
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-text-muted">Completed</span>
+                  <span className="text-xs text-text-muted">{t('label.completed')}</span>
                   <span className="text-sm text-text-primary font-mono">
                     {formatDate(order.completedAt)}
                   </span>
@@ -178,11 +180,11 @@ export default function ServiceOrderDetail() {
           {/* Days elapsed */}
           <Card>
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-1">
-              Days Elapsed
+              {t('label.daysElapsed')}
             </p>
             <p className="text-2xl font-mono font-bold text-amber-primary">
               {daysElapsed}
-              <span className="text-sm text-text-muted font-normal ml-1">days</span>
+              <span className="text-sm text-text-muted font-normal ml-1">{t('misc.days')}</span>
             </p>
           </Card>
 
@@ -190,7 +192,7 @@ export default function ServiceOrderDetail() {
           {order.notes && order.notes.trim() !== '' && (
             <Card>
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-                Notes
+                {t('label.notes')}
               </p>
               <p className="text-sm text-text-primary leading-relaxed">{order.notes}</p>
             </Card>
@@ -202,7 +204,7 @@ export default function ServiceOrderDetail() {
             (order.status === 'returned' || order.status === 'completed') && (
               <Card>
                 <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-                  Repair Summary
+                  {t('label.repairSummary')}
                 </p>
                 <p className="text-sm text-text-primary leading-relaxed">
                   {order.repairSummary}
@@ -214,7 +216,7 @@ export default function ServiceOrderDetail() {
           {order.cost !== null && order.cost !== undefined && (
             <Card>
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-1">
-                Cost
+                {t('label.cost')}
               </p>
               <p className="text-lg font-mono font-semibold text-text-primary">
                 ${order.cost.toLocaleString()}
@@ -226,7 +228,7 @@ export default function ServiceOrderDetail() {
           {isActiveOrder && (
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                Actions
+                {t('label.actions')}
               </p>
 
               {order.status === 'pending' && (
@@ -236,7 +238,7 @@ export default function ServiceOrderDetail() {
                   loading={loading}
                   onClick={() => handleStatusChange('in-service')}
                 >
-                  Mark In Service
+                  {t('action.markInService')}
                 </Button>
               )}
 
@@ -247,7 +249,7 @@ export default function ServiceOrderDetail() {
                   loading={loading}
                   onClick={() => handleStatusChange('returned')}
                 >
-                  Mark Returned
+                  {t('action.markReturned')}
                 </Button>
               )}
 
@@ -255,19 +257,19 @@ export default function ServiceOrderDetail() {
                 <div className="space-y-3">
                   <div>
                     <label className="text-xs text-text-muted block mb-1">
-                      Repair Summary
+                      {t('label.repairSummary')}
                     </label>
                     <textarea
                       className="w-full bg-elevated border border-border rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:border-amber-primary transition-colors duration-150"
                       rows={3}
-                      placeholder="Describe the repairs performed..."
+                      placeholder={t('placeholder.describeRepairs')}
                       value={repairSummary}
                       onChange={e => setRepairSummary(e.target.value)}
                     />
                   </div>
                   <div>
                     <label className="text-xs text-text-muted block mb-1">
-                      Cost (optional)
+                      {t('label.cost')} ({t('misc.optional')})
                     </label>
                     <input
                       type="number"
@@ -285,7 +287,7 @@ export default function ServiceOrderDetail() {
                     loading={loading}
                     onClick={handleComplete}
                   >
-                    Confirm Complete
+                    {t('action.confirmComplete')}
                   </Button>
                 </div>
               )}
@@ -296,7 +298,7 @@ export default function ServiceOrderDetail() {
                 loading={loading}
                 onClick={() => handleStatusChange('cancelled')}
               >
-                Cancel Order
+                {t('action.cancelOrder')}
               </Button>
             </div>
           )}

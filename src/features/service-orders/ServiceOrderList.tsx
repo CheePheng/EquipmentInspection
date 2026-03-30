@@ -11,17 +11,10 @@ import { EmptyState } from '../../components/ui/EmptyState';
 import { Spinner } from '../../components/ui/Spinner';
 import { useServiceOrders } from './useServiceOrders';
 import { useMachines } from '../machines/useMachines';
+import { useTranslation } from '../../i18n/useTranslation';
 import { listVariants, cardVariants } from '../../lib/motion';
 import { formatDate } from '../../lib/utils';
 import type { ServiceOrder } from '../../db/schemas/service-order.schema';
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: 'Pending',
-  'in-service': 'In Service',
-  returned: 'Returned',
-  completed: 'Completed',
-  cancelled: 'Cancelled',
-};
 
 const STATUS_VARIANTS: Record<string, string> = {
   pending: 'open',
@@ -41,6 +34,16 @@ function ServiceOrderCard({
   machineCode: string;
 }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const STATUS_LABELS: Record<string, string> = {
+    pending: t('serviceOrder.pending'),
+    'in-service': t('serviceOrder.inService'),
+    returned: t('serviceOrder.returned'),
+    completed: t('serviceOrder.completed'),
+    cancelled: t('serviceOrder.cancelled'),
+  };
+
   const daysElapsed = differenceInDays(new Date(), parseISO(order.dateSent));
 
   return (
@@ -50,7 +53,7 @@ function ServiceOrderCard({
           {machineCode}
         </span>
         <span className="font-mono text-xs text-text-muted flex-shrink-0">
-          {daysElapsed}d
+          {daysElapsed}{t('misc.days')}
         </span>
       </div>
       <p className="text-sm text-text-secondary mb-2">{order.workshopName}</p>
@@ -59,7 +62,7 @@ function ServiceOrderCard({
           {STATUS_LABELS[order.status] ?? order.status}
         </Badge>
         <span className="text-xs text-text-muted">
-          Sent {formatDate(order.dateSent)}
+          {t('label.dateSent')} {formatDate(order.dateSent)}
         </span>
       </div>
     </Card>
@@ -67,6 +70,7 @@ function ServiceOrderCard({
 }
 
 export default function ServiceOrderList() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<'active' | 'completed' | 'all'>('active');
   const allOrders = useServiceOrders();
   const machines = useMachines();
@@ -87,10 +91,17 @@ export default function ServiceOrderList() {
         : 'text-text-muted hover:text-text-primary',
     ].join(' ');
 
+  const emptyDescription =
+    tab === 'active'
+      ? t('empty.serviceOrdersActive')
+      : tab === 'completed'
+      ? t('empty.serviceOrdersCompleted')
+      : t('empty.serviceOrdersAll');
+
   return (
     <AnimatedPage>
       <div className="min-h-screen bg-obsidian pb-20">
-        <PageHeader title="Service Orders" />
+        <PageHeader title={t('page.serviceOrders')} />
 
         <div className="px-4 pt-3 pb-1">
           <div className="flex gap-1 bg-slate-dark rounded-xl p-1">
@@ -99,21 +110,21 @@ export default function ServiceOrderList() {
               className={tabClass(tab === 'active')}
               onClick={() => setTab('active')}
             >
-              Active
+              {t('label.active')}
             </button>
             <button
               type="button"
               className={tabClass(tab === 'completed')}
               onClick={() => setTab('completed')}
             >
-              Completed
+              {t('label.completed')}
             </button>
             <button
               type="button"
               className={tabClass(tab === 'all')}
               onClick={() => setTab('all')}
             >
-              All
+              {t('label.all')}
             </button>
           </div>
         </div>
@@ -126,14 +137,8 @@ export default function ServiceOrderList() {
           ) : filteredOrders.length === 0 ? (
             <EmptyState
               icon={ClipboardList}
-              title="No service orders"
-              description={
-                tab === 'active'
-                  ? 'No active service orders at the moment.'
-                  : tab === 'completed'
-                  ? 'No completed service orders yet.'
-                  : 'No service orders have been created yet.'
-              }
+              title={t('empty.serviceOrders')}
+              description={emptyDescription}
             />
           ) : (
             <motion.div

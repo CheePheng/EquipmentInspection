@@ -16,35 +16,37 @@ import { useDefect, useDefectPhotos, updateDefectStatus } from './useDefects';
 import { useMachine } from '../machines/useMachines';
 import { useAuthStore } from '../auth/auth.store';
 import { useToastStore } from '../../stores/toast.store';
+import { useTranslation } from '../../i18n/useTranslation';
 import { db } from '../../db/database';
 import { formatDateTime, today } from '../../lib/utils';
-
-const CATEGORY_LABELS: Record<string, string> = {
-  engine: 'Engine',
-  hydraulic: 'Hydraulic',
-  electrical: 'Electrical',
-  structural: 'Structural',
-  safety: 'Safety',
-  'tires-tracks': 'Tires/Tracks',
-  'cab-controls': 'Cab/Controls',
-  'lights-signals': 'Lights/Signals',
-  'fluid-leaks': 'Fluid Leaks',
-  other: 'Other',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  open: 'Open',
-  acknowledged: 'Acknowledged',
-  'sent-out': 'Sent for Service',
-  resolved: 'Resolved',
-  deferred: 'Deferred',
-};
 
 export default function DefectDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { currentUser } = useAuthStore();
   const { addToast } = useToastStore();
+  const { t } = useTranslation();
+
+  const CATEGORY_LABELS: Record<string, string> = {
+    engine: t('category.engine'),
+    hydraulic: t('category.hydraulic'),
+    electrical: t('category.electrical'),
+    structural: t('category.structural'),
+    safety: t('category.safety'),
+    'tires-tracks': t('category.tiresTracks'),
+    'cab-controls': t('category.cabControls'),
+    'lights-signals': t('category.lightsSignals'),
+    'fluid-leaks': t('category.fluidLeaks'),
+    other: t('category.other'),
+  };
+
+  const STATUS_LABELS: Record<string, string> = {
+    open: t('defect.open'),
+    acknowledged: t('defect.acknowledged'),
+    'sent-out': t('defect.sentOut'),
+    resolved: t('defect.resolved'),
+    deferred: t('defect.deferred'),
+  };
 
   const defectId = id ? parseInt(id, 10) : 0;
   const defect = useDefect(defectId);
@@ -72,9 +74,9 @@ export default function DefectDetail() {
   const handleStatusChange = async (newStatus: string) => {
     try {
       await updateDefectStatus(defectId, newStatus);
-      addToast(`Defect marked as ${STATUS_LABELS[newStatus] ?? newStatus}`, 'success');
+      addToast(t('toast.defectUpdated'), 'success');
     } catch {
-      addToast('Failed to update status', 'error');
+      addToast(t('toast.defectUpdateFailed'), 'error');
     }
   };
 
@@ -96,13 +98,13 @@ export default function DefectDetail() {
         cost: null,
       });
       await updateDefectStatus(defectId, 'sent-out');
-      addToast('Service order created', 'success');
+      addToast(t('toast.serviceOrderCreated'), 'success');
       setShowSendForm(false);
       setWorkshopName('');
       setExpectedReturn('');
       setServiceNotes('');
     } catch {
-      addToast('Failed to create service order', 'error');
+      addToast(t('toast.serviceOrderFailed'), 'error');
     } finally {
       setSending(false);
     }
@@ -122,12 +124,12 @@ export default function DefectDetail() {
     return (
       <AnimatedPage>
         <div className="min-h-screen bg-obsidian">
-          <PageHeader title="Defect Not Found" showBack />
+          <PageHeader title={t('empty.defectNotFound')} showBack />
           <EmptyState
             icon={AlertTriangle}
-            title="Defect not found"
+            title={t('empty.defectNotFound')}
             description="This defect may have been removed."
-            action={{ label: 'Go Back', onClick: () => navigate(-1) }}
+            action={{ label: t('action.goBack'), onClick: () => navigate(-1) }}
           />
         </div>
       </AnimatedPage>
@@ -145,7 +147,7 @@ export default function DefectDetail() {
           {/* Machine info */}
           <Card>
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-1">
-              Machine
+              {t('label.machine')}
             </p>
             {machine ? (
               <p className="text-text-primary font-medium">
@@ -163,19 +165,19 @@ export default function DefectDetail() {
           <Card>
             <div className="flex items-center gap-3 flex-wrap">
               <div className="flex flex-col gap-1">
-                <p className="text-xs text-text-muted">Severity</p>
+                <p className="text-xs text-text-muted">{t('label.severity')}</p>
                 <Badge variant={defect.severity as any} className="text-sm px-3 py-1">
                   {defect.severity.charAt(0).toUpperCase() + defect.severity.slice(1)}
                 </Badge>
               </div>
               <div className="flex flex-col gap-1">
-                <p className="text-xs text-text-muted">Status</p>
+                <p className="text-xs text-text-muted">{t('label.status')}</p>
                 <Badge variant={defect.status as any} className="text-sm px-3 py-1">
                   {STATUS_LABELS[defect.status] ?? defect.status}
                 </Badge>
               </div>
               <div className="flex flex-col gap-1">
-                <p className="text-xs text-text-muted">Category</p>
+                <p className="text-xs text-text-muted">{t('label.category')}</p>
                 <span className="text-sm text-text-primary font-medium">
                   {CATEGORY_LABELS[defect.category] ?? defect.category}
                 </span>
@@ -186,18 +188,18 @@ export default function DefectDetail() {
           {/* Safe to operate */}
           <Card>
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-              Safe to Operate
+              {t('label.safeToOperate')}
             </p>
             <div className="flex items-center gap-2">
               {defect.safeToOperate ? (
                 <>
                   <CheckCircle size={18} className="text-emerald-400 flex-shrink-0" />
-                  <span className="text-emerald-400 font-medium">Yes — Safe to operate</span>
+                  <span className="text-emerald-400 font-medium">{t('label.safeYes')}</span>
                 </>
               ) : (
                 <>
                   <XCircle size={18} className="text-red-400 flex-shrink-0" />
-                  <span className="text-red-400 font-medium">No — Do not operate</span>
+                  <span className="text-red-400 font-medium">{t('label.safeNo')}</span>
                 </>
               )}
             </div>
@@ -207,7 +209,7 @@ export default function DefectDetail() {
           {defect.description ? (
             <Card>
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-                Description
+                {t('label.description')}
               </p>
               <p className="text-sm text-text-primary leading-relaxed">{defect.description}</p>
             </Card>
@@ -217,7 +219,7 @@ export default function DefectDetail() {
           {photoBlobs.length > 0 && (
             <Card>
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
-                Photos ({photoBlobs.length})
+                {t('label.photos')} ({photoBlobs.length})
               </p>
               <PhotoGrid photos={photoBlobs} readOnly />
             </Card>
@@ -226,7 +228,7 @@ export default function DefectDetail() {
           {/* Reporter + timestamp */}
           <Card>
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-              Reported
+              {t('label.reported')}
             </p>
             <p className="text-sm text-text-primary">
               {reporter ? reporter.name : `User #${defect.reportedBy}`}
@@ -243,14 +245,14 @@ export default function DefectDetail() {
                 <Truck size={18} className="text-amber-primary flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-text-primary">
-                    Service Order #{linkedServiceOrder.id}
+                    {t('label.linkedServiceOrder')} #{linkedServiceOrder.id}
                   </p>
                   <p className="text-xs text-text-secondary">
                     {linkedServiceOrder.workshopName}
                   </p>
                 </div>
                 <Badge variant={linkedServiceOrder.status as any}>
-                  {linkedServiceOrder.status === 'in-service' ? 'In Service' :
+                  {linkedServiceOrder.status === 'in-service' ? t('serviceOrder.inService') :
                    linkedServiceOrder.status.charAt(0).toUpperCase() + linkedServiceOrder.status.slice(1)}
                 </Badge>
               </div>
@@ -261,7 +263,7 @@ export default function DefectDetail() {
           {canChangeStatus && defect.status !== 'resolved' && (
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                Update Status
+                {t('label.updateStatus')}
               </p>
               <div className="flex flex-col gap-2">
                 {defect.status === 'open' && (
@@ -270,7 +272,7 @@ export default function DefectDetail() {
                     fullWidth
                     onClick={() => handleStatusChange('acknowledged')}
                   >
-                    Acknowledge
+                    {t('action.acknowledge')}
                   </Button>
                 )}
                 {(defect.status === 'open' || defect.status === 'acknowledged') && !linkedServiceOrder && (
@@ -279,7 +281,7 @@ export default function DefectDetail() {
                     fullWidth
                     onClick={() => setShowSendForm(true)}
                   >
-                    Send for Service
+                    {t('action.sendForService')}
                   </Button>
                 )}
                 {defect.status !== 'sent-out' && (
@@ -288,7 +290,7 @@ export default function DefectDetail() {
                     fullWidth
                     onClick={() => handleStatusChange('resolved')}
                   >
-                    Mark Resolved
+                    {t('action.markResolved')}
                   </Button>
                 )}
                 {defect.status === 'deferred' && (
@@ -297,7 +299,7 @@ export default function DefectDetail() {
                     fullWidth
                     onClick={() => handleStatusChange('open')}
                   >
-                    Reopen
+                    {t('action.reopen')}
                   </Button>
                 )}
                 {defect.status !== 'deferred' && defect.status !== 'sent-out' && (
@@ -306,7 +308,7 @@ export default function DefectDetail() {
                     fullWidth
                     onClick={() => handleStatusChange('deferred')}
                   >
-                    Defer
+                    {t('action.defer')}
                   </Button>
                 )}
               </div>
@@ -319,24 +321,24 @@ export default function DefectDetail() {
       <Modal
         isOpen={showSendForm}
         onClose={() => setShowSendForm(false)}
-        title="Send for Service"
+        title={t('action.sendForService')}
       >
         <div className="space-y-4">
           <div className="space-y-1.5">
             <label className="block text-sm font-medium text-text-secondary">
-              Workshop / Vendor <span className="text-red-400">*</span>
+              {t('label.workshop')} <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
               value={workshopName}
               onChange={e => setWorkshopName(e.target.value)}
-              placeholder="Enter workshop name"
+              placeholder={t('placeholder.enterWorkshop')}
               className="w-full bg-elevated border border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-amber-primary transition-colors"
             />
           </div>
           <div className="space-y-1.5">
             <label className="block text-sm font-medium text-text-secondary">
-              Expected Return Date
+              {t('label.expectedReturn')}
             </label>
             <input
               type="date"
@@ -347,13 +349,13 @@ export default function DefectDetail() {
           </div>
           <div className="space-y-1.5">
             <label className="block text-sm font-medium text-text-secondary">
-              Notes <span className="text-text-muted text-xs">(optional)</span>
+              {t('label.notes')} <span className="text-text-muted text-xs">({t('misc.optional')})</span>
             </label>
             <textarea
               value={serviceNotes}
               onChange={e => setServiceNotes(e.target.value)}
               rows={2}
-              placeholder="Additional details…"
+              placeholder={t('placeholder.additionalDetails')}
               className="w-full bg-elevated border border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:border-amber-primary transition-colors"
             />
           </div>
@@ -363,7 +365,7 @@ export default function DefectDetail() {
               fullWidth
               onClick={() => setShowSendForm(false)}
             >
-              Cancel
+              {t('action.cancel')}
             </Button>
             <Button
               variant="primary"
@@ -372,7 +374,7 @@ export default function DefectDetail() {
               loading={sending}
               onClick={handleSendForService}
             >
-              Create Order
+              {t('action.createOrder')}
             </Button>
           </div>
         </div>

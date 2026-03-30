@@ -211,4 +211,84 @@ export const en: Record<string, string> = {
   'misc.days': 'days',
   'misc.optional': 'optional',
   'misc.required': 'required',
+
+  // Defect categories
+  'category.engine': 'Engine',
+  'category.hydraulic': 'Hydraulic',
+  'category.electrical': 'Electrical',
+  'category.structural': 'Structural',
+  'category.safety': 'Safety',
+  'category.tiresTracks': 'Tires/Tracks',
+  'category.cabControls': 'Cab/Controls',
+  'category.lightsSignals': 'Lights/Signals',
+  'category.fluidLeaks': 'Fluid Leaks',
+  'category.other': 'Other',
+
+  // Role labels
+  'role.supervisor': 'Supervisor',
+  'role.worker': 'Worker',
+
+  // Form placeholders
+  'placeholder.selectMachine': 'Select a machine…',
+  'placeholder.enterWorkshop': 'Enter workshop name',
+  'placeholder.additionalDetails': 'Additional details…',
+  'placeholder.describeIssue': 'Describe the issue (optional)',
+  'placeholder.describeRepairs': 'Describe the repairs performed…',
+
+  // Service order & downtime details
+  'label.actions': 'Actions',
+  'label.daysElapsedUnit': 'days',
+  'label.cost.optional': 'Cost (optional)',
+  'label.repairSummaryLabel': 'Repair Summary',
+
+  // Profile / activity
+  'profile.yourActivity': 'Your Activity',
+  'profile.inspectionsCompleted': 'Inspections Completed',
+  'profile.defectsReported': 'Defects Reported',
+  'profile.appInfo': 'App Info',
+  'profile.logOut': 'Log Out',
+  'profile.logOutConfirmMsg': 'Are you sure you want to log out? You will need your PIN to log back in.',
+
+  // Settings section headers
+  'settings.dataManagement': 'Data Management',
+  'settings.inspectionTemplates': 'Inspection Templates',
+  'settings.downtimeCodes': 'Downtime Codes',
+  'settings.users': 'Users',
+  'settings.appInfo': 'App Info',
+  'settings.resetDescription': 'Deletes all local data and re-seeds the database on next load. This cannot be undone.',
+  'settings.resetModalWarning': 'This will permanently delete all inspections, defects, repairs, and other records from this device. The database will be re-seeded with default data on next load.',
+  'settings.resetModalConfirm': 'This action cannot be undone. Are you sure?',
+  'settings.resetButton': 'Reset',
+  'settings.active': 'Active',
+  'settings.inactive': 'Inactive',
+  'settings.checklistItems': 'checklist item',
+  'settings.checklistItemsPlural': 'checklist items',
+
+  // Downtime history labels
+  'downtime.active': 'Active',
+  'downtime.history': 'History',
+  'downtime.allMachines': 'All machines',
+  'downtime.noDowntime': 'No downtime recorded',
+  'downtime.noDowntimeDesc': 'Log a downtime event when a machine is out of service.',
+
+  // Service order empty states
+  'empty.serviceOrdersActive': 'No active service orders at the moment.',
+  'empty.serviceOrdersCompleted': 'No completed service orders yet.',
+  'empty.serviceOrdersAll': 'No service orders have been created yet.',
+
+  // Defect report
+  'defect.reported': 'Defect reported',
+  'defect.reportFailed': 'Failed to report defect',
+
+  // Inspection
+  'inspection.itemsFailed': 'item failed',
+  'inspection.itemsFailedPlural': 'items failed',
+  'inspection.reportFailedItems': 'Would you like to report the failed items as defects?',
+  'inspection.skip': 'Skip',
+  'inspection.reportDefects': 'Report Defects',
+  'inspection.backToMachine': 'Back to Machine',
+  'inspection.preStart': 'Pre-Start Inspection',
+  'inspection.noTemplate': 'No template found',
+  'inspection.itemsOf': 'items',
+  'inspection.currentMeter': 'Current Meter Reading',
 };

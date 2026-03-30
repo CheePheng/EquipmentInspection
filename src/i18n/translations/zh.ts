@@ -211,4 +211,84 @@ export const zh: Record<string, string> = {
   'misc.days': '天',
   'misc.optional': '可选',
   'misc.required': '必填',
+
+  // Defect categories
+  'category.engine': '发动机',
+  'category.hydraulic': '液压',
+  'category.electrical': '电气',
+  'category.structural': '结构',
+  'category.safety': '安全',
+  'category.tiresTracks': '轮胎/履带',
+  'category.cabControls': '驾驶室/操控',
+  'category.lightsSignals': '灯光/信号',
+  'category.fluidLeaks': '液体泄漏',
+  'category.other': '其他',
+
+  // Role labels
+  'role.supervisor': '主管',
+  'role.worker': '工人',
+
+  // Form placeholders
+  'placeholder.selectMachine': '选择机器…',
+  'placeholder.enterWorkshop': '输入维修厂名称',
+  'placeholder.additionalDetails': '其他详情…',
+  'placeholder.describeIssue': '描述问题（可选）',
+  'placeholder.describeRepairs': '描述已完成的维修工作…',
+
+  // Service order & downtime details
+  'label.actions': '操作',
+  'label.daysElapsedUnit': '天',
+  'label.cost.optional': '费用（可选）',
+  'label.repairSummaryLabel': '维修摘要',
+
+  // Profile / activity
+  'profile.yourActivity': '您的活动',
+  'profile.inspectionsCompleted': '完成的检查',
+  'profile.defectsReported': '报告的缺陷',
+  'profile.appInfo': '应用信息',
+  'profile.logOut': '退出登录',
+  'profile.logOutConfirmMsg': '确定要退出登录吗？您需要 PIN 码才能重新登录。',
+
+  // Settings section headers
+  'settings.dataManagement': '数据管理',
+  'settings.inspectionTemplates': '检查模板',
+  'settings.downtimeCodes': '停机代码',
+  'settings.users': '用户',
+  'settings.appInfo': '应用信息',
+  'settings.resetDescription': '删除所有本地数据，并在下次加载时重新初始化数据库。此操作无法撤销。',
+  'settings.resetModalWarning': '这将永久删除此设备上的所有检查、缺陷、维修及其他记录。下次加载时将重新填入默认数据。',
+  'settings.resetModalConfirm': '此操作无法撤销，是否确认？',
+  'settings.resetButton': '重置',
+  'settings.active': '启用',
+  'settings.inactive': '停用',
+  'settings.checklistItems': '个检查项',
+  'settings.checklistItemsPlural': '个检查项',
+
+  // Downtime history labels
+  'downtime.active': '进行中',
+  'downtime.history': '历史记录',
+  'downtime.allMachines': '所有机器',
+  'downtime.noDowntime': '暂无停机记录',
+  'downtime.noDowntimeDesc': '当机器停止服务时，登记停机事件。',
+
+  // Service order empty states
+  'empty.serviceOrdersActive': '目前没有进行中的维修工单。',
+  'empty.serviceOrdersCompleted': '尚无已完成的维修工单。',
+  'empty.serviceOrdersAll': '尚未创建任何维修工单。',
+
+  // Defect report
+  'defect.reported': '缺陷已报告',
+  'defect.reportFailed': '报告缺陷失败',
+
+  // Inspection
+  'inspection.itemsFailed': '个项目不通过',
+  'inspection.itemsFailedPlural': '个项目不通过',
+  'inspection.reportFailedItems': '是否将不通过的项目报告为缺陷？',
+  'inspection.skip': '跳过',
+  'inspection.reportDefects': '报告缺陷',
+  'inspection.backToMachine': '返回机器',
+  'inspection.preStart': '启动前检查',
+  'inspection.noTemplate': '未找到模板',
+  'inspection.itemsOf': '个项目',
+  'inspection.currentMeter': '当前仪表读数',
 };

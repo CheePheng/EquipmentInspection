@@ -27,11 +27,6 @@ function getRoleBadgeVariant(role: string) {
   return 'default' as const;
 }
 
-function getRoleLabel(role: string): string {
-  if (role === 'supervisor') return 'Supervisor';
-  return 'Worker';
-}
-
 export default function ProfilePage() {
   const navigate = useNavigate();
   const currentUser = useAuthStore((s) => s.currentUser);
@@ -69,10 +64,12 @@ export default function ProfilePage() {
     navigate('/login');
   }
 
+  const roleLabel = currentUser.role === 'supervisor' ? t('role.supervisor') : t('role.worker');
+
   return (
     <AnimatedPage>
       <div className="flex flex-col min-h-screen bg-obsidian pb-24">
-        <PageHeader title="Profile" />
+        <PageHeader title={t('page.profile')} />
 
         <div className="flex flex-col gap-4 p-4">
           {/* User info card */}
@@ -90,19 +87,19 @@ export default function ProfilePage() {
 
               {/* Role badge */}
               <Badge variant={getRoleBadgeVariant(currentUser.role)}>
-                {getRoleLabel(currentUser.role)}
+                {roleLabel}
               </Badge>
 
               {/* Site */}
               {site && (
                 <p className="text-sm text-text-secondary">
-                  Site: <span className="text-text-primary font-medium">{site.name}</span>
+                  {t('label.site')}: <span className="text-text-primary font-medium">{site.name}</span>
                 </p>
               )}
 
               {/* PIN */}
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-sm text-text-secondary">PIN:</span>
+                <span className="text-sm text-text-secondary">{t('label.pin')}:</span>
                 <span className="text-sm font-mono text-text-primary tracking-widest">
                   {pinRevealed ? currentUser.pin : '••••'}
                 </span>
@@ -129,7 +126,7 @@ export default function ProfilePage() {
           {currentUser.role === 'worker' && (
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2 px-1">
-                Your Activity
+                {t('profile.yourActivity')}
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <Card className="flex flex-col items-center py-4 gap-1">
@@ -137,7 +134,7 @@ export default function ProfilePage() {
                     {inspectionCount ?? '—'}
                   </span>
                   <span className="text-xs text-text-secondary text-center">
-                    Inspections Completed
+                    {t('profile.inspectionsCompleted')}
                   </span>
                 </Card>
                 <Card className="flex flex-col items-center py-4 gap-1">
@@ -145,7 +142,7 @@ export default function ProfilePage() {
                     {defectCount ?? '—'}
                   </span>
                   <span className="text-xs text-text-secondary text-center">
-                    Defects Reported
+                    {t('profile.defectsReported')}
                   </span>
                 </Card>
               </div>
@@ -160,18 +157,18 @@ export default function ProfilePage() {
               onClick={() => navigate('/settings')}
             >
               <Settings size={18} />
-              Settings
+              {t('page.settings')}
             </Button>
           )}
 
           {/* App info */}
           <Card className="mt-1">
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-              App Info
+              {t('profile.appInfo')}
             </p>
             <div className="flex flex-col gap-1">
               <div className="flex justify-between text-sm">
-                <span className="text-text-secondary">Version</span>
+                <span className="text-text-secondary">{t('profile.version')}</span>
                 <span className="text-text-primary font-medium">CCT FieldOps v1.0.0</span>
               </div>
               <div className="flex justify-between text-sm">
@@ -189,7 +186,7 @@ export default function ProfilePage() {
               onClick={() => setLogoutModalOpen(true)}
             >
               <LogOut size={18} />
-              Log Out
+              {t('action.signOut')}
             </Button>
           </div>
         </div>
@@ -199,10 +196,10 @@ export default function ProfilePage() {
       <Modal
         isOpen={logoutModalOpen}
         onClose={() => setLogoutModalOpen(false)}
-        title="Log Out"
+        title={t('action.signOut')}
       >
         <p className="text-text-secondary text-sm mb-6">
-          Are you sure you want to log out? You will need your PIN to log back in.
+          {t('profile.logOutConfirmMsg')}
         </p>
         <div className="flex gap-3">
           <Button
@@ -210,10 +207,10 @@ export default function ProfilePage() {
             fullWidth
             onClick={() => setLogoutModalOpen(false)}
           >
-            Cancel
+            {t('action.cancel')}
           </Button>
           <Button variant="danger" fullWidth onClick={handleLogout}>
-            Log Out
+            {t('action.signOut')}
           </Button>
         </div>
       </Modal>

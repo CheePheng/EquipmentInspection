@@ -8,39 +8,16 @@ import { PhotoCapture } from '../../components/ui/PhotoCapture';
 import { useMachines, useMachine } from '../machines/useMachines';
 import { useAuthStore } from '../auth/auth.store';
 import { useToastStore } from '../../stores/toast.store';
+import { useTranslation } from '../../i18n/useTranslation';
 import { createDefect } from './useDefects';
 import { DEFECT_CATEGORIES, SEVERITY_COLORS, MAX_PHOTOS_PER_DEFECT } from '../../lib/constants';
-
-const CATEGORY_LABELS: Record<string, string> = {
-  engine: 'Engine',
-  hydraulic: 'Hydraulic',
-  electrical: 'Electrical',
-  structural: 'Structural',
-  safety: 'Safety',
-  'tires-tracks': 'Tires/Tracks',
-  'cab-controls': 'Cab/Controls',
-  'lights-signals': 'Lights/Signals',
-  'fluid-leaks': 'Fluid Leaks',
-  other: 'Other',
-};
-
-const SEVERITY_OPTIONS = [
-  { value: 'low', label: 'Low' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'high', label: 'High' },
-  { value: 'critical', label: 'Critical' },
-];
-
-const SAFE_OPTIONS = [
-  { value: 'yes', label: 'Yes' },
-  { value: 'no', label: 'No' },
-];
 
 export default function DefectReport() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { currentUser } = useAuthStore();
   const { addToast } = useToastStore();
+  const { t } = useTranslation();
 
   const paramMachineId = searchParams.get('machineId');
   const paramInspectionId = searchParams.get('inspectionId');
@@ -58,6 +35,31 @@ export default function DefectReport() {
   const [safeToOperate, setSafeToOperate] = useState('yes');
   const [photos, setPhotos] = useState<Blob[]>([]);
   const [submitting, setSubmitting] = useState(false);
+
+  const CATEGORY_LABELS: Record<string, string> = {
+    engine: t('category.engine'),
+    hydraulic: t('category.hydraulic'),
+    electrical: t('category.electrical'),
+    structural: t('category.structural'),
+    safety: t('category.safety'),
+    'tires-tracks': t('category.tiresTracks'),
+    'cab-controls': t('category.cabControls'),
+    'lights-signals': t('category.lightsSignals'),
+    'fluid-leaks': t('category.fluidLeaks'),
+    other: t('category.other'),
+  };
+
+  const SEVERITY_OPTIONS = [
+    { value: 'low', label: t('severity.low') },
+    { value: 'medium', label: t('severity.medium') },
+    { value: 'high', label: t('severity.high') },
+    { value: 'critical', label: t('severity.critical') },
+  ];
+
+  const SAFE_OPTIONS = [
+    { value: 'yes', label: 'Yes' },
+    { value: 'no', label: 'No' },
+  ];
 
   const selectedMachineId = preselectedMachineId ?? machineId;
   const selectedMachine = preselectedMachineId
@@ -85,10 +87,10 @@ export default function DefectReport() {
         },
         photos
       );
-      addToast('Defect reported', 'success');
+      addToast(t('defect.reported'), 'success');
       navigate(-1);
     } catch {
-      addToast('Failed to report defect', 'error');
+      addToast(t('defect.reportFailed'), 'error');
     } finally {
       setSubmitting(false);
     }
@@ -97,13 +99,13 @@ export default function DefectReport() {
   return (
     <AnimatedPage>
       <div className="min-h-screen bg-obsidian pb-24">
-        <PageHeader title="Report Defect" showBack />
+        <PageHeader title={t('page.reportDefect')} showBack />
 
         <div className="px-4 py-4 space-y-6">
           {/* Machine selector */}
           <div className="space-y-2">
             <label className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-              Machine
+              {t('label.machine')}
             </label>
             {preselectedMachineId && preselectedMachine ? (
               <div className="bg-elevated border border-border rounded-xl px-4 py-3">
@@ -122,7 +124,7 @@ export default function DefectReport() {
                 onChange={e => setMachineId(e.target.value ? parseInt(e.target.value, 10) : null)}
                 className="w-full bg-elevated border border-border rounded-xl px-4 py-3 text-text-primary text-sm appearance-none focus:outline-none focus:border-amber-primary transition-colors duration-150"
               >
-                <option value="">Select machine...</option>
+                <option value="">{t('placeholder.selectMachine')}</option>
                 {allMachines?.map(m => (
                   <option key={m.id} value={m.id}>
                     {m.code} — {m.name}
@@ -135,7 +137,7 @@ export default function DefectReport() {
           {/* Severity */}
           <div className="space-y-2">
             <label className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-              Severity
+              {t('label.severity')}
             </label>
             <SegmentedControl
               options={SEVERITY_OPTIONS}
@@ -162,7 +164,7 @@ export default function DefectReport() {
           {/* Category */}
           <div className="space-y-2">
             <label className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-              Category
+              {t('label.category')}
             </label>
             <div className="grid grid-cols-2 gap-2">
               {DEFECT_CATEGORIES.map(cat => {
@@ -189,12 +191,12 @@ export default function DefectReport() {
           {/* Description */}
           <div className="space-y-2">
             <label className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-              Description
+              {t('label.description')}
             </label>
             <textarea
               value={description}
               onChange={e => setDescription(e.target.value)}
-              placeholder="Describe the issue (optional)"
+              placeholder={t('placeholder.describeIssue')}
               rows={3}
               className="w-full bg-elevated border border-border rounded-xl px-4 py-3 text-text-primary text-sm placeholder:text-text-muted resize-none focus:outline-none focus:border-amber-primary transition-colors duration-150"
             />
@@ -203,7 +205,7 @@ export default function DefectReport() {
           {/* Safe to operate */}
           <div className="space-y-2">
             <label className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-              Safe to operate?
+              {t('label.safeToOperate')}?
             </label>
             <SegmentedControl
               options={SAFE_OPTIONS}
@@ -215,7 +217,7 @@ export default function DefectReport() {
           {/* Photos */}
           <div className="space-y-2">
             <label className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-              Photos
+              {t('label.photos')}
             </label>
             <PhotoCapture
               photos={photos}
@@ -234,7 +236,7 @@ export default function DefectReport() {
             disabled={!canSubmit}
             loading={submitting}
           >
-            Report Defect
+            {t('action.reportDefect')}
           </Button>
         </div>
       </div>

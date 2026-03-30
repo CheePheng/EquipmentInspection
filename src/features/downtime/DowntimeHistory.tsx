@@ -12,6 +12,7 @@ import { Spinner } from '../../components/ui/Spinner';
 import { useDowntimeEvents, stopDowntime } from './useDowntime';
 import { useMachines } from '../machines/useMachines';
 import { useToastStore } from '../../stores/toast.store';
+import { useTranslation } from '../../i18n/useTranslation';
 import { DOWNTIME_CODE_LABELS } from '../../lib/constants';
 import type { DowntimeCode } from '../../lib/constants';
 import { formatDateTime, formatTimeAgo } from '../../lib/utils';
@@ -45,11 +46,10 @@ interface ActiveCardProps {
   machineName: string;
   onStop: (id: number) => void;
   stopping: boolean;
+  downtimeLabel: string;
 }
 
-function ActiveDowntimeCard({ event, machineName, onStop, stopping }: ActiveCardProps) {
-  const label = DOWNTIME_CODE_LABELS[event.reasonCode as DowntimeCode] ?? event.reasonCode;
-
+function ActiveDowntimeCard({ event, machineName, onStop, stopping, downtimeLabel }: ActiveCardProps) {
   return (
     <div className="bg-red-900/20 border border-red-800/60 rounded-xl p-4">
       <div className="flex items-start justify-between gap-3 mb-3">
@@ -73,7 +73,7 @@ function ActiveDowntimeCard({ event, machineName, onStop, stopping }: ActiveCard
 
       <p className="text-sm font-semibold text-text-primary mb-1">{machineName}</p>
       <div className="flex items-center gap-2 flex-wrap mb-2">
-        <Badge variant="down">{label}</Badge>
+        <Badge variant="down">{downtimeLabel}</Badge>
       </div>
 
       <div className="flex items-center gap-1 text-xs text-text-secondary">
@@ -93,10 +93,10 @@ function ActiveDowntimeCard({ event, machineName, onStop, stopping }: ActiveCard
 interface HistoryCardProps {
   event: DowntimeEvent;
   machineName: string;
+  downtimeLabel: string;
 }
 
-function HistoryCard({ event, machineName }: HistoryCardProps) {
-  const label = DOWNTIME_CODE_LABELS[event.reasonCode as DowntimeCode] ?? event.reasonCode;
+function HistoryCard({ event, machineName, downtimeLabel }: HistoryCardProps) {
   const duration = event.endTime ? formatDuration(event.startTime, event.endTime) : null;
 
   return (
@@ -109,7 +109,7 @@ function HistoryCard({ event, machineName }: HistoryCardProps) {
       </div>
 
       <div className="flex items-center gap-2 flex-wrap mb-2">
-        <Badge variant="default">{label}</Badge>
+        <Badge variant="default">{downtimeLabel}</Badge>
       </div>
 
       <div className="space-y-0.5 text-xs text-text-secondary">
@@ -130,6 +130,7 @@ function HistoryCard({ event, machineName }: HistoryCardProps) {
 export default function DowntimeHistory() {
   const navigate = useNavigate();
   const { addToast } = useToastStore();
+  const { t } = useTranslation();
   const [stoppingId, setStoppingId] = useState<number | null>(null);
   const [machineFilter, setMachineFilter] = useState<string>('');
 
@@ -139,9 +140,24 @@ export default function DowntimeHistory() {
 
   const machineMap = new Map(machines?.map(m => [m.id!, { code: m.code, name: m.name }]));
 
+  const DOWNTIME_LABELS: Record<string, string> = {
+    mechanical: t('downtime.mechanical'),
+    hydraulic: t('downtime.hydraulic'),
+    electrical: t('downtime.electrical'),
+    'tire-track': t('downtime.tireTrack'),
+    'waiting-parts': t('downtime.waitingParts'),
+    'scheduled-service': t('downtime.scheduledService'),
+    'weather-access': t('downtime.weatherAccess'),
+    other: t('downtime.other'),
+  };
+
   function getMachineName(id: number): string {
     const m = machineMap.get(id);
     return m ? `${m.code} — ${m.name}` : `Machine #${id}`;
+  }
+
+  function getDowntimeLabel(reasonCode: string): string {
+    return DOWNTIME_LABELS[reasonCode] ?? DOWNTIME_CODE_LABELS[reasonCode as DowntimeCode] ?? reasonCode;
   }
 
   async function handleStop(eventId: number) {
@@ -163,7 +179,7 @@ export default function DowntimeHistory() {
     <AnimatedPage>
       <div className="min-h-screen bg-obsidian pb-24">
         <PageHeader
-          title="Downtime"
+          title={t('page.downtime')}
           action={
             <Button
               variant="primary"
@@ -184,7 +200,7 @@ export default function DowntimeHistory() {
               onChange={e => setMachineFilter(e.target.value)}
               className="w-full bg-slate-dark border border-border rounded-xl px-4 py-2.5 text-sm text-text-primary appearance-none focus:outline-none focus:border-amber-primary transition-colors"
             >
-              <option value="">All machines</option>
+              <option value="">{t('downtime.allMachines')}</option>
               {machines.map(m => (
                 <option key={m.id} value={m.id}>
                   {m.code} — {m.name}
@@ -201,10 +217,10 @@ export default function DowntimeHistory() {
         ) : events.length === 0 ? (
           <EmptyState
             icon={Clock}
-            title="No downtime recorded"
-            description="Log a downtime event when a machine is out of service."
+            title={t('downtime.noDowntime')}
+            description={t('downtime.noDowntimeDesc')}
             action={{
-              label: 'Log Downtime',
+              label: t('action.logDowntime'),
               onClick: () => navigate('/downtime/log'),
             }}
           />
@@ -214,7 +230,7 @@ export default function DowntimeHistory() {
             {activeEvents.length > 0 && (
               <section>
                 <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
-                  Active ({activeEvents.length})
+                  {t('downtime.active')} ({activeEvents.length})
                 </h2>
                 <div className="space-y-3">
                   {activeEvents.map(event => (
@@ -224,6 +240,7 @@ export default function DowntimeHistory() {
                       machineName={getMachineName(event.machineId)}
                       onStop={handleStop}
                       stopping={stoppingId === event.id}
+                      downtimeLabel={getDowntimeLabel(event.reasonCode)}
                     />
                   ))}
                 </div>
@@ -234,7 +251,7 @@ export default function DowntimeHistory() {
             {historyEvents.length > 0 && (
               <section>
                 <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
-                  History ({historyEvents.length})
+                  {t('downtime.history')} ({historyEvents.length})
                 </h2>
                 <motion.div
                   className="space-y-3"
@@ -256,6 +273,7 @@ export default function DowntimeHistory() {
                       <HistoryCard
                         event={event}
                         machineName={getMachineName(event.machineId)}
+                        downtimeLabel={getDowntimeLabel(event.reasonCode)}
                       />
                     </motion.div>
                   ))}

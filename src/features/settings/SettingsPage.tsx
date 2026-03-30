@@ -7,10 +7,10 @@ import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
+import { useTranslation } from '../../i18n/useTranslation';
 import { db } from '../../db/database';
 import {
   DOWNTIME_CODES,
-  DOWNTIME_CODE_LABELS,
   MACHINE_TYPE_LABELS,
 } from '../../lib/constants';
 import type { DowntimeCode, MachineType } from '../../lib/constants';
@@ -21,6 +21,7 @@ function formatBytes(bytes: number): string {
 }
 
 export default function SettingsPage() {
+  const { t } = useTranslation();
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [resetting, setResetting] = useState(false);
   const [storageInfo, setStorageInfo] = useState<{ usage: number; quota: number } | null>(null);
@@ -46,6 +47,17 @@ export default function SettingsPage() {
   const users = useLiveQuery(() => db.users.toArray(), []);
   const sites = useLiveQuery(() => db.sites.toArray(), []);
 
+  const DOWNTIME_LABELS: Record<string, string> = {
+    mechanical: t('downtime.mechanical'),
+    hydraulic: t('downtime.hydraulic'),
+    electrical: t('downtime.electrical'),
+    'tire-track': t('downtime.tireTrack'),
+    'waiting-parts': t('downtime.waitingParts'),
+    'scheduled-service': t('downtime.scheduledService'),
+    'weather-access': t('downtime.weatherAccess'),
+    other: t('downtime.other'),
+  };
+
   // Build site id → name map
   const siteMap: Record<number, string> = {};
   if (sites) {
@@ -67,7 +79,7 @@ export default function SettingsPage() {
   return (
     <AnimatedPage>
       <div className="flex flex-col min-h-screen bg-obsidian pb-24">
-        <PageHeader title="Settings" showBack />
+        <PageHeader title={t('page.settings')} showBack />
 
         <div className="flex flex-col gap-6 p-4">
 
@@ -76,13 +88,12 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2 mb-3">
               <Database size={15} className="text-text-muted" />
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                Data Management
+                {t('settings.dataManagement')}
               </p>
             </div>
             <Card>
               <p className="text-sm text-text-secondary mb-4">
-                Deletes all local data and re-seeds the database on next load. This
-                cannot be undone.
+                {t('settings.resetDescription')}
               </p>
               <Button
                 variant="danger"
@@ -90,7 +101,7 @@ export default function SettingsPage() {
                 onClick={() => setResetModalOpen(true)}
               >
                 <AlertTriangle size={16} />
-                Reset All Data
+                {t('action.resetData')}
               </Button>
             </Card>
           </section>
@@ -100,24 +111,24 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2 mb-3">
               <ClipboardList size={15} className="text-text-muted" />
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                Inspection Templates
+                {t('settings.inspectionTemplates')}
               </p>
             </div>
             <div className="flex flex-col gap-2">
               {templates && templates.length > 0 ? (
-                templates.map((t) => (
-                  <Card key={t.id}>
+                templates.map((tmpl) => (
+                  <Card key={tmpl.id}>
                     <div className="flex items-center justify-between gap-3">
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-text-primary truncate">
-                          {MACHINE_TYPE_LABELS[t.machineType as MachineType] ?? t.machineType}
+                          {MACHINE_TYPE_LABELS[tmpl.machineType as MachineType] ?? tmpl.machineType}
                         </p>
                         <p className="text-xs text-text-muted mt-0.5">
-                          {t.items.length} checklist item{t.items.length !== 1 ? 's' : ''}
+                          {tmpl.items.length} {tmpl.items.length !== 1 ? t('settings.checklistItemsPlural') : t('settings.checklistItems')}
                         </p>
                       </div>
-                      <Badge variant={t.isActive ? 'available' : 'deferred'}>
-                        {t.isActive ? 'Active' : 'Inactive'}
+                      <Badge variant={tmpl.isActive ? 'available' : 'deferred'}>
+                        {tmpl.isActive ? t('settings.active') : t('settings.inactive')}
                       </Badge>
                     </div>
                   </Card>
@@ -135,7 +146,7 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2 mb-3">
               <Activity size={15} className="text-text-muted" />
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                Downtime Codes
+                {t('settings.downtimeCodes')}
               </p>
             </div>
             <Card>
@@ -143,7 +154,7 @@ export default function SettingsPage() {
                 {DOWNTIME_CODES.map((code) => (
                   <div key={code} className="flex items-center justify-between py-2.5 first:pt-0 last:pb-0">
                     <span className="text-sm text-text-primary">
-                      {DOWNTIME_CODE_LABELS[code as DowntimeCode]}
+                      {DOWNTIME_LABELS[code as DowntimeCode] ?? code}
                     </span>
                     <span className="text-xs font-mono text-text-muted">{code}</span>
                   </div>
@@ -157,7 +168,7 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2 mb-3">
               <Users size={15} className="text-text-muted" />
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                Users
+                {t('settings.users')}
               </p>
             </div>
             <div className="flex flex-col gap-2">
@@ -180,7 +191,7 @@ export default function SettingsPage() {
                             : 'default'
                         }
                       >
-                        {u.role.charAt(0).toUpperCase() + u.role.slice(1)}
+                        {u.role === 'supervisor' ? t('role.supervisor') : t('role.worker')}
                       </Badge>
                     </div>
                   </Card>
@@ -198,7 +209,7 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2 mb-3">
               <Cpu size={15} className="text-text-muted" />
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                App Info
+                {t('settings.appInfo')}
               </p>
             </div>
             <Card>
@@ -242,18 +253,16 @@ export default function SettingsPage() {
       <Modal
         isOpen={resetModalOpen}
         onClose={() => !resetting && setResetModalOpen(false)}
-        title="Reset All Data"
+        title={t('action.resetData')}
       >
         <div className="flex items-start gap-3 mb-4 p-3 bg-red-900/20 border border-red-800/40 rounded-xl">
           <AlertTriangle size={18} className="text-red-400 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-red-300">
-            This will permanently delete all inspections, defects, repairs, and other
-            records from this device. The database will be re-seeded with default data
-            on next load.
+            {t('settings.resetModalWarning')}
           </p>
         </div>
         <p className="text-sm text-text-secondary mb-6">
-          This action cannot be undone. Are you sure?
+          {t('settings.resetModalConfirm')}
         </p>
         <div className="flex gap-3">
           <Button
@@ -262,7 +271,7 @@ export default function SettingsPage() {
             disabled={resetting}
             onClick={() => setResetModalOpen(false)}
           >
-            Cancel
+            {t('action.cancel')}
           </Button>
           <Button
             variant="danger"
@@ -270,7 +279,7 @@ export default function SettingsPage() {
             loading={resetting}
             onClick={handleReset}
           >
-            Reset
+            {t('settings.resetButton')}
           </Button>
         </div>
       </Modal>

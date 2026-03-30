@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SlidersHorizontal, AlertTriangle } from 'lucide-react';
@@ -9,59 +9,36 @@ import { Card } from '../../components/ui/Card';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { Spinner } from '../../components/ui/Spinner';
 import { FilterDrawer } from '../../components/ui/FilterDrawer';
-import type { FilterSection } from '../../components/ui/FilterDrawer';
 import { useDefects } from './useDefects';
 import { useMachines } from '../machines/useMachines';
+import { useTranslation } from '../../i18n/useTranslation';
 import { formatTimeAgo } from '../../lib/utils';
 import type { Defect } from '../../lib/types';
 
-const FILTER_SECTIONS: FilterSection[] = [
-  {
-    key: 'severity',
-    label: 'Severity',
-    options: [
-      { value: 'low', label: 'Low' },
-      { value: 'medium', label: 'Medium' },
-      { value: 'high', label: 'High' },
-      { value: 'critical', label: 'Critical' },
-    ],
-  },
-  {
-    key: 'status',
-    label: 'Status',
-    options: [
-      { value: 'open', label: 'Open' },
-      { value: 'acknowledged', label: 'Acknowledged' },
-      { value: 'sent-out', label: 'Sent for Service' },
-      { value: 'resolved', label: 'Resolved' },
-      { value: 'deferred', label: 'Deferred' },
-    ],
-  },
-];
-
-const CATEGORY_LABELS: Record<string, string> = {
-  engine: 'Engine',
-  hydraulic: 'Hydraulic',
-  electrical: 'Electrical',
-  structural: 'Structural',
-  safety: 'Safety',
-  'tires-tracks': 'Tires/Tracks',
-  'cab-controls': 'Cab/Controls',
-  'lights-signals': 'Lights/Signals',
-  'fluid-leaks': 'Fluid Leaks',
-  other: 'Other',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  open: 'Open',
-  acknowledged: 'Acknowledged',
-  'sent-out': 'Sent for Service',
-  resolved: 'Resolved',
-  deferred: 'Deferred',
-};
-
 function DefectCard({ defect, machineName }: { defect: Defect; machineName: string }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const CATEGORY_LABELS: Record<string, string> = {
+    engine: t('category.engine'),
+    hydraulic: t('category.hydraulic'),
+    electrical: t('category.electrical'),
+    structural: t('category.structural'),
+    safety: t('category.safety'),
+    'tires-tracks': t('category.tiresTracks'),
+    'cab-controls': t('category.cabControls'),
+    'lights-signals': t('category.lightsSignals'),
+    'fluid-leaks': t('category.fluidLeaks'),
+    other: t('category.other'),
+  };
+
+  const STATUS_LABELS: Record<string, string> = {
+    open: t('defect.open'),
+    acknowledged: t('defect.acknowledged'),
+    'sent-out': t('defect.sentOut'),
+    resolved: t('defect.resolved'),
+    deferred: t('defect.deferred'),
+  };
 
   return (
     <Card pressable onClick={() => navigate(`/defects/${defect.id}`)}>
@@ -92,6 +69,7 @@ function DefectCard({ defect, machineName }: { defect: Defect; machineName: stri
 
 export default function DefectList() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [filterOpen, setFilterOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<Record<string, string[]>>({
     severity: [],
@@ -108,11 +86,35 @@ export default function DefectList() {
 
   const hasActiveFilters = Object.values(filterValues).some(v => v.length > 0);
 
+  const filterSections = useMemo(() => [
+    {
+      key: 'severity',
+      label: t('filter.severity'),
+      options: [
+        { value: 'low', label: t('severity.low') },
+        { value: 'medium', label: t('severity.medium') },
+        { value: 'high', label: t('severity.high') },
+        { value: 'critical', label: t('severity.critical') },
+      ],
+    },
+    {
+      key: 'status',
+      label: t('filter.status'),
+      options: [
+        { value: 'open', label: t('defect.open') },
+        { value: 'acknowledged', label: t('defect.acknowledged') },
+        { value: 'sent-out', label: t('defect.sentOut') },
+        { value: 'resolved', label: t('defect.resolved') },
+        { value: 'deferred', label: t('defect.deferred') },
+      ],
+    },
+  ], [t]);
+
   return (
     <AnimatedPage>
       <div className="min-h-screen bg-obsidian pb-20">
         <PageHeader
-          title="Defects"
+          title={t('page.defects')}
           action={
             <button
               type="button"
@@ -141,17 +143,17 @@ export default function DefectList() {
           ) : defects.length === 0 ? (
             <EmptyState
               icon={AlertTriangle}
-              title="No defects found"
+              title={t('empty.defects')}
               description={
                 hasActiveFilters
-                  ? 'No defects match the current filters.'
-                  : 'No defects have been reported yet.'
+                  ? t('empty.defectsFilterDesc')
+                  : t('empty.defectsDesc')
               }
               action={
                 hasActiveFilters
                   ? undefined
                   : {
-                      label: 'Report Defect',
+                      label: t('action.reportDefect'),
                       onClick: () => navigate('/defects/new'),
                     }
               }
@@ -190,8 +192,8 @@ export default function DefectList() {
       <FilterDrawer
         isOpen={filterOpen}
         onClose={() => setFilterOpen(false)}
-        title="Filter Defects"
-        sections={FILTER_SECTIONS}
+        title={t('filter.title')}
+        sections={filterSections}
         values={filterValues}
         onChange={setFilterValues}
       />

@@ -14,6 +14,7 @@ import { useInspectionTemplate, createInspection, getExistingTodayInspection } f
 import { useMachine } from '../machines/useMachines';
 import { useAuthStore } from '../auth/auth.store';
 import { useToastStore } from '../../stores/toast.store';
+import { useTranslation } from '../../i18n/useTranslation';
 
 interface ItemValue {
   result: string;
@@ -25,6 +26,7 @@ export default function InspectionForm() {
   const navigate = useNavigate();
   const currentUser = useAuthStore((s) => s.currentUser);
   const addToast = useToastStore((s) => s.addToast);
+  const { t } = useTranslation();
 
   const machineId = Number(id);
   const machine = useMachine(machineId);
@@ -132,12 +134,12 @@ export default function InspectionForm() {
   }
 
   function handleFailPromptDismiss() {
-    addToast('Inspection completed successfully', 'success');
+    addToast(t('toast.inspectionSubmitted'), 'success');
     navigate(`/machines/${machineId}`);
   }
 
   function handleReportDefects() {
-    addToast('Inspection completed successfully', 'success');
+    addToast(t('toast.inspectionSubmitted'), 'success');
     const params = new URLSearchParams({ machineId: String(machineId) });
     if (savedInspectionId !== undefined) params.set('inspectionId', String(savedInspectionId));
     navigate(`/defects/new?${params.toString()}`);
@@ -150,7 +152,7 @@ export default function InspectionForm() {
   if (isLoading && !templateMissing) {
     return (
       <AnimatedPage>
-        <PageHeader title="Pre-Start Inspection" showBack />
+        <PageHeader title={t('inspection.preStart')} showBack />
         <div className="flex items-center justify-center py-20">
           <Spinner size="lg" />
         </div>
@@ -161,12 +163,12 @@ export default function InspectionForm() {
   if (templateMissing || (machine !== undefined && template === null)) {
     return (
       <AnimatedPage>
-        <PageHeader title="Pre-Start Inspection" showBack />
+        <PageHeader title={t('inspection.preStart')} showBack />
         <EmptyState
           icon={ClipboardList}
-          title="No template found"
+          title={t('inspection.noTemplate')}
           description={`No active inspection template exists for ${machine?.type ?? 'this machine type'}.`}
-          action={{ label: 'Go Back', onClick: () => navigate(-1) }}
+          action={{ label: t('action.goBack'), onClick: () => navigate(-1) }}
         />
       </AnimatedPage>
     );
@@ -178,7 +180,7 @@ export default function InspectionForm() {
     <AnimatedPage>
       <div className="flex flex-col min-h-screen">
         <PageHeader
-          title="Pre-Start Inspection"
+          title={t('inspection.preStart')}
           showBack
           action={
             <span className="text-sm text-text-secondary font-medium">{machine?.code}</span>
@@ -190,7 +192,7 @@ export default function InspectionForm() {
           <div className="px-4 pt-4 pb-2">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-xs text-text-secondary font-medium">
-                {answeredCount} of {totalCount} items
+                {answeredCount} {t('inspection.of')} {totalCount} {t('inspection.itemsOf')}
               </span>
             </div>
             <ProgressBar
@@ -206,7 +208,7 @@ export default function InspectionForm() {
             <MeterInput
               value={meterReading}
               onChange={setMeterReading}
-              label="Current Meter Reading"
+              label={t('inspection.currentMeter')}
             />
 
             {/* Checklist items */}
@@ -235,7 +237,7 @@ export default function InspectionForm() {
             loading={submitting}
             onClick={handleSubmit}
           >
-            Submit Inspection
+            {t('inspection.submitInspection')}
           </Button>
         </div>
       </div>
@@ -265,7 +267,7 @@ export default function InspectionForm() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25 }}
               >
-                Inspection Complete
+                {t('inspection.complete')}
               </motion.h2>
               <motion.div
                 className="space-y-1 mb-6"
@@ -275,7 +277,7 @@ export default function InspectionForm() {
               >
                 <p className="text-text-secondary text-sm">{machine?.name}</p>
                 <p className="text-text-muted text-xs font-mono tabular-nums">
-                  {answeredCount} items passed · {meterReading} hrs
+                  {answeredCount} {t('inspection.itemsOf')} · {meterReading} hrs
                 </p>
               </motion.div>
               <motion.div
@@ -291,7 +293,7 @@ export default function InspectionForm() {
                     navigate(`/machines/${machineId}`);
                   }}
                 >
-                  Back to Machine
+                  {t('inspection.backToMachine')}
                 </Button>
               </motion.div>
               <motion.p
@@ -300,7 +302,7 @@ export default function InspectionForm() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
               >
-                Auto-redirecting in 3 seconds…
+                {t('inspection.redirecting')}
               </motion.p>
             </div>
           </motion.div>
@@ -312,10 +314,10 @@ export default function InspectionForm() {
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4">
           <div className="bg-surface border border-border rounded-2xl w-full max-w-md p-6 space-y-4">
             <h2 className="text-lg font-semibold text-text-primary">
-              {failedItems.length} item{failedItems.length !== 1 ? 's' : ''} failed
+              {failedItems.length} {failedItems.length !== 1 ? t('inspection.itemsFailedPlural') : t('inspection.itemsFailed')}
             </h2>
             <p className="text-sm text-text-secondary">
-              Would you like to report the failed items as defects?
+              {t('inspection.reportFailedItems')}
             </p>
             <ul className="space-y-1">
               {failedItems.map((item) => (
@@ -332,7 +334,7 @@ export default function InspectionForm() {
                 fullWidth
                 onClick={handleFailPromptDismiss}
               >
-                Skip
+                {t('inspection.skip')}
               </Button>
               <Button
                 variant="danger"
@@ -340,7 +342,7 @@ export default function InspectionForm() {
                 fullWidth
                 onClick={handleReportDefects}
               >
-                Report Defects
+                {t('inspection.reportDefects')}
               </Button>
             </div>
           </div>

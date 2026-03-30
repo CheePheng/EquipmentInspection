@@ -7,8 +7,9 @@ import { Spinner } from '../../components/ui/Spinner';
 import { useMachines } from '../machines/useMachines';
 import { useAuthStore } from '../auth/auth.store';
 import { useToastStore } from '../../stores/toast.store';
+import { useTranslation } from '../../i18n/useTranslation';
 import { logDowntime } from './useDowntime';
-import { DOWNTIME_CODES, DOWNTIME_CODE_LABELS } from '../../lib/constants';
+import { DOWNTIME_CODES } from '../../lib/constants';
 import type { DowntimeCode } from '../../lib/constants';
 import { format } from 'date-fns';
 
@@ -20,6 +21,7 @@ export default function DowntimeLogger() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const paramMachineId = searchParams.get('machineId');
+  const { t } = useTranslation();
 
   const machines = useMachines();
   const { currentUser } = useAuthStore();
@@ -30,6 +32,17 @@ export default function DowntimeLogger() {
   const [startTime, setStartTime] = useState<string>(localNow());
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  const DOWNTIME_LABELS: Record<string, string> = {
+    mechanical: t('downtime.mechanical'),
+    hydraulic: t('downtime.hydraulic'),
+    electrical: t('downtime.electrical'),
+    'tire-track': t('downtime.tireTrack'),
+    'waiting-parts': t('downtime.waitingParts'),
+    'scheduled-service': t('downtime.scheduledService'),
+    'weather-access': t('downtime.weatherAccess'),
+    other: t('downtime.other'),
+  };
 
   const selectedMachine = machines?.find(m => m.id === Number(machineId));
 
@@ -51,10 +64,10 @@ export default function DowntimeLogger() {
         loggedBy: currentUser.id,
         startTime: new Date(startTime).toISOString(),
       });
-      addToast('Downtime logged', 'success');
+      addToast(t('toast.downtimeLogged'), 'success');
       navigate(-1);
     } catch {
-      addToast('Failed to log downtime', 'error');
+      addToast(t('toast.downtimeFailed'), 'error');
     } finally {
       setSubmitting(false);
     }
@@ -63,7 +76,7 @@ export default function DowntimeLogger() {
   if (!machines) {
     return (
       <AnimatedPage>
-        <PageHeader title="Log Downtime" showBack />
+        <PageHeader title={t('page.logDowntime')} showBack />
         <div className="flex items-center justify-center h-48">
           <Spinner size="lg" />
         </div>
@@ -75,13 +88,13 @@ export default function DowntimeLogger() {
 
   return (
     <AnimatedPage>
-      <PageHeader title="Log Downtime" showBack />
+      <PageHeader title={t('page.logDowntime')} showBack />
       <form onSubmit={handleSubmit} className="p-4 space-y-6 pb-24">
 
         {/* Machine selector */}
         <div className="space-y-2">
           <label className="block text-sm font-medium text-text-secondary">
-            Machine <span className="text-status-critical">*</span>
+            {t('label.machine')} <span className="text-status-critical">*</span>
           </label>
           {paramMachineId && selectedMachine ? (
             <div className="bg-slate-dark border border-border rounded-xl px-4 py-3 text-text-primary">
@@ -95,7 +108,7 @@ export default function DowntimeLogger() {
               required
               className="w-full bg-slate-dark border border-border rounded-xl px-4 py-3 text-text-primary appearance-none focus:outline-none focus:border-amber-primary transition-colors"
             >
-              <option value="">Select a machine…</option>
+              <option value="">{t('placeholder.selectMachine')}</option>
               {machines.map(m => (
                 <option key={m.id} value={m.id}>
                   {m.code} — {m.name}
@@ -108,7 +121,7 @@ export default function DowntimeLogger() {
         {/* Reason code chip grid */}
         <div className="space-y-2">
           <label className="block text-sm font-medium text-text-secondary">
-            Reason Code <span className="text-status-critical">*</span>
+            {t('label.reasonCode')} <span className="text-status-critical">*</span>
           </label>
           <div className="grid grid-cols-2 gap-2">
             {DOWNTIME_CODES.map(code => {
@@ -125,7 +138,7 @@ export default function DowntimeLogger() {
                       : 'bg-slate-dark text-text-primary border-border hover:border-amber-primary/50 hover:bg-elevated',
                   ].join(' ')}
                 >
-                  {DOWNTIME_CODE_LABELS[code]}
+                  {DOWNTIME_LABELS[code] ?? code}
                 </button>
               );
             })}
@@ -135,7 +148,7 @@ export default function DowntimeLogger() {
         {/* Start time */}
         <div className="space-y-2">
           <label className="block text-sm font-medium text-text-secondary">
-            Start Time
+            {t('label.startTime')}
           </label>
           <input
             type="datetime-local"
@@ -148,13 +161,13 @@ export default function DowntimeLogger() {
         {/* Notes */}
         <div className="space-y-2">
           <label className="block text-sm font-medium text-text-secondary">
-            Notes <span className="text-text-muted text-xs">(optional)</span>
+            {t('label.notes')} <span className="text-text-muted text-xs">({t('misc.optional')})</span>
           </label>
           <textarea
             value={notes}
             onChange={e => setNotes(e.target.value)}
             rows={3}
-            placeholder="Additional details…"
+            placeholder={t('placeholder.additionalDetails')}
             className="w-full bg-slate-dark border border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:border-amber-primary transition-colors"
           />
         </div>
@@ -168,7 +181,7 @@ export default function DowntimeLogger() {
             disabled={!canSubmit}
             loading={submitting}
           >
-            Log Downtime
+            {t('action.logDowntime')}
           </Button>
         </div>
       </form>
