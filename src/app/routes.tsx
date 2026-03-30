@@ -22,6 +22,7 @@ const ProfilePage = lazy(() => import('../features/profile/ProfilePage'));
 const SettingsPage = lazy(() => import('../features/settings/SettingsPage'));
 const ServiceOrderList = lazy(() => import('../features/service-orders/ServiceOrderList'));
 const ServiceOrderDetail = lazy(() => import('../features/service-orders/ServiceOrderDetail'));
+const WorkerHistory = lazy(() => import('../features/profile/WorkerHistory'));
 
 function PageLoader() {
   return (
@@ -84,6 +85,7 @@ export const router = createBrowserRouter([
         element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><SupervisorDashboard /></SuspenseWrapper></RoleGuard>,
       },
       { path: 'profile', element: <SuspenseWrapper><ProfilePage /></SuspenseWrapper> },
+      { path: 'my-activity', element: <SuspenseWrapper><WorkerHistory /></SuspenseWrapper> },
       {
         path: 'settings',
         element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><SettingsPage /></SuspenseWrapper></RoleGuard>,

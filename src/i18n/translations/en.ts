@@ -24,6 +24,7 @@ export const en: Record<string, string> = {
   'page.serviceOrderDetail': 'Service Order',
   'page.inspection': 'Inspection',
   'page.profile': 'Profile',
+  'page.myActivity': 'My Activity',
   'page.settings': 'Settings',
   'page.login': 'CCT Field Ops',
 
@@ -95,6 +96,7 @@ export const en: Record<string, string> = {
   'action.viewDetails': 'View Details',
   'action.goBack': 'Go Back',
   'action.signOut': 'Sign Out',
+  'action.viewActivity': 'View My Activity',
   'action.resetData': 'Reset All Data',
 
   // Labels
@@ -149,6 +151,10 @@ export const en: Record<string, string> = {
   'empty.defects': 'No defects found',
   'empty.defectsDesc': 'No defects have been reported yet.',
   'empty.defectsFilterDesc': 'No defects match the current filters.',
+  'empty.inspections': 'No inspections yet',
+  'empty.inspectionsDesc': 'Your completed inspections will appear here.',
+  'empty.myDefects': 'No defects reported',
+  'empty.myDefectsDesc': 'Defects you report will appear here.',
   'empty.serviceOrders': 'No service orders',
   'empty.serviceOrdersDesc': 'No machines are currently out for service.',
   'empty.downtime': 'No downtime events',

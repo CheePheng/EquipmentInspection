@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Eye, EyeOff, Settings, LogOut } from 'lucide-react';
+import { Eye, EyeOff, Settings, LogOut, Activity } from 'lucide-react';
 import { AnimatedPage } from '../../components/ui/AnimatedPage';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Card } from '../../components/ui/Card';
@@ -128,7 +128,7 @@ export default function ProfilePage() {
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2 px-1">
                 {t('profile.yourActivity')}
               </p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 mb-3">
                 <Card className="flex flex-col items-center py-4 gap-1">
                   <span className="text-3xl font-bold text-amber-primary">
                     {inspectionCount ?? '—'}
@@ -146,6 +146,14 @@ export default function ProfilePage() {
                   </span>
                 </Card>
               </div>
+              <Button
+                variant="secondary"
+                fullWidth
+                onClick={() => navigate('/my-activity')}
+              >
+                <Activity size={18} />
+                {t('action.viewActivity')}
+              </Button>
             </div>
           )}
 

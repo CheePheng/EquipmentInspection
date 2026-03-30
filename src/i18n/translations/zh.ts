@@ -24,6 +24,7 @@ export const zh: Record<string, string> = {
   'page.serviceOrderDetail': '维修工单',
   'page.inspection': '检查',
   'page.profile': '个人资料',
+  'page.myActivity': '我的活动',
   'page.settings': '设置',
   'page.login': 'CCT 现场作业',
 
@@ -95,6 +96,7 @@ export const zh: Record<string, string> = {
   'action.viewDetails': '查看详情',
   'action.goBack': '返回',
   'action.signOut': '退出登录',
+  'action.viewActivity': '查看我的活动',
   'action.resetData': '重置所有数据',
 
   // Labels
@@ -149,6 +151,10 @@ export const zh: Record<string, string> = {
   'empty.defects': '暂无缺陷',
   'empty.defectsDesc': '尚未报告任何缺陷。',
   'empty.defectsFilterDesc': '没有符合筛选条件的缺陷。',
+  'empty.inspections': '暂无检查记录',
+  'empty.inspectionsDesc': '您完成的检查记录将显示在此处。',
+  'empty.myDefects': '暂无缺陷报告',
+  'empty.myDefectsDesc': '您报告的缺陷将显示在此处。',
   'empty.serviceOrders': '暂无维修工单',
   'empty.serviceOrdersDesc': '目前没有机器在外维修。',
   'empty.downtime': '暂无停机记录',
