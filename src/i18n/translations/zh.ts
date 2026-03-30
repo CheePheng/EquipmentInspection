@@ -33,6 +33,8 @@ export const zh: Record<string, string> = {
   'login.enterPin': '输入 PIN 码登录',
   'login.signIn': '登录',
   'login.invalidPin': 'PIN 码无效，请重试。',
+  'login.pinTooShort': '请输入至少4位数字',
+  'login.failed': '登录失败，请重试。',
 
   // Machine statuses
   'status.available': '可用',

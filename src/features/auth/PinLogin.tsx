@@ -29,14 +29,14 @@ export default function PinLogin() {
 
   const handleSubmit = async () => {
     if (pin.length < 4) {
-      setError('Enter at least 4 digits');
+      setError(t('login.pinTooShort'));
       return;
     }
 
     try {
       const user = await db.users.where('pin').equals(pin).first();
       if (!user) {
-        setError('Invalid PIN');
+        setError(t('login.invalidPin'));
         setPin('');
         return;
       }
@@ -56,7 +56,7 @@ export default function PinLogin() {
           navigate('/machines');
       }
     } catch {
-      setError('Login failed. Please try again.');
+      setError(t('login.failed'));
     }
   };
 
@@ -71,8 +71,21 @@ export default function PinLogin() {
 
       {/* Logo / Title */}
       <div className="mb-10 text-center">
-        <h1 className="text-3xl font-bold text-text-primary">{t('login.title')}</h1>
-        <p className="text-text-secondary mt-2 text-sm">{t('login.enterPin')}</p>
+        {/* Brand name with amber accent */}
+        <h1 className="text-4xl font-bold tracking-tight">
+          <span className="text-amber-primary">CCT</span>
+          <span className="text-text-primary ml-2">Field Ops</span>
+        </h1>
+        {/* Subtle amber glow behind title */}
+        <div className="w-24 h-1 bg-amber-primary/60 rounded-full mx-auto mt-3 shadow-[0_0_12px_rgba(245,158,11,0.4)]" />
+        {/* Subtitle */}
+        <p className="text-text-secondary mt-4 text-sm tracking-wide">
+          {t('login.subtitle')}
+        </p>
+        {/* PIN prompt */}
+        <p className="text-text-muted mt-2 text-xs">
+          {t('login.enterPin')}
+        </p>
       </div>
 
       {/* PIN dots */}

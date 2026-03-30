@@ -33,6 +33,8 @@ export const en: Record<string, string> = {
   'login.enterPin': 'Enter your PIN to sign in',
   'login.signIn': 'Sign In',
   'login.invalidPin': 'Invalid PIN. Please try again.',
+  'login.pinTooShort': 'Enter at least 4 digits',
+  'login.failed': 'Login failed. Please try again.',
 
   // Machine statuses
   'status.available': 'Available',
