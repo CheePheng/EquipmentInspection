@@ -9,10 +9,12 @@ import { SiteFilterBar } from '../../components/ui/SiteFilterBar';
 import { MachineCard } from './MachineCard';
 import { TodaysMachine } from './TodaysMachine';
 import { useMachines, useSites } from './useMachines';
+import { useTranslation } from '../../i18n/useTranslation';
 import { listVariants } from '../../lib/motion';
 
 export default function MachineList() {
   const [selectedSiteId, setSelectedSiteId] = useState<number | null>(null);
+  const { t } = useTranslation();
 
   const sites = useSites();
   const machines = useMachines(selectedSiteId);
@@ -25,7 +27,7 @@ export default function MachineList() {
   return (
     <AnimatedPage>
       <div className="min-h-screen bg-obsidian pb-24">
-        <PageHeader title="Machines" />
+        <PageHeader title={t('page.machines')} />
 
         <div className="p-4 space-y-4">
           {/* Today's machine shortcut — only renders for operators */}
@@ -51,11 +53,11 @@ export default function MachineList() {
           {!isLoading && machines.length === 0 && (
             <EmptyState
               icon={Cpu}
-              title="No machines found"
+              title={t('empty.machines')}
               description={
                 selectedSiteId
-                  ? 'No machines are assigned to this site.'
-                  : 'No machines have been added yet.'
+                  ? t('empty.machinesSiteDesc')
+                  : t('empty.machinesDesc')
               }
             />
           )}

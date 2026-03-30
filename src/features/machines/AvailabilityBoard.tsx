@@ -11,6 +11,7 @@ import { StatusIndicator } from '../../components/ui/StatusIndicator';
 import { SiteFilterBar } from '../../components/ui/SiteFilterBar';
 import { useAvailabilityBoard } from './useAvailability';
 import { useSites } from './useMachines';
+import { useTranslation } from '../../i18n/useTranslation';
 import {
   AVAILABILITY_STATE_COLORS,
   type AvailabilityState,
@@ -23,19 +24,12 @@ const GROUP_ORDER: AvailabilityState[] = [
   'down', 'out-for-service', 'service-due', 'available',
 ];
 
-const STATE_LABELS: Record<AvailabilityState, string> = {
-  'down': 'Down',
-  'out-for-service': 'Out for Service',
-  'service-due': 'Service Due',
-  'available': 'Available',
-};
-
-// Summary KPI labels (shorter)
-const KPI_LABELS: Record<AvailabilityState, string> = {
-  'down': 'Down',
-  'out-for-service': 'Out for Service',
-  'service-due': 'Service Due',
-  'available': 'Available',
+// Map availability states to translation keys
+const STATE_LABEL_KEYS: Record<AvailabilityState, string> = {
+  'down': 'status.down',
+  'out-for-service': 'status.outForService',
+  'service-due': 'status.serviceDue',
+  'available': 'status.available',
 };
 
 // Section left-border accent colors per state
@@ -59,6 +53,7 @@ const STATE_SECTION_BG: Record<AvailabilityState, string> = {
 export default function AvailabilityBoard() {
   const navigate = useNavigate();
   const [selectedSiteId, setSelectedSiteId] = useState<number | null>(null);
+  const { t } = useTranslation();
 
   const sites = useSites();
   const machines = useAvailabilityBoard(selectedSiteId);
@@ -92,7 +87,7 @@ export default function AvailabilityBoard() {
   return (
     <AnimatedPage>
       <div className="min-h-screen bg-obsidian pb-24">
-        <PageHeader title="Availability Board" />
+        <PageHeader title={t('page.availability')} />
 
         <div className="p-4 space-y-4">
           {/* Site filter chips */}
@@ -115,11 +110,11 @@ export default function AvailabilityBoard() {
           {!isLoading && !hasMachines && (
             <EmptyState
               icon={LayoutGrid}
-              title="No machines found"
+              title={t('empty.machines')}
               description={
                 selectedSiteId
-                  ? 'No machines are assigned to this site.'
-                  : 'No machines have been added yet.'
+                  ? t('empty.machinesSiteDesc')
+                  : t('empty.machinesDesc')
               }
             />
           )}
@@ -143,7 +138,7 @@ export default function AvailabilityBoard() {
                         {counts[state]}
                       </span>
                       <span className="text-[10px] text-text-secondary text-center leading-tight mt-0.5">
-                        {KPI_LABELS[state]}
+                        {t(STATE_LABEL_KEYS[state])}
                       </span>
                     </div>
                   );
@@ -169,10 +164,10 @@ export default function AvailabilityBoard() {
                       >
                         <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${colors.dot}`} />
                         <span className={`font-semibold text-sm ${colors.text}`}>
-                          {STATE_LABELS[state]}
+                          {t(STATE_LABEL_KEYS[state])}
                         </span>
                         <span className="ml-auto text-xs text-text-muted font-medium tabular-nums">
-                          {group.length} {group.length === 1 ? 'machine' : 'machines'}
+                          {group.length} {group.length === 1 ? t('misc.machine') : t('misc.machines')}
                         </span>
                       </div>
 
@@ -214,7 +209,7 @@ export default function AvailabilityBoard() {
                               </div>
 
                               <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
-                                <span className="text-xs text-text-muted">Meter Hours</span>
+                                <span className="text-xs text-text-muted">{t('label.meterHours')}</span>
                                 <span className="text-xs font-mono font-semibold text-text-secondary tabular-nums">
                                   {formatMeterHours(machine.currentMeterHours)}
                                 </span>

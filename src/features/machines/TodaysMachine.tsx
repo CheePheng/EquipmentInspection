@@ -8,10 +8,12 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { StatusIndicator } from '../../components/ui/StatusIndicator';
 import { Badge } from '../../components/ui/Badge';
+import { useTranslation } from '../../i18n/useTranslation';
 
 export function TodaysMachine() {
   const navigate = useNavigate();
   const currentUser = useAuthStore((s) => s.currentUser);
+  const { t } = useTranslation();
 
   const machine = useLiveQuery(async () => {
     if (!currentUser) return null;
@@ -54,7 +56,7 @@ export function TodaysMachine() {
           </div>
           <div className="min-w-0">
             <p className="text-xs text-text-muted font-medium uppercase tracking-wide">
-              Your Machine
+              {t('label.yourMachine')}
             </p>
             <p className="text-text-primary font-semibold truncate">{machine.name}</p>
           </div>
@@ -76,7 +78,7 @@ export function TodaysMachine() {
           onClick={() => navigate(`/machines/${machine.id}/inspect`)}
           className="flex-1"
         >
-          Start Inspection
+          {t('action.startInspection')}
         </Button>
         <Button
           variant="secondary"
@@ -84,7 +86,7 @@ export function TodaysMachine() {
           onClick={() => navigate(`/defects/new?machineId=${machine.id}`)}
           className="flex-1"
         >
-          Report Defect
+          {t('action.reportDefect')}
         </Button>
       </div>
     </Card>

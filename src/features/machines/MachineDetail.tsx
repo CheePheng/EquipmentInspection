@@ -22,6 +22,7 @@ import { MACHINE_TYPE_LABELS } from '../../lib/constants';
 import { formatMeterHours, formatTimeAgo, formatDate } from '../../lib/utils';
 import { useMachine, useMachineTimeline } from './useMachines';
 import { useActiveServiceOrder } from '../service-orders/useServiceOrders';
+import { useTranslation } from '../../i18n/useTranslation';
 
 const timelineIcons = {
   inspection: ClipboardCheck,
@@ -35,11 +36,12 @@ const timelineColors = {
   downtime: 'text-red-400',
 };
 
-const timelineLabels = {
-  inspection: 'Inspection',
-  defect: 'Defect reported',
-  downtime: 'Downtime event',
-};
+// Label keys for timeline types — resolved with t() in render
+const timelineLabelKeys = {
+  inspection: 'label.inspection',
+  defect: 'label.defect',
+  downtime: 'label.downtime',
+} as const;
 
 function timelineRoute(type: string, id: number): string {
   switch (type) {
@@ -73,6 +75,7 @@ export default function MachineDetail() {
   const navigate = useNavigate();
   const id = Number(idParam);
   const currentUser = useAuthStore((s) => s.currentUser);
+  const { t } = useTranslation();
 
   const machine = useMachine(id);
   const timeline = useMachineTimeline(id);
@@ -104,9 +107,9 @@ export default function MachineDetail() {
           <div className="p-4">
             <EmptyState
               icon={Cpu}
-              title="Machine not found"
+              title={t('empty.machineNotFound')}
               description="This machine may have been removed."
-              action={{ label: 'Back to Machines', onClick: () => navigate('/machines') }}
+              action={{ label: t('nav.machines'), onClick: () => navigate('/machines') }}
             />
           </div>
         )}
@@ -120,7 +123,7 @@ export default function MachineDetail() {
                 title={`Out for service at ${activeServiceOrder.workshopName}`}
                 description={`Sent ${formatDate(activeServiceOrder.dateSent)}`}
                 action={{
-                  label: 'View Order',
+                  label: t('action.viewOrder'),
                   onClick: () => navigate(`/service-orders/${activeServiceOrder.id}`),
                 }}
               />
@@ -146,21 +149,21 @@ export default function MachineDetail() {
               {/* Stat strip */}
               <div className="grid grid-cols-3 gap-3 pt-3 border-t border-border">
                 <div>
-                  <p className="text-text-muted text-[10px] uppercase tracking-wide font-medium">Meter Hours</p>
+                  <p className="text-text-muted text-[10px] uppercase tracking-wide font-medium">{t('label.meterHours')}</p>
                   <p className="text-text-primary font-mono text-sm font-bold tabular-nums mt-0.5">
                     {formatMeterHours(machine.currentMeterHours)}
                   </p>
                 </div>
                 <div>
                   <p className="text-text-muted text-[10px] uppercase tracking-wide font-medium">
-                    {timeline.length > 0 ? 'Last Activity' : 'Activity'}
+                    {timeline.length > 0 ? t('label.lastActivity') : t('label.activity')}
                   </p>
                   <p className="text-text-primary text-sm font-semibold mt-0.5">
                     {timeline.length > 0 ? formatTimeAgo(timeline[0].date) : '—'}
                   </p>
                 </div>
                 <div>
-                  <p className="text-text-muted text-[10px] uppercase tracking-wide font-medium">Site</p>
+                  <p className="text-text-muted text-[10px] uppercase tracking-wide font-medium">{t('label.site')}</p>
                   <p className="text-text-primary text-sm font-semibold mt-0.5 truncate">
                     {site?.name ?? '—'}
                   </p>
@@ -178,7 +181,7 @@ export default function MachineDetail() {
                   className="w-full"
                 >
                   <ClipboardCheck size={16} className="mr-1.5" />
-                  Start Inspection
+                  {t('action.startInspection')}
                 </Button>
               )}
               {(role === 'worker' || role === 'supervisor') && (
@@ -189,7 +192,7 @@ export default function MachineDetail() {
                   className="w-full"
                 >
                   <AlertTriangle size={16} className="mr-1.5" />
-                  Report Defect
+                  {t('action.reportDefect')}
                 </Button>
               )}
               {(role === 'worker' || role === 'supervisor') && (
@@ -200,7 +203,7 @@ export default function MachineDetail() {
                   className="w-full"
                 >
                   <Clock size={16} className="mr-1.5" />
-                  Log Downtime
+                  {t('action.logDowntime')}
                 </Button>
               )}
             </div>
@@ -208,14 +211,14 @@ export default function MachineDetail() {
             {/* ── Timeline (date-grouped) ──────────────────────────────── */}
             <div>
               <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-widest mb-3">
-                Recent Activity
+                {t('label.activity')}
               </h2>
 
               {timeline.length === 0 ? (
                 <EmptyState
                   icon={ClipboardCheck}
-                  title="No activity yet"
-                  description="Inspections, defects, repairs and downtime will appear here."
+                  title={t('empty.timeline')}
+                  description={t('empty.timelineDesc')}
                 />
               ) : (
                 <div className="space-y-4">
@@ -235,7 +238,7 @@ export default function MachineDetail() {
                           {items.map((item) => {
                             const Icon = timelineIcons[item.type];
                             const color = timelineColors[item.type];
-                            const label = timelineLabels[item.type];
+                            const labelKey = timelineLabelKeys[item.type];
 
                             return (
                               <div key={`${item.type}-${item.id}`} className="relative">
@@ -257,7 +260,7 @@ export default function MachineDetail() {
                                       <Icon size={16} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                      <p className="text-text-primary text-sm font-medium">{label}</p>
+                                      <p className="text-text-primary text-sm font-medium">{t(labelKey)}</p>
                                       {item.type === 'defect' && item.data.description && (
                                         <p className="text-text-muted text-xs truncate mt-0.5">
                                           {item.data.description}

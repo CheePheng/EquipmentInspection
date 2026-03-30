@@ -129,6 +129,10 @@ export const en: Record<string, string> = {
   'label.active': 'Active',
   'label.completed': 'Completed',
   'label.timeline': 'Timeline',
+  'label.inspection': 'Inspection',
+  'label.yourMachine': 'Your Machine',
+  'label.defect': 'Defect reported',
+  'label.downtime': 'Downtime event',
   'label.linkedServiceOrder': 'Linked Service Order',
 
   // Filter

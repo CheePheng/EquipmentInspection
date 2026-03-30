@@ -129,6 +129,10 @@ export const zh: Record<string, string> = {
   'label.active': '进行中',
   'label.completed': '已完成',
   'label.timeline': '时间线',
+  'label.inspection': '检查',
+  'label.yourMachine': '您的机器',
+  'label.defect': '缺陷报告',
+  'label.downtime': '停机事件',
   'label.linkedServiceOrder': '关联维修工单',
 
   // Filter

@@ -32,21 +32,22 @@ import { Card } from '../../components/ui/Card';
 import { AlertBanner } from '../../components/ui/AlertBanner';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { chartColors, severityChartColors, tooltipStyle, axisTickStyle, gridStyle } from '../../lib/chart-theme';
+import { useTranslation } from '../../i18n/useTranslation';
 
 // ─── Greeting helper ─────────────────────────────────────────────────────────
-function getGreeting(): string {
+function getGreetingKey(): string {
   const hour = new Date().getHours();
-  if (hour < 12) return 'Good morning';
-  if (hour < 17) return 'Good afternoon';
-  return 'Good evening';
+  if (hour < 12) return 'dashboard.greeting.morning';
+  if (hour < 17) return 'dashboard.greeting.afternoon';
+  return 'dashboard.greeting.evening';
 }
 
 // ─── Severity config ─────────────────────────────────────────────────────────
 const severityConfig = [
-  { key: 'critical', label: 'Critical', color: severityChartColors.critical, tw: 'bg-status-critical', textTw: 'text-status-critical' },
-  { key: 'high',     label: 'High',     color: severityChartColors.high,     tw: 'bg-orange-500',      textTw: 'text-orange-400' },
-  { key: 'medium',   label: 'Medium',   color: severityChartColors.medium,   tw: 'bg-status-warning',  textTw: 'text-status-warning' },
-  { key: 'low',      label: 'Low',      color: severityChartColors.low,      tw: 'bg-status-deferred', textTw: 'text-status-deferred' },
+  { key: 'critical', labelKey: 'severity.critical', color: severityChartColors.critical, tw: 'bg-status-critical', textTw: 'text-status-critical' },
+  { key: 'high',     labelKey: 'severity.high',     color: severityChartColors.high,     tw: 'bg-orange-500',      textTw: 'text-orange-400' },
+  { key: 'medium',   labelKey: 'severity.medium',   color: severityChartColors.medium,   tw: 'bg-status-warning',  textTw: 'text-status-warning' },
+  { key: 'low',      labelKey: 'severity.low',      color: severityChartColors.low,      tw: 'bg-status-deferred', textTw: 'text-status-deferred' },
 ] as const;
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -55,15 +56,16 @@ export default function SupervisorDashboard() {
   const { currentUser } = useAuthStore();
   const data = useDashboardData();
   const [alertDismissed, setAlertDismissed] = useState(false);
+  const { t } = useTranslation();
 
-  const greeting = `${getGreeting()}, ${currentUser?.name?.split(' ')[0] ?? 'Supervisor'}`;
+  const greeting = `${t(getGreetingKey())}, ${currentUser?.name?.split(' ')[0] ?? 'Supervisor'}`;
 
   // Loading state — use skeletons instead of spinner
   if (data === undefined) {
     return (
       <AnimatedPage>
         <div className="flex flex-col min-h-screen bg-obsidian">
-          <PageHeader title="Dashboard" />
+          <PageHeader title={t('page.dashboard')} />
           <div className="px-4 pt-4 space-y-6">
             <Skeleton count={2} />
             <Skeleton.KpiRow />
@@ -99,14 +101,14 @@ export default function SupervisorDashboard() {
   return (
     <AnimatedPage>
       <div className="flex flex-col min-h-screen bg-obsidian pb-24">
-        <PageHeader title="Dashboard" />
+        <PageHeader title={t('page.dashboard')} />
 
         <div className="px-4 pt-4 space-y-6">
           {/* ── Greeting ───────────────────────────────────────────────────── */}
           <div>
             <p className="text-text-secondary text-sm">{greeting}</p>
             <p className="text-text-primary text-lg font-semibold leading-tight mt-0.5">
-              Here's your operation overview
+              {t('dashboard.overview')}
             </p>
           </div>
 
@@ -114,21 +116,21 @@ export default function SupervisorDashboard() {
           <div className="grid grid-cols-2 gap-3">
             <KpiCard
               value={data.criticalDefects}
-              label="Critical Defects"
+              label={t('dashboard.criticalDefects')}
               color="red"
               icon={AlertTriangle}
               onClick={() => navigate('/defects')}
             />
             <KpiCard
               value={data.machinesDown}
-              label="Machines Down"
+              label={t('dashboard.machinesDown')}
               color="red"
               icon={XCircle}
               onClick={() => navigate('/availability')}
             />
             <KpiCard
               value={data.inspectionRate}
-              label="Inspections Today"
+              label={t('dashboard.inspectionsToday')}
               color={data.inspectionRate >= 80 ? 'green' : 'amber'}
               icon={ClipboardCheck}
               suffix="%"
@@ -136,7 +138,7 @@ export default function SupervisorDashboard() {
             />
             <KpiCard
               value={data.machinesOutForService}
-              label="Out for Service"
+              label={t('dashboard.outForService')}
               color="amber"
               icon={Truck}
               onClick={() => navigate('/service-orders')}
@@ -151,8 +153,8 @@ export default function SupervisorDashboard() {
                 data.criticalDefects > 0 ? `${data.criticalDefects} critical defect${data.criticalDefects > 1 ? 's' : ''}` : '',
                 data.machinesDown > 0 ? `${data.machinesDown} machine${data.machinesDown > 1 ? 's' : ''} down` : '',
               ].filter(Boolean).join(' · ')}
-              description="Requires immediate attention"
-              action={{ label: 'View Details', onClick: () => navigate('/defects') }}
+              description={t('dashboard.requiresAttention')}
+              action={{ label: t('action.viewDetails'), onClick: () => navigate('/defects') }}
               onDismiss={() => setAlertDismissed(true)}
             />
           )}
@@ -160,7 +162,7 @@ export default function SupervisorDashboard() {
           {/* ── Downtime by Code ───────────────────────────────────────────── */}
           <section>
             <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-widest mb-3">
-              Downtime by Reason
+              {t('dashboard.downtimeByCode')}
             </h2>
             <Card>
               {downtimeChartData.length === 0 ? (
@@ -214,7 +216,7 @@ export default function SupervisorDashboard() {
           {/* ── Inspection Compliance ──────────────────────────────────────── */}
           <section>
             <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-widest mb-3">
-              Inspection Compliance (7 Days)
+              {t('dashboard.inspectionCompliance')} (7 Days)
             </h2>
             <Card>
               <ResponsiveContainer width="100%" height={200}>
@@ -270,18 +272,18 @@ export default function SupervisorDashboard() {
           {/* ── Defects by Severity ────────────────────────────────────────── */}
           <section>
             <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-widest mb-3">
-              Defects by Severity
+              {t('dashboard.defectsBySeverity')}
             </h2>
             <Card>
               <div className="space-y-3">
-                {severityConfig.map(({ key, label, tw, textTw }) => {
+                {severityConfig.map(({ key, labelKey, tw, textTw }) => {
                   const count = data.defectsBySeverity[key] ?? 0;
                   const pct = Math.round((count / maxSeverityCount) * 100);
                   return (
                     <div key={key}>
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-xs font-medium text-text-secondary uppercase tracking-wide">
-                          {label}
+                          {t(labelKey)}
                         </span>
                         <span className={`text-xs font-bold font-mono tabular-nums ${textTw}`}>
                           {count}
@@ -307,10 +309,10 @@ export default function SupervisorDashboard() {
             </h2>
             <div className="grid grid-cols-3 gap-3">
               {[
-                { icon: AlertTriangle, label: 'Defects', count: data.totalDefectsOpen, path: '/defects' },
-                { icon: LayoutGrid, label: 'Availability', count: data.machinesDown, path: '/availability' },
-                { icon: Wrench, label: 'Maintenance', count: data.overdueMaintenanceCount, path: '/maintenance' },
-              ].map(({ icon: Icon, label, count, path }) => (
+                { icon: AlertTriangle, labelKey: 'nav.defects', count: data.totalDefectsOpen, path: '/defects' },
+                { icon: LayoutGrid, labelKey: 'nav.availability', count: data.machinesDown, path: '/availability' },
+                { icon: Wrench, labelKey: 'nav.maintenance', count: data.overdueMaintenanceCount, path: '/maintenance' },
+              ].map(({ icon: Icon, labelKey, count, path }) => (
                 <Card
                   key={path}
                   tier="action"
@@ -320,7 +322,7 @@ export default function SupervisorDashboard() {
                 >
                   <div className="flex flex-col items-center gap-1.5 py-1">
                     <Icon size={20} className="text-text-secondary" />
-                    <span className="text-xs font-medium text-text-primary">{label}</span>
+                    <span className="text-xs font-medium text-text-primary">{t(labelKey)}</span>
                     <span className="text-xs font-mono font-semibold text-amber-primary tabular-nums">{count}</span>
                   </div>
                 </Card>
