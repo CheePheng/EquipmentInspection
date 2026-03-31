@@ -47,7 +47,7 @@ export class ErrorBoundary extends Component<Props, State> {
               Reload
             </button>
             <a
-              href="/"
+              href={import.meta.env.BASE_URL}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-elevated text-text-primary font-medium text-sm border border-border transition-all hover:bg-elevated-high active:scale-[0.98]"
             >
               <Home size={16} />

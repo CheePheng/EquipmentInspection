@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig({
-  base: '/EquipmentInspection/',
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/EquipmentInspection/' : '/',
   plugins: [
     react(),
     tailwindcss(),
@@ -40,4 +40,4 @@ export default defineConfig({
       },
     }),
   ],
-});
+}));

@@ -92,4 +92,4 @@ export const router = createBrowserRouter([
       },
     ],
   },
-], { basename: '/EquipmentInspection' });
+], { basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/' });
