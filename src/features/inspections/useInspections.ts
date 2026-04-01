@@ -1,30 +1,30 @@
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../../db/database';
+import { useMemo } from 'react';
+import { useCollectionQuery } from '../../db/useFirestoreQuery';
+import { inspectionTemplatesRef, inspectionsRef, query, where } from '../../db/collections';
+import { addDocument, updateDocument, queryByField } from '../../db/firestore';
 import { now, today } from '../../lib/utils';
 
 export function useInspectionTemplate(machineType: string | undefined) {
-  return useLiveQuery(
-    () => {
-      if (!machineType) return undefined;
-      return db.inspectionTemplates
-        .where('machineType')
-        .equals(machineType)
-        .filter((t) => !!t.isActive)
-        .first();
-    },
-    [machineType]
+  const q = useMemo(
+    () =>
+      machineType
+        ? query(inspectionTemplatesRef(), where('machineType', '==', machineType), where('isActive', '==', true))
+        : null,
+    [machineType],
   );
+  const results = useCollectionQuery<any>(q, [machineType]);
+  return useMemo(() => (results ? results[0] : undefined), [results]);
 }
 
 export function useInspectionsByMachine(machineId: number) {
-  return useLiveQuery(
-    () =>
-      db.inspections
-        .where('machineId')
-        .equals(machineId)
-        .reverse()
-        .sortBy('date'),
-    [machineId]
+  const q = useMemo(
+    () => query(inspectionsRef(), where('machineId', '==', machineId)),
+    [machineId],
+  );
+  const results = useCollectionQuery<any>(q, [machineId]);
+  return useMemo(
+    () => results?.slice().sort((a: any, b: any) => (b.date ?? '').localeCompare(a.date ?? '')),
+    [results],
   );
 }
 
@@ -33,38 +33,34 @@ export async function createInspection(
   operatorId: number,
   siteId: number,
   meterReading: number,
-  items: { templateItemId: string; result: 'pass' | 'fail' | 'na'; notes: string }[]
+  items: { templateItemId: string; result: 'pass' | 'fail' | 'na'; notes: string }[],
 ) {
-  return db.transaction('rw', [db.inspections, db.inspectionItems, db.machines], async () => {
-    const inspectionId = await db.inspections.add({
-      machineId,
-      operatorId,
-      date: today(),
-      meterReading,
-      status: 'completed',
-      completedAt: now(),
-      siteId,
-    });
-
-    await db.inspectionItems.bulkAdd(
-      items.map((item) => ({
-        inspectionId: inspectionId as number,
-        templateItemId: item.templateItemId,
-        result: item.result,
-        notes: item.notes,
-      }))
-    );
-
-    // Update machine meter hours
-    await db.machines.update(machineId, { currentMeterHours: meterReading });
-
-    return inspectionId;
+  const inspectionId = await addDocument<any>('inspections', {
+    machineId,
+    operatorId,
+    date: today(),
+    meterReading,
+    status: 'completed',
+    completedAt: now(),
+    siteId,
   });
+
+  for (const item of items) {
+    await addDocument<any>('inspectionItems', {
+      inspectionId,
+      templateItemId: item.templateItemId,
+      result: item.result,
+      notes: item.notes,
+    });
+  }
+
+  await updateDocument('machines', machineId, { currentMeterHours: meterReading });
+
+  return inspectionId;
 }
 
 export async function getExistingTodayInspection(machineId: number) {
-  return db.inspections
-    .where('[machineId+date]')
-    .equals([machineId, today()])
-    .first();
+  const results = await queryByField<any>('inspections', 'machineId', machineId);
+  const todayStr = today();
+  return results.find((r: any) => r.date === todayStr);
 }

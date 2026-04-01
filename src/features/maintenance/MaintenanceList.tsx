@@ -82,8 +82,8 @@ function MaintenanceCard({ item }: { item: ScheduleWithMachine }) {
             ? <><span className="text-amber-primary">{machine.code}</span>{' — '}{machine.name}</>
             : `Machine #${item.machineId}`}
         </p>
-        <Badge variant={STATUS_BADGE_VARIANT[item.maintenanceStatus]}>
-          {STATUS_LABEL[item.maintenanceStatus]}
+        <Badge variant={STATUS_BADGE_VARIANT[item.maintenanceStatus as MaintenanceStatus]}>
+          {STATUS_LABEL[item.maintenanceStatus as MaintenanceStatus]}
         </Badge>
       </div>
 

@@ -1,30 +1,43 @@
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../../db/database';
+import { useMemo } from 'react';
+import { useCollectionQuery } from '../../db/useFirestoreQuery';
+import { useDocQuery } from '../../db/useFirestoreQuery';
+import { serviceOrdersRef, serviceOrderDoc, query, where } from '../../db/collections';
+import { addDocument, updateDocument } from '../../db/firestore';
 import type { ServiceOrder } from '../../db/schemas/service-order.schema';
 import { now, today } from '../../lib/utils';
 
 export function useServiceOrders(status?: string) {
-  return useLiveQuery(async () => {
-    let query = db.serviceOrders.orderBy('createdAt');
-    const all = await query.reverse().toArray();
-    if (status) return all.filter(o => o.status === status);
-    return all;
-  }, [status]);
+  const q = useMemo(() => query(serviceOrdersRef()), []);
+  const results = useCollectionQuery<any>(q, []);
+  return useMemo(() => {
+    if (results === undefined) return undefined;
+    let filtered = results;
+    if (status) filtered = results.filter((o: any) => o.status === status);
+    return filtered.slice().sort((a: any, b: any) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''));
+  }, [results, status]);
 }
 
 export function useServiceOrder(id: number) {
-  return useLiveQuery(() => db.serviceOrders.get(id), [id]);
+  return useDocQuery<any>(serviceOrderDoc(id), [id]);
 }
 
 export function useActiveServiceOrder(machineId: number) {
-  return useLiveQuery(async () => {
-    const orders = await db.serviceOrders.where('machineId').equals(machineId).toArray();
-    return orders.find(o => o.status === 'pending' || o.status === 'in-service' || o.status === 'returned');
-  }, [machineId]);
+  const q = useMemo(
+    () => query(serviceOrdersRef(), where('machineId', '==', machineId)),
+    [machineId],
+  );
+  const results = useCollectionQuery<any>(q, [machineId]);
+  return useMemo(
+    () =>
+      results === undefined
+        ? undefined
+        : results.find((o: any) => o.status === 'pending' || o.status === 'in-service' || o.status === 'returned'),
+    [results],
+  );
 }
 
 export async function createServiceOrder(data: Omit<ServiceOrder, 'id' | 'createdAt' | 'completedAt'>) {
-  return db.serviceOrders.add({
+  return addDocument<any>('serviceOrders', {
     ...data,
     createdAt: now(),
     completedAt: null,
@@ -35,5 +48,5 @@ export async function updateServiceOrderStatus(id: number, status: ServiceOrder[
   const updates: Partial<ServiceOrder> = { status, ...extra };
   if (status === 'completed') updates.completedAt = now();
   if (status === 'returned' && !extra?.dateReturned) updates.dateReturned = today();
-  await db.serviceOrders.update(id, updates);
+  await updateDocument('serviceOrders', id, updates as Record<string, unknown>);
 }
