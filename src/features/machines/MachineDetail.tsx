@@ -139,7 +139,7 @@ export default function MachineDetail() {
                   <p className="text-text-primary font-semibold text-xl leading-tight mt-1 truncate">
                     {machine.name}
                   </p>
-                  <Badge variant="default" className="mt-2">{MACHINE_TYPE_LABELS[machine.type]}</Badge>
+                  <Badge variant="default" className="mt-2">{MACHINE_TYPE_LABELS[machine.type as keyof typeof MACHINE_TYPE_LABELS]}</Badge>
                 </div>
                 <div className="flex-shrink-0 pt-1">
                   <StatusIndicator state={machine.availabilityState} size="md" />

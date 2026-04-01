@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Delete, LogIn } from 'lucide-react';
-import { db } from '../../db/database';
+import { queryByField } from '../../db/firestore';
 import { useAuthStore } from './auth.store';
 import { useToastStore } from '../../stores/toast.store';
 import { LanguageToggle } from '../../components/ui/LanguageToggle';
@@ -34,7 +34,8 @@ export default function PinLogin() {
     }
 
     try {
-      const user = await db.users.where('pin').equals(pin).first();
+      const users = await queryByField<any>('users', 'pin', pin);
+      const user = users[0] ?? null;
       if (!user) {
         setError(t('login.invalidPin'));
         setPin('');

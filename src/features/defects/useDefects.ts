@@ -1,5 +1,7 @@
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../../db/database';
+import { useMemo } from 'react';
+import { useCollectionQuery, useDocQuery } from '../../db/useFirestoreQuery';
+import { defectsRef, defectPhotosRef, defectDoc, query, where } from '../../db/collections';
+import { addDocument, updateDocument } from '../../db/firestore';
 import { now } from '../../lib/utils';
 
 export function useDefects(filters?: {
@@ -8,33 +10,36 @@ export function useDefects(filters?: {
   siteId?: number;
   machineId?: number;
 }) {
-  return useLiveQuery(async () => {
-    let defects = await db.defects.toArray();
+  const q = useMemo(() => query(defectsRef()), []);
+  const defects = useCollectionQuery<any>(q, []);
+
+  return useMemo(() => {
+    if (!defects) return undefined;
+
+    let result = [...defects];
     if (filters?.severity?.length) {
-      defects = defects.filter(d => filters.severity!.includes(d.severity));
+      result = result.filter(d => filters.severity!.includes(d.severity));
     }
     if (filters?.status?.length) {
-      defects = defects.filter(d => filters.status!.includes(d.status));
+      result = result.filter(d => filters.status!.includes(d.status));
     }
     if (filters?.siteId) {
-      defects = defects.filter(d => d.siteId === filters.siteId);
+      result = result.filter(d => d.siteId === filters.siteId);
     }
     if (filters?.machineId) {
-      defects = defects.filter(d => d.machineId === filters.machineId);
+      result = result.filter(d => d.machineId === filters.machineId);
     }
-    return defects.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  }, [filters?.severity?.join(), filters?.status?.join(), filters?.siteId, filters?.machineId]);
+    return result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  }, [defects, filters?.severity?.join(), filters?.status?.join(), filters?.siteId, filters?.machineId]);
 }
 
 export function useDefect(id: number) {
-  return useLiveQuery(() => db.defects.get(id), [id]);
+  return useDocQuery<any>(defectDoc(id), [id]);
 }
 
 export function useDefectPhotos(defectId: number) {
-  return useLiveQuery(
-    () => db.defectPhotos.where('defectId').equals(defectId).toArray(),
-    [defectId]
-  );
+  const q = useMemo(() => query(defectPhotosRef(), where('defectId', '==', defectId)), [defectId]);
+  return useCollectionQuery<any>(q, [defectId]);
 }
 
 export async function createDefect(
@@ -50,32 +55,28 @@ export async function createDefect(
   },
   photos: Blob[]
 ) {
-  return db.transaction('rw', [db.defects, db.defectPhotos], async () => {
-    const defectId = await db.defects.add({
-      ...data,
-      status: 'open',
-      priority: data.severity === 'critical' || data.severity === 'high',
-      createdAt: now(),
-      updatedAt: now(),
-    } as any);
-
-    // Add photos
-    if (photos.length > 0) {
-      await db.defectPhotos.bulkAdd(
-        photos.map(blob => ({
-          defectId: defectId as number,
-          data: blob,
-          mimeType: 'image/jpeg',
-          capturedAt: now(),
-          fileSize: blob.size,
-        }))
-      );
-    }
-
-    return defectId;
+  const defectId = await addDocument('defects', {
+    ...data,
+    status: 'open',
+    priority: data.severity === 'critical' || data.severity === 'high',
+    createdAt: now(),
+    updatedAt: now(),
   });
+
+  // Add photos
+  for (const blob of photos) {
+    await addDocument('defectPhotos', {
+      defectId,
+      data: blob,
+      mimeType: 'image/jpeg',
+      capturedAt: now(),
+      fileSize: blob.size,
+    });
+  }
+
+  return defectId;
 }
 
 export async function updateDefectStatus(id: number, status: string) {
-  await db.defects.update(id, { status: status as any, updatedAt: now() });
+  await updateDocument('defects', id, { status, updatedAt: now() });
 }
