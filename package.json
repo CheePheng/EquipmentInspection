@@ -14,8 +14,6 @@
     "@fontsource/jetbrains-mono": "^5.2.8",
     "browser-image-compression": "^2.0.2",
     "date-fns": "^4.1.0",
-    "dexie": "^4.3.0",
-    "dexie-react-hooks": "^4.2.0",
     "firebase": "^12.11.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.6.0",
