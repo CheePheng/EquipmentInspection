@@ -23,6 +23,8 @@ const SettingsPage = lazy(() => import('../features/settings/SettingsPage'));
 const ServiceOrderList = lazy(() => import('../features/service-orders/ServiceOrderList'));
 const ServiceOrderDetail = lazy(() => import('../features/service-orders/ServiceOrderDetail'));
 const WorkerHistory = lazy(() => import('../features/profile/WorkerHistory'));
+const FleetPage = lazy(() => import('../features/fleet/FleetPage'));
+const TeamPage = lazy(() => import('../features/team/TeamPage'));
 
 function PageLoader() {
   return (
@@ -89,6 +91,14 @@ export const router = createBrowserRouter([
       {
         path: 'settings',
         element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><SettingsPage /></SuspenseWrapper></RoleGuard>,
+      },
+      {
+        path: 'fleet',
+        element: <RoleGuard roles={['boss']}><SuspenseWrapper><FleetPage /></SuspenseWrapper></RoleGuard>,
+      },
+      {
+        path: 'team',
+        element: <RoleGuard roles={['boss']}><SuspenseWrapper><TeamPage /></SuspenseWrapper></RoleGuard>,
       },
     ],
   },
