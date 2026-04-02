@@ -31,7 +31,7 @@ export const DEFECT_CATEGORIES = [
 ] as const;
 export type DefectCategory = typeof DEFECT_CATEGORIES[number];
 
-export const USER_ROLES = ['worker', 'supervisor'] as const;
+export const USER_ROLES = ['worker', 'supervisor', 'boss'] as const;
 export type UserRole = typeof USER_ROLES[number];
 
 export const MACHINE_STATUSES = ['active', 'inactive'] as const;

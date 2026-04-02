@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Settings, LogOut, Activity } from 'lucide-react';
+import { Eye, EyeOff, Settings, LogOut, Activity, Users } from 'lucide-react';
 import { AnimatedPage } from '../../components/ui/AnimatedPage';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Card } from '../../components/ui/Card';
@@ -64,7 +64,7 @@ export default function ProfilePage() {
     navigate('/login');
   }
 
-  const roleLabel = currentUser.role === 'supervisor' ? t('role.supervisor') : t('role.worker');
+  const roleLabel = currentUser.role === 'boss' ? t('role.boss') : currentUser.role === 'supervisor' ? t('role.supervisor') : t('role.worker');
 
   return (
     <AnimatedPage>
@@ -166,6 +166,18 @@ export default function ProfilePage() {
             >
               <Settings size={18} />
               {t('page.settings')}
+            </Button>
+          )}
+
+          {/* Boss: manage team */}
+          {currentUser.role === 'boss' && (
+            <Button
+              variant="secondary"
+              fullWidth
+              onClick={() => navigate('/team')}
+            >
+              <Users size={18} />
+              {t('action.manageTeam')}
             </Button>
           )}
 

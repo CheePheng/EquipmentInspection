@@ -87,6 +87,7 @@ export async function seedDatabase(): Promise<void> {
   await batchSet('users', thaboId, { pin: '1114', name: 'Tan Chee Keong', role: 'worker', siteId: site2Id });
   await batchSet('users', 5, { pin: '3333', name: 'Razak bin Osman', role: 'supervisor', siteId: site1Id });
   await batchSet('users', 6, { pin: '3334', name: 'Chen Mei Ling', role: 'supervisor', siteId: site2Id });
+  await batchSet('users', 7, { pin: '888888', name: "Dato' Chai", role: 'boss', siteId: site1Id });
 
   // -----------------------------------------------------------------------
   // MACHINES  (18 total) — all availabilityState: 'available'
@@ -581,7 +582,7 @@ export async function seedDatabase(): Promise<void> {
   const totalInspectionItems = nextItemId - 1;
   await setDoc(doc(firestore, 'meta', 'counters'), {
     sites: 3,
-    users: 6,
+    users: 7,
     machines: 18,
     inspectionTemplates: 9,
     inspections: 30,

@@ -21,6 +21,7 @@ export default function RoleGuard({ children, roles }: RoleGuardProps) {
       case 'worker':
         return <Navigate to="/machines" replace />;
       case 'supervisor':
+      case 'boss':
         return <Navigate to="/dashboard" replace />;
     }
   }

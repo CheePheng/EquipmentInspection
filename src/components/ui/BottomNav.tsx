@@ -7,6 +7,7 @@ import {
   BarChart3,
   Grid3X3,
   Truck,
+  CarFront,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuthStore } from '../../features/auth/auth.store';
@@ -31,6 +32,13 @@ const TABS_BY_ROLE: Record<UserRole, TabConfig[]> = {
     { path: '/availability', labelKey: 'nav.availability', icon: Grid3X3 },
     { path: '/service-orders', labelKey: 'nav.serviceOrders', icon: Truck },
     { path: '/defects', labelKey: 'nav.defects', icon: AlertTriangle },
+    { path: '/profile', labelKey: 'nav.profile', icon: User },
+  ],
+  boss: [
+    { path: '/dashboard', labelKey: 'nav.dashboard', icon: BarChart3 },
+    { path: '/availability', labelKey: 'nav.availability', icon: Grid3X3 },
+    { path: '/defects', labelKey: 'nav.defects', icon: AlertTriangle },
+    { path: '/fleet', labelKey: 'nav.fleet', icon: CarFront },
     { path: '/profile', labelKey: 'nav.profile', icon: User },
   ],
 };

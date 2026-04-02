@@ -51,6 +51,7 @@ export default function PinLogin() {
           navigate('/machines');
           break;
         case 'supervisor':
+        case 'boss':
           navigate('/dashboard');
           break;
         default:

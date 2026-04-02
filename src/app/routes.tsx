@@ -82,7 +82,7 @@ export const router = createBrowserRouter([
       { path: 'availability', element: <SuspenseWrapper><AvailabilityBoard /></SuspenseWrapper> },
       {
         path: 'dashboard',
-        element: <RoleGuard roles={['supervisor']}><SuspenseWrapper><SupervisorDashboard /></SuspenseWrapper></RoleGuard>,
+        element: <RoleGuard roles={['supervisor', 'boss']}><SuspenseWrapper><SupervisorDashboard /></SuspenseWrapper></RoleGuard>,
       },
       { path: 'profile', element: <SuspenseWrapper><ProfilePage /></SuspenseWrapper> },
       { path: 'my-activity', element: <SuspenseWrapper><WorkerHistory /></SuspenseWrapper> },
