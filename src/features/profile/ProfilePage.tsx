@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { Eye, EyeOff, Settings, LogOut, Activity } from 'lucide-react';
 import { AnimatedPage } from '../../components/ui/AnimatedPage';
 import { PageHeader } from '../../components/ui/PageHeader';
@@ -9,7 +8,8 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { useAuthStore } from '../auth/auth.store';
-import { db } from '../../db/database';
+import { useDocQuery, useCollectionQuery } from '../../db/useFirestoreQuery';
+import { siteDoc, inspectionsRef, defectsRef, query, where } from '../../db/collections';
 import { LanguageToggle } from '../../components/ui/LanguageToggle';
 import { useTranslation } from '../../i18n/useTranslation';
 
@@ -36,26 +36,26 @@ export default function ProfilePage() {
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const { t } = useTranslation();
 
-  const site = useLiveQuery(
-    () => (currentUser?.siteId ? db.sites.get(currentUser.siteId) : undefined),
-    [currentUser?.siteId]
-  );
+  const siteRef = currentUser?.siteId ? siteDoc(currentUser.siteId) : null;
+  const site = useDocQuery<any>(siteRef, [currentUser?.siteId]);
 
-  const inspectionCount = useLiveQuery(
-    () =>
-      currentUser?.role === 'worker' && currentUser.id
-        ? db.inspections.where('operatorId').equals(currentUser.id).count()
-        : Promise.resolve(0),
-    [currentUser?.id, currentUser?.role]
+  const inspQ = useMemo(
+    () => currentUser?.role === 'worker' && currentUser.id
+      ? query(inspectionsRef(), where('operatorId', '==', currentUser.id))
+      : null,
+    [currentUser?.id, currentUser?.role],
   );
+  const inspections = useCollectionQuery<any>(inspQ, [currentUser?.id, currentUser?.role]);
+  const inspectionCount = inspections?.length ?? 0;
 
-  const defectCount = useLiveQuery(
-    () =>
-      currentUser?.role === 'worker' && currentUser.id
-        ? db.defects.where('reportedBy').equals(currentUser.id).count()
-        : Promise.resolve(0),
-    [currentUser?.id, currentUser?.role]
+  const defQ = useMemo(
+    () => currentUser?.role === 'worker' && currentUser.id
+      ? query(defectsRef(), where('reportedBy', '==', currentUser.id))
+      : null,
+    [currentUser?.id, currentUser?.role],
   );
+  const defectsArr = useCollectionQuery<any>(defQ, [currentUser?.id, currentUser?.role]);
+  const defectCount = defectsArr?.length ?? 0;
 
   if (!currentUser) return null;
 

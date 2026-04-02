@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { format, parseISO, isToday, isYesterday } from 'date-fns';
 import {
   ClipboardCheck,
@@ -16,7 +15,8 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { StatusIndicator } from '../../components/ui/StatusIndicator';
 import { AlertBanner } from '../../components/ui/AlertBanner';
-import { db } from '../../db/database';
+import { useDocQuery } from '../../db/useFirestoreQuery';
+import { siteDoc } from '../../db/collections';
 import { useAuthStore } from '../auth/auth.store';
 import { MACHINE_TYPE_LABELS } from '../../lib/constants';
 import { formatMeterHours, formatTimeAgo, formatDate } from '../../lib/utils';
@@ -80,10 +80,8 @@ export default function MachineDetail() {
   const machine = useMachine(id);
   const timeline = useMachineTimeline(id);
 
-  const site = useLiveQuery(async () => {
-    if (!machine?.siteId) return undefined;
-    return db.sites.get(machine.siteId);
-  }, [machine?.siteId]);
+  const siteRef = machine?.siteId ? siteDoc(machine.siteId) : null;
+  const site = useDocQuery<any>(siteRef, [machine?.siteId]);
 
   const isLoading = machine === undefined || timeline === undefined;
   const role = currentUser?.role;

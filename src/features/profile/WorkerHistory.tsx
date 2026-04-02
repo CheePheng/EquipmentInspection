@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { motion } from 'framer-motion';
 import { ClipboardCheck, AlertTriangle } from 'lucide-react';
 import { AnimatedPage } from '../../components/ui/AnimatedPage';
@@ -10,12 +9,11 @@ import { Badge } from '../../components/ui/Badge';
 import { Spinner } from '../../components/ui/Spinner';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { useAuthStore } from '../auth/auth.store';
-import { db } from '../../db/database';
+import { useCollectionQuery } from '../../db/useFirestoreQuery';
+import { machinesRef, inspectionsRef, defectsRef, query, where } from '../../db/collections';
 import { useTranslation } from '../../i18n/useTranslation';
 import { listVariants, cardVariants } from '../../lib/motion';
 import { formatDate } from '../../lib/utils';
-import type { Inspection } from '../../db/schemas/inspection.schema';
-import type { Defect } from '../../db/schemas/defect.schema';
 
 const SEVERITY_VARIANTS: Record<string, 'low' | 'medium' | 'high' | 'critical'> = {
   low: 'low',
@@ -44,31 +42,28 @@ export default function WorkerHistory() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const [tab, setTab] = useState<'inspections' | 'defects'>('inspections');
 
-  const machines = useLiveQuery(() => db.machines.toArray(), []);
-  const machineMap = new Map(machines?.map((m) => [m.id!, m.code]));
+  const machinesQ = useMemo(() => query(machinesRef()), []);
+  const machines = useCollectionQuery<any>(machinesQ, []);
+  const machineMap = new Map(machines?.map((m: any) => [m.id!, m.code]));
 
-  const inspections = useLiveQuery<Inspection[]>(
-    () =>
-      currentUser?.id
-        ? db.inspections
-            .where('operatorId')
-            .equals(currentUser.id)
-            .reverse()
-            .sortBy('date')
-        : Promise.resolve([] as Inspection[]),
-    [currentUser?.id]
+  const inspQ = useMemo(
+    () => currentUser?.id ? query(inspectionsRef(), where('operatorId', '==', currentUser.id)) : null,
+    [currentUser?.id],
+  );
+  const rawInspections = useCollectionQuery<any>(inspQ, [currentUser?.id]);
+  const inspections = useMemo(
+    () => rawInspections ? [...rawInspections].sort((a: any, b: any) => (b.date ?? '').localeCompare(a.date ?? '')) : undefined,
+    [rawInspections],
   );
 
-  const defects = useLiveQuery<Defect[]>(
-    () =>
-      currentUser?.id
-        ? db.defects
-            .where('reportedBy')
-            .equals(currentUser.id)
-            .reverse()
-            .sortBy('createdAt')
-        : Promise.resolve([] as Defect[]),
-    [currentUser?.id]
+  const defQ = useMemo(
+    () => currentUser?.id ? query(defectsRef(), where('reportedBy', '==', currentUser.id)) : null,
+    [currentUser?.id],
+  );
+  const rawDefects = useCollectionQuery<any>(defQ, [currentUser?.id]);
+  const defects = useMemo(
+    () => rawDefects ? [...rawDefects].sort((a: any, b: any) => (b.createdAt ?? '').localeCompare(a.createdAt ?? '')) : undefined,
+    [rawDefects],
   );
 
   const SEVERITY_LABELS: Record<string, string> = {

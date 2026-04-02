@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { CheckCircle, XCircle, AlertTriangle, Truck } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 import { createServiceOrder } from '../service-orders/useServiceOrders';
@@ -17,7 +16,8 @@ import { useMachine } from '../machines/useMachines';
 import { useAuthStore } from '../auth/auth.store';
 import { useToastStore } from '../../stores/toast.store';
 import { useTranslation } from '../../i18n/useTranslation';
-import { db } from '../../db/database';
+import { useDocQuery, useCollectionQuery } from '../../db/useFirestoreQuery';
+import { userDoc, serviceOrdersRef, query, where } from '../../db/collections';
 import { formatDateTime, today } from '../../lib/utils';
 
 export default function DefectDetail() {
@@ -53,15 +53,12 @@ export default function DefectDetail() {
   const photos = useDefectPhotos(defectId);
   const machine = useMachine(defect?.machineId ?? 0);
 
-  const reporter = useLiveQuery(
-    () => (defect?.reportedBy ? db.users.get(defect.reportedBy) : undefined),
-    [defect?.reportedBy]
-  );
+  const reporterRef = defect?.reportedBy ? userDoc(defect.reportedBy) : null;
+  const reporter = useDocQuery<any>(reporterRef, [defect?.reportedBy]);
 
-  const linkedServiceOrder = useLiveQuery(
-    () => db.serviceOrders.where('defectId').equals(defectId).first(),
-    [defectId]
-  );
+  const soQ = useMemo(() => query(serviceOrdersRef(), where('defectId', '==', defectId)), [defectId]);
+  const serviceOrders = useCollectionQuery<any>(soQ, [defectId]);
+  const linkedServiceOrder = useMemo(() => serviceOrders?.[0] ?? null, [serviceOrders]);
 
   const canChangeStatus = currentUser?.role === 'supervisor';
 

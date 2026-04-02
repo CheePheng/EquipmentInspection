@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { CalendarClock, ChevronDown, ChevronUp } from 'lucide-react';
 import { AnimatedPage } from '../../components/ui/AnimatedPage';
 import { PageHeader } from '../../components/ui/PageHeader';
@@ -20,7 +19,8 @@ import {
   getMaintenanceStatus,
 } from './useMaintenance';
 import type { MaintenanceStatus } from './useMaintenance';
-import { db } from '../../db/database';
+import { useCollectionQuery } from '../../db/useFirestoreQuery';
+import { usersRef, query } from '../../db/collections';
 import { formatDate, formatDateTime, formatMeterHours } from '../../lib/utils';
 
 const STATUS_BADGE_VARIANT: Record<MaintenanceStatus, 'critical' | 'medium' | 'available'> = {
@@ -45,7 +45,8 @@ export default function MaintenanceDetail() {
   const schedule = useMaintenanceSchedule(scheduleId);
   const machine = useMachine(schedule?.machineId ?? 0);
   const events = useMaintenanceEvents(scheduleId);
-  const users = useLiveQuery(() => db.users.toArray());
+  const usersQ = useMemo(() => query(usersRef()), []);
+  const users = useCollectionQuery<any>(usersQ, []);
 
   const [formOpen, setFormOpen] = useState(false);
   const [meterReading, setMeterReading] = useState<number | ''>('');

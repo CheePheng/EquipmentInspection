@@ -1,7 +1,8 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { Truck } from 'lucide-react';
-import { db } from '../../db/database';
+import { useCollectionQuery } from '../../db/useFirestoreQuery';
+import { machinesRef, inspectionsRef, query, where } from '../../db/collections';
 import { useAuthStore } from '../auth/auth.store';
 import { MACHINE_TYPE_LABELS } from '../../lib/constants';
 import { Card } from '../../components/ui/Card';
@@ -15,32 +16,25 @@ export function TodaysMachine() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const { t } = useTranslation();
 
-  const machine = useLiveQuery(async () => {
-    if (!currentUser) return null;
+  const allMachinesQ = useMemo(() => query(machinesRef()), []);
+  const allMachines = useCollectionQuery<any>(allMachinesQ, []);
 
-    // Try to find a machine assigned to this operator
-    if (currentUser.id) {
-      const assigned = await db.machines
-        .where('assignedOperatorId')
-        .equals(currentUser.id)
-        .first();
-      if (assigned) return assigned;
-    }
+  const inspQ = useMemo(
+    () => currentUser?.id ? query(inspectionsRef(), where('operatorId', '==', currentUser.id)) : null,
+    [currentUser?.id],
+  );
+  const userInspections = useCollectionQuery<any>(inspQ, [currentUser?.id]);
 
-    // Fallback: most recently inspected machine by this operator
-    const latestInspection = await db.inspections
-      .where('operatorId')
-      .equals(currentUser.id!)
-      .reverse()
-      .sortBy('date')
-      .then((arr) => arr[0]);
-
-    if (latestInspection) {
-      return db.machines.get(latestInspection.machineId) ?? null;
-    }
-
-    return null;
-  }, [currentUser?.id]);
+  const machine = useMemo(() => {
+    if (!currentUser || !allMachines) return null;
+    // Try assigned
+    const assigned = allMachines.find((m: any) => m.assignedOperatorId === currentUser.id);
+    if (assigned) return assigned;
+    // Fallback: most recently inspected
+    if (!userInspections || userInspections.length === 0) return null;
+    const sorted = [...userInspections].sort((a: any, b: any) => (b.date ?? '').localeCompare(a.date ?? ''));
+    return allMachines.find((m: any) => m.id === sorted[0].machineId) ?? null;
+  }, [currentUser, allMachines, userInspections]);
 
   // Only show for operators
   if (!currentUser || currentUser.role !== 'worker') return null;
@@ -68,7 +62,7 @@ export function TodaysMachine() {
 
       <div className="flex items-center gap-2 mb-4">
         <span className="font-mono text-amber-primary font-bold text-sm">{machine.code}</span>
-        <Badge variant="default">{MACHINE_TYPE_LABELS[machine.type]}</Badge>
+        <Badge variant="default">{MACHINE_TYPE_LABELS[machine.type as keyof typeof MACHINE_TYPE_LABELS]}</Badge>
       </div>
 
       <div className="flex gap-2">

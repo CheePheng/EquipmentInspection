@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useEffect, useState, useMemo } from 'react';
 import { AlertTriangle, Database, Users, ClipboardList, Activity, Cpu } from 'lucide-react';
 import { AnimatedPage } from '../../components/ui/AnimatedPage';
 import { PageHeader } from '../../components/ui/PageHeader';
@@ -8,7 +7,8 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { useTranslation } from '../../i18n/useTranslation';
-import { db } from '../../db/database';
+import { useCollectionQuery } from '../../db/useFirestoreQuery';
+import { inspectionTemplatesRef, usersRef, sitesRef, query } from '../../db/collections';
 import {
   DOWNTIME_CODES,
   MACHINE_TYPE_LABELS,
@@ -43,9 +43,12 @@ export default function SettingsPage() {
     }
   }, []);
 
-  const templates = useLiveQuery(() => db.inspectionTemplates.toArray(), []);
-  const users = useLiveQuery(() => db.users.toArray(), []);
-  const sites = useLiveQuery(() => db.sites.toArray(), []);
+  const templatesQ = useMemo(() => query(inspectionTemplatesRef()), []);
+  const templates = useCollectionQuery<any>(templatesQ, []);
+  const usersQ = useMemo(() => query(usersRef()), []);
+  const users = useCollectionQuery<any>(usersQ, []);
+  const sitesQ = useMemo(() => query(sitesRef()), []);
+  const sites = useCollectionQuery<any>(sitesQ, []);
 
   const DOWNTIME_LABELS: Record<string, string> = {
     mechanical: t('downtime.mechanical'),
@@ -69,7 +72,7 @@ export default function SettingsPage() {
   async function handleReset() {
     setResetting(true);
     try {
-      await db.delete();
+      // Firestore data is cloud-hosted; local reset clears cache and reloads
       window.location.reload();
     } catch {
       setResetting(false);
