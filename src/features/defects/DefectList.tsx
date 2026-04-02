@@ -19,19 +19,6 @@ function DefectCard({ defect, machineName }: { defect: Defect; machineName: stri
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const CATEGORY_LABELS: Record<string, string> = {
-    engine: t('category.engine'),
-    hydraulic: t('category.hydraulic'),
-    electrical: t('category.electrical'),
-    structural: t('category.structural'),
-    safety: t('category.safety'),
-    'tires-tracks': t('category.tiresTracks'),
-    'cab-controls': t('category.cabControls'),
-    'lights-signals': t('category.lightsSignals'),
-    'fluid-leaks': t('category.fluidLeaks'),
-    other: t('category.other'),
-  };
-
   const STATUS_LABELS: Record<string, string> = {
     open: t('defect.open'),
     acknowledged: t('defect.acknowledged'),
@@ -56,13 +43,7 @@ function DefectCard({ defect, machineName }: { defect: Defect; machineName: stri
         </span>
       </div>
 
-      <p className="text-sm font-medium text-text-primary mb-1">{machineName}</p>
-      <p className="text-xs text-text-secondary mb-1">
-        {CATEGORY_LABELS[defect.category] ?? defect.category}
-      </p>
-      {defect.description && (
-        <p className="text-sm text-text-secondary line-clamp-2 mt-1">{defect.description}</p>
-      )}
+      <p className="text-sm font-medium text-text-primary">{machineName}</p>
     </Card>
   );
 }

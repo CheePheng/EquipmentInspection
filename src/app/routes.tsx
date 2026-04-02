@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import RoleGuard from './guards/RoleGuard';
+import { useAuthStore } from '../features/auth/auth.store';
 import AppShell from './AppShell';
 import { ErrorBoundary } from '../components/ui/ErrorBoundary';
 
@@ -10,6 +11,7 @@ const MachineList = lazy(() => import('../features/machines/MachineList'));
 const MachineDetail = lazy(() => import('../features/machines/MachineDetail'));
 const InspectionForm = lazy(() => import('../features/inspections/InspectionForm'));
 const DefectList = lazy(() => import('../features/defects/DefectList'));
+const BossDefectList = lazy(() => import('../features/defects/BossDefectList'));
 const DefectReport = lazy(() => import('../features/defects/DefectReport'));
 const DefectDetail = lazy(() => import('../features/defects/DefectDetail'));
 const DowntimeHistory = lazy(() => import('../features/downtime/DowntimeHistory'));
@@ -38,6 +40,11 @@ function SuspenseWrapper({ children }: { children: React.ReactNode }) {
   return <ErrorBoundary><Suspense fallback={<PageLoader />}>{children}</Suspense></ErrorBoundary>;
 }
 
+function DefectListByRole() {
+  const role = useAuthStore((s) => s.currentUser?.role);
+  return role === 'boss' ? <BossDefectList /> : <DefectList />;
+}
+
 export const router = createBrowserRouter([
   {
     path: '/login',
@@ -54,7 +61,7 @@ export const router = createBrowserRouter([
         path: 'machines/:id/inspect',
         element: <RoleGuard roles={['worker', 'supervisor']}><SuspenseWrapper><InspectionForm /></SuspenseWrapper></RoleGuard>,
       },
-      { path: 'defects', element: <SuspenseWrapper><DefectList /></SuspenseWrapper> },
+      { path: 'defects', element: <SuspenseWrapper><DefectListByRole /></SuspenseWrapper> },
       {
         path: 'defects/new',
         element: <RoleGuard roles={['worker', 'supervisor']}><SuspenseWrapper><DefectReport /></SuspenseWrapper></RoleGuard>,
