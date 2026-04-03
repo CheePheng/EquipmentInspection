@@ -235,6 +235,7 @@ export const en: Record<string, string> = {
   // Role labels
   'role.supervisor': 'Supervisor',
   'role.worker': 'Worker',
+  'role.boss': 'Boss',
 
   // Form placeholders
   'placeholder.selectMachine': 'Select a machine…',
@@ -299,4 +300,29 @@ export const en: Record<string, string> = {
   'inspection.noTemplate': 'No template found',
   'inspection.itemsOf': 'items',
   'inspection.currentMeter': 'Current Meter Reading',
+
+  // Fleet & Team (boss)
+  'nav.fleet': 'Fleet',
+  'nav.team': 'Team',
+  'page.fleet': 'Fleet Management',
+  'page.team': 'Team Management',
+  'action.addMachine': 'Add Machine',
+  'action.editMachine': 'Edit Machine',
+  'action.addUser': 'Add User',
+  'action.editUser': 'Edit User',
+  'action.manageTeam': 'Manage Team',
+  'label.code': 'Code',
+  'label.machineType': 'Machine Type',
+  'label.siteAssignment': 'Site Assignment',
+  'label.userPin': 'User PIN',
+  'label.userRole': 'User Role',
+  'label.inactive': 'Inactive',
+  'empty.fleet': 'No machines',
+  'empty.fleetDesc': 'Add your first machine to get started.',
+  'empty.team': 'No team members',
+  'empty.teamDesc': 'Add your first team member to get started.',
+  'toast.machineSaved': 'Machine saved',
+  'toast.machineAdded': 'Machine added',
+  'toast.userSaved': 'User saved',
+  'toast.userAdded': 'User added',
 };

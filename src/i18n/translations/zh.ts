@@ -235,6 +235,7 @@ export const zh: Record<string, string> = {
   // Role labels
   'role.supervisor': '主管',
   'role.worker': '工人',
+  'role.boss': '老板',
 
   // Form placeholders
   'placeholder.selectMachine': '选择机器…',
@@ -299,4 +300,29 @@ export const zh: Record<string, string> = {
   'inspection.noTemplate': '未找到模板',
   'inspection.itemsOf': '个项目',
   'inspection.currentMeter': '当前仪表读数',
+
+  // Fleet & Team (boss)
+  'nav.fleet': '车队',
+  'nav.team': '团队',
+  'page.fleet': '车队管理',
+  'page.team': '团队管理',
+  'action.addMachine': '添加机器',
+  'action.editMachine': '编辑机器',
+  'action.addUser': '添加用户',
+  'action.editUser': '编辑用户',
+  'action.manageTeam': '管理团队',
+  'label.code': '编号',
+  'label.machineType': '机器类型',
+  'label.siteAssignment': '工地分配',
+  'label.userPin': '用户 PIN 码',
+  'label.userRole': '用户角色',
+  'label.inactive': '停用',
+  'empty.fleet': '暂无机器',
+  'empty.fleetDesc': '添加您的第一台机器以开始使用。',
+  'empty.team': '暂无团队成员',
+  'empty.teamDesc': '添加您的第一个团队成员以开始使用。',
+  'toast.machineSaved': '机器已保存',
+  'toast.machineAdded': '机器已添加',
+  'toast.userSaved': '用户已保存',
+  'toast.userAdded': '用户已添加',
 };

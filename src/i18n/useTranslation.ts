@@ -1,8 +1,9 @@
 import { useAppStore } from '../stores/app.store';
 import { en } from './translations/en';
+import { ms } from './translations/ms';
 import { zh } from './translations/zh';
 
-const translations = { en, zh } as const;
+const translations = { en, ms, zh } as const;
 
 export function useTranslation() {
   const language = useAppStore(s => s.language);
