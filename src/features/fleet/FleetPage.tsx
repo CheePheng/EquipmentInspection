@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Plus, Pencil, Truck } from 'lucide-react';
+import { Plus, Pencil, Truck, MapPin } from 'lucide-react';
 import { AnimatedPage } from '../../components/ui/AnimatedPage';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Card } from '../../components/ui/Card';
@@ -32,10 +32,19 @@ const emptyForm: MachineForm = {
 
 export default function FleetPage() {
   const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState<'machines' | 'sites'>('machines');
+
+  // Machine modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<MachineForm>(emptyForm);
   const [saving, setSaving] = useState(false);
+
+  // Site modal state
+  const [siteModalOpen, setSiteModalOpen] = useState(false);
+  const [editingSiteId, setEditingSiteId] = useState<number | null>(null);
+  const [siteForm, setSiteForm] = useState({ name: '', location: '', isActive: true });
+  const [savingSite, setSavingSite] = useState(false);
 
   const machinesQ = useMemo(() => query(machinesRef()), []);
   const machines = useCollectionQuery<any>(machinesQ, []);
@@ -92,6 +101,44 @@ export default function FleetPage() {
     }
   }
 
+  function openAddSite() {
+    setEditingSiteId(null);
+    setSiteForm({ name: '', location: '', isActive: true });
+    setSiteModalOpen(true);
+  }
+
+  function openEditSite(site: any) {
+    setEditingSiteId(site.id);
+    setSiteForm({
+      name: site.name ?? '',
+      location: site.location ?? '',
+      isActive: site.isActive !== false,
+    });
+    setSiteModalOpen(true);
+  }
+
+  async function handleSaveSite() {
+    setSavingSite(true);
+    try {
+      if (editingSiteId != null) {
+        await updateDocument('sites', editingSiteId, {
+          name: siteForm.name,
+          location: siteForm.location,
+          isActive: siteForm.isActive,
+        });
+      } else {
+        await addDocument('sites', {
+          name: siteForm.name,
+          location: siteForm.location,
+          isActive: true,
+        });
+      }
+      setSiteModalOpen(false);
+    } finally {
+      setSavingSite(false);
+    }
+  }
+
   const inputClass =
     'w-full bg-elevated border border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-amber-primary transition-colors';
 
@@ -101,66 +148,134 @@ export default function FleetPage() {
         <PageHeader
           title={t('page.fleet')}
           action={
-            <Button variant="primary" size="sm" onClick={openAdd}>
-              <Plus size={16} className="mr-1" />
-              {t('action.addMachine')}
-            </Button>
+            activeTab === 'machines' ? (
+              <Button variant="primary" size="sm" onClick={openAdd}>
+                <Plus size={16} className="mr-1" />
+                {t('action.addMachine')}
+              </Button>
+            ) : (
+              <Button variant="primary" size="sm" onClick={openAddSite}>
+                <Plus size={16} className="mr-1" />
+                {t('action.addSite')}
+              </Button>
+            )
           }
         />
 
-        <div className="px-4 py-4 space-y-3">
-          {machines === undefined ? (
-            <div className="flex justify-center py-12">
-              <Spinner size="lg" />
-            </div>
-          ) : machines.length === 0 ? (
-            <EmptyState
-              icon={Truck}
-              title={t('empty.machines.title')}
-              description={t('empty.machines.description')}
-            />
-          ) : (
-            machines.map((m: any) => (
-              <Card key={m.id} className="p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-mono text-sm font-semibold text-amber-primary">
-                        {m.code}
-                      </span>
-                      <span className="text-text-primary font-medium truncate">
-                        {m.name}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant="default">
-                        {MACHINE_TYPE_LABELS[m.type as keyof typeof MACHINE_TYPE_LABELS] ?? m.type}
-                      </Badge>
-                      <span className="text-xs text-text-secondary">
-                        {siteName(m.siteId)}
-                      </span>
-                      <span
-                        className={`inline-block w-2 h-2 rounded-full ${
-                          m.status === 'active' ? 'bg-emerald-400' : 'bg-gray-500'
-                        }`}
-                      />
-                      <span className="text-xs text-text-muted">
-                        {m.status === 'active' ? t('status.active') : t('status.inactive')}
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => openEdit(m)}
-                    className="flex items-center justify-center w-9 h-9 rounded-xl text-text-secondary hover:text-text-primary hover:bg-elevated transition-colors"
-                  >
-                    <Pencil size={16} />
-                  </button>
-                </div>
-              </Card>
-            ))
-          )}
+        <div className="flex gap-2 px-4 pt-4">
+          <button
+            type="button"
+            onClick={() => setActiveTab('machines')}
+            className={`flex-1 py-2 rounded-xl text-sm font-medium transition-colors ${
+              activeTab === 'machines'
+                ? 'bg-amber-primary text-obsidian'
+                : 'bg-elevated text-text-muted'
+            }`}
+          >
+            {t('label.machines')}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('sites')}
+            className={`flex-1 py-2 rounded-xl text-sm font-medium transition-colors ${
+              activeTab === 'sites'
+                ? 'bg-amber-primary text-obsidian'
+                : 'bg-elevated text-text-muted'
+            }`}
+          >
+            {t('label.sites')}
+          </button>
         </div>
 
+        {activeTab === 'machines' && (
+          <div className="px-4 py-4 space-y-3">
+            {machines === undefined ? (
+              <div className="flex justify-center py-12">
+                <Spinner size="lg" />
+              </div>
+            ) : machines.length === 0 ? (
+              <EmptyState
+                icon={Truck}
+                title={t('empty.fleet')}
+                description={t('empty.fleetDesc')}
+              />
+            ) : (
+              machines.map((m: any) => (
+                <Card key={m.id} className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-mono text-sm font-semibold text-amber-primary">
+                          {m.code}
+                        </span>
+                        <span className="text-text-primary font-medium truncate">
+                          {m.name}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="default">
+                          {MACHINE_TYPE_LABELS[m.type as keyof typeof MACHINE_TYPE_LABELS] ?? m.type}
+                        </Badge>
+                        <span className="text-xs text-text-secondary">
+                          {siteName(m.siteId)}
+                        </span>
+                        <span
+                          className={`inline-block w-2 h-2 rounded-full ${
+                            m.status === 'active' ? 'bg-emerald-400' : 'bg-gray-500'
+                          }`}
+                        />
+                        <span className="text-xs text-text-muted">
+                          {m.status === 'active' ? t('status.active') : t('status.inactive')}
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => openEdit(m)}
+                      className="flex items-center justify-center w-9 h-9 rounded-xl text-text-secondary hover:text-text-primary hover:bg-elevated transition-colors"
+                    >
+                      <Pencil size={16} />
+                    </button>
+                  </div>
+                </Card>
+              ))
+            )}
+          </div>
+        )}
+
+        {activeTab === 'sites' && (
+          <div className="px-4 py-4 space-y-3">
+            {sites === undefined ? (
+              <div className="flex justify-center py-12"><Spinner size="lg" /></div>
+            ) : sites.length === 0 ? (
+              <EmptyState icon={MapPin} title={t('empty.sites')} description={t('empty.sitesDesc')} />
+            ) : (
+              sites.map((s: any) => (
+                <Card key={s.id} className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-text-primary font-medium mb-1">{s.name}</div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {s.location && <span className="text-xs text-text-secondary">{s.location}</span>}
+                        <span className={`inline-block w-2 h-2 rounded-full ${s.isActive !== false ? 'bg-emerald-400' : 'bg-gray-500'}`} />
+                        <span className="text-xs text-text-muted">
+                          {s.isActive !== false ? t('status.active') : t('status.inactive')}
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => openEditSite(s)}
+                      className="flex items-center justify-center w-9 h-9 rounded-xl text-text-secondary hover:text-text-primary hover:bg-elevated transition-colors"
+                    >
+                      <Pencil size={16} />
+                    </button>
+                  </div>
+                </Card>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* Machine Modal */}
         <Modal
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
@@ -262,6 +377,78 @@ export default function FleetPage() {
               onClick={handleSave}
             >
               {editingId != null ? t('action.save') : t('action.addMachine')}
+            </Button>
+          </div>
+        </Modal>
+
+        {/* Site Modal */}
+        <Modal
+          isOpen={siteModalOpen}
+          onClose={() => setSiteModalOpen(false)}
+          title={editingSiteId != null ? t('action.editSite') : t('action.addSite')}
+        >
+          <div className="space-y-4">
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-1 block">
+                {t('field.name')}
+              </label>
+              <input
+                type="text"
+                className={inputClass}
+                placeholder={t('field.name')}
+                value={siteForm.name}
+                onChange={(e) => setSiteForm({ ...siteForm, name: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-1 block">
+                {t('field.location')}
+              </label>
+              <input
+                type="text"
+                className={inputClass}
+                placeholder={t('field.locationPlaceholder')}
+                value={siteForm.location}
+                onChange={(e) => setSiteForm({ ...siteForm, location: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-1 block">
+                {t('field.status')}
+              </label>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSiteForm({ ...siteForm, isActive: true })}
+                  className={`flex-1 py-2 rounded-xl text-sm font-medium transition-colors ${
+                    siteForm.isActive
+                      ? 'bg-emerald-900/40 text-emerald-300 border border-emerald-700'
+                      : 'bg-elevated text-text-muted border border-border'
+                  }`}
+                >
+                  {t('status.active')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSiteForm({ ...siteForm, isActive: false })}
+                  className={`flex-1 py-2 rounded-xl text-sm font-medium transition-colors ${
+                    !siteForm.isActive
+                      ? 'bg-red-900/40 text-red-300 border border-red-700'
+                      : 'bg-elevated text-text-muted border border-border'
+                  }`}
+                >
+                  {t('status.inactive')}
+                </button>
+              </div>
+            </div>
+            <Button
+              variant="primary"
+              fullWidth
+              loading={savingSite}
+              disabled={!siteForm.name}
+              onClick={handleSaveSite}
+            >
+              {editingSiteId != null ? t('action.save') : t('action.addSite')}
             </Button>
           </div>
         </Modal>
