@@ -325,4 +325,34 @@ export const ms: Record<string, string> = {
   'toast.machineAdded': 'Mesin ditambah',
   'toast.userSaved': 'Pengguna disimpan',
   'toast.userAdded': 'Pengguna ditambah',
+
+  // Form field labels
+  'field.code': 'Kod',
+  'field.name': 'Nama',
+  'field.type': 'Jenis',
+  'field.selectType': 'Pilih jenis…',
+  'field.site': 'Tapak',
+  'field.selectSite': 'Pilih tapak…',
+  'field.status': 'Status',
+  'field.pin': 'PIN',
+  'field.role': 'Peranan',
+  'field.location': 'Lokasi',
+  'field.locationPlaceholder': 'cth. Sabah, Malaysia',
+
+  // Status labels
+  'status.active': 'Aktif',
+  'status.inactive': 'Tidak Aktif',
+
+  // Placeholders
+  'placeholder.pinDigits': '4-6 digit',
+
+  // Sites management
+  'label.machines': 'Mesin',
+  'label.sites': 'Tapak',
+  'action.addSite': 'Tambah Tapak',
+  'action.editSite': 'Edit Tapak',
+  'empty.sites': 'Tiada tapak',
+  'empty.sitesDesc': 'Tambah tapak pertama anda untuk bermula.',
+  'toast.siteSaved': 'Tapak disimpan',
+  'toast.siteAdded': 'Tapak ditambah',
 };

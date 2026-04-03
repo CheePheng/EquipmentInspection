@@ -325,4 +325,34 @@ export const en: Record<string, string> = {
   'toast.machineAdded': 'Machine added',
   'toast.userSaved': 'User saved',
   'toast.userAdded': 'User added',
+
+  // Form field labels
+  'field.code': 'Code',
+  'field.name': 'Name',
+  'field.type': 'Type',
+  'field.selectType': 'Select type…',
+  'field.site': 'Site',
+  'field.selectSite': 'Select site…',
+  'field.status': 'Status',
+  'field.pin': 'PIN',
+  'field.role': 'Role',
+  'field.location': 'Location',
+  'field.locationPlaceholder': 'e.g. Sabah, Malaysia',
+
+  // Status labels
+  'status.active': 'Active',
+  'status.inactive': 'Inactive',
+
+  // Placeholders
+  'placeholder.pinDigits': '4-6 digits',
+
+  // Sites management
+  'label.machines': 'Machines',
+  'label.sites': 'Sites',
+  'action.addSite': 'Add Site',
+  'action.editSite': 'Edit Site',
+  'empty.sites': 'No sites',
+  'empty.sitesDesc': 'Add your first site to get started.',
+  'toast.siteSaved': 'Site saved',
+  'toast.siteAdded': 'Site added',
 };

@@ -325,4 +325,34 @@ export const zh: Record<string, string> = {
   'toast.machineAdded': '机器已添加',
   'toast.userSaved': '用户已保存',
   'toast.userAdded': '用户已添加',
+
+  // Form field labels
+  'field.code': '编号',
+  'field.name': '名称',
+  'field.type': '类型',
+  'field.selectType': '选择类型…',
+  'field.site': '工地',
+  'field.selectSite': '选择工地…',
+  'field.status': '状态',
+  'field.pin': 'PIN 码',
+  'field.role': '角色',
+  'field.location': '位置',
+  'field.locationPlaceholder': '例如 沙巴, 马来西亚',
+
+  // Status labels
+  'status.active': '启用',
+  'status.inactive': '停用',
+
+  // Placeholders
+  'placeholder.pinDigits': '4-6 位数字',
+
+  // Sites management
+  'label.machines': '机器',
+  'label.sites': '工地',
+  'action.addSite': '添加工地',
+  'action.editSite': '编辑工地',
+  'empty.sites': '暂无工地',
+  'empty.sitesDesc': '添加您的第一个工地以开始使用。',
+  'toast.siteSaved': '工地已保存',
+  'toast.siteAdded': '工地已添加',
 };
