@@ -22,6 +22,7 @@ import type { MaintenanceStatus } from './useMaintenance';
 import { useCollectionQuery } from '../../db/useFirestoreQuery';
 import { usersRef, query } from '../../db/collections';
 import { formatDate, formatDateTime, formatMeterHours } from '../../lib/utils';
+import { useTranslation } from '../../i18n/useTranslation';
 
 const STATUS_BADGE_VARIANT: Record<MaintenanceStatus, 'critical' | 'medium' | 'available'> = {
   overdue: 'critical',
@@ -29,15 +30,16 @@ const STATUS_BADGE_VARIANT: Record<MaintenanceStatus, 'critical' | 'medium' | 'a
   ok: 'available',
 };
 
-const STATUS_LABEL: Record<MaintenanceStatus, string> = {
-  overdue: 'Overdue',
-  'due-soon': 'Due Soon',
-  ok: 'Up to Date',
-};
-
 export default function MaintenanceDetail() {
   const { id } = useParams<{ id: string }>();
   const scheduleId = Number(id);
+
+  const { t } = useTranslation();
+  const statusLabel: Record<MaintenanceStatus, string> = {
+    overdue: t('maintenance.overdue'),
+    'due-soon': t('maintenance.dueSoon'),
+    ok: t('maintenance.ok'),
+  };
 
   const { currentUser } = useAuthStore();
   const { addToast } = useToastStore();
@@ -69,11 +71,11 @@ export default function MaintenanceDetail() {
     return (
       <AnimatedPage>
         <div className="min-h-screen bg-obsidian">
-          <PageHeader title="Not Found" showBack />
+          <PageHeader title={t('empty.notFound')} showBack />
           <EmptyState
             icon={CalendarClock}
-            title="Schedule not found"
-            description="This maintenance schedule doesn't exist or was removed."
+            title={t('maintenance.notFound')}
+            description={t('maintenance.notFoundDesc')}
           />
         </div>
       </AnimatedPage>
@@ -100,12 +102,12 @@ export default function MaintenanceDetail() {
         notes.trim(),
         schedule.serviceType
       );
-      addToast('Maintenance recorded successfully', 'success');
+      addToast(t('toast.maintenanceRecorded'), 'success');
       setMeterReading('');
       setNotes('');
       setFormOpen(false);
     } catch {
-      addToast('Failed to record maintenance', 'error');
+      addToast(t('toast.maintenanceFailed'), 'error');
     } finally {
       setSubmitting(false);
     }
@@ -121,7 +123,7 @@ export default function MaintenanceDetail() {
           {/* Schedule info card */}
           <section>
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-              Schedule Info
+              {t('maintenance.scheduleInfo')}
             </p>
             <Card>
               {/* Machine */}
@@ -137,7 +139,7 @@ export default function MaintenanceDetail() {
                   )}
                 </div>
                 <Badge variant={STATUS_BADGE_VARIANT[status]}>
-                  {STATUS_LABEL[status]}
+                  {statusLabel[status]}
                 </Badge>
               </div>
 
@@ -220,13 +222,13 @@ export default function MaintenanceDetail() {
 
                   <div className="space-y-1.5">
                     <label className="block text-sm font-medium text-text-secondary">
-                      Notes <span className="text-text-muted font-normal">(optional)</span>
+                      {t('maintenance.notes')} <span className="text-text-muted font-normal">({t('misc.optional')})</span>
                     </label>
                     <textarea
                       rows={3}
                       value={notes}
                       onChange={e => setNotes(e.target.value)}
-                      placeholder="Describe the work done, parts used, observations…"
+                      placeholder={t('placeholder.maintenanceNotes')}
                       className="w-full bg-elevated border border-border rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-text-muted resize-none outline-none focus:border-amber-primary transition-colors duration-150"
                     />
                   </div>

@@ -355,4 +355,42 @@ export const en: Record<string, string> = {
   'empty.sitesDesc': 'Add your first site to get started.',
   'toast.siteSaved': 'Site saved',
   'toast.siteAdded': 'Site added',
+
+  // Profile
+  'profile.mode': 'Mode',
+  'profile.offlinePwa': 'Offline-first PWA',
+
+  // Welcome
+  'toast.welcome': 'Welcome',
+
+  // Maintenance
+  'page.maintenance': 'Maintenance',
+  'maintenance.overdue': 'Overdue',
+  'maintenance.dueSoon': 'Due Soon',
+  'maintenance.ok': 'Up to Date',
+  'maintenance.scheduleInfo': 'Schedule Info',
+  'maintenance.notFound': 'Schedule not found',
+  'maintenance.notFoundDesc': 'This maintenance schedule doesn\'t exist or was removed.',
+  'maintenance.notes': 'Notes',
+  'placeholder.maintenanceNotes': 'Describe the work done, parts used, observations…',
+  'toast.maintenanceRecorded': 'Maintenance recorded successfully',
+  'toast.maintenanceFailed': 'Failed to record maintenance',
+
+  // Inspection
+  'placeholder.describeFault': 'Describe the fault… (optional)',
+  'action.reportDefectLink': 'Report defect →',
+
+  // Yes/No labels
+  'label.yes': 'Yes',
+  'label.no': 'No',
+
+  // Downtime toasts
+  'toast.downtimeStopped': 'Downtime stopped',
+  'toast.downtimeStopFailed': 'Failed to stop downtime',
+
+  // Inspection toast
+  'toast.inspectionFailed': 'Failed to save inspection. Please try again.',
+
+  // Machine fallback
+  'label.machineHash': 'Machine',
 };

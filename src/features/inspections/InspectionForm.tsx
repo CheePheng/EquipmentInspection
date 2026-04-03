@@ -127,7 +127,7 @@ export default function InspectionForm() {
       }
     } catch (err) {
       console.error('Failed to save inspection', err);
-      addToast('Failed to save inspection. Please try again.', 'error');
+      addToast(t('toast.inspectionFailed'), 'error');
     } finally {
       setSubmitting(false);
     }

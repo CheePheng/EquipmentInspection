@@ -117,7 +117,7 @@ export default function ServiceOrderDetail() {
               </p>
             ) : (
               <p className="text-text-secondary text-sm font-mono">
-                Machine #{order.machineId}
+                {t('label.machineHash')} #{order.machineId}
               </p>
             )}
           </Card>

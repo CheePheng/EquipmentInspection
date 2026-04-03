@@ -151,7 +151,7 @@ export default function ServiceOrderList() {
                 <motion.div key={order.id} variants={cardVariants}>
                   <ServiceOrderCard
                     order={order}
-                    machineCode={machineMap.get(order.machineId) ?? `Machine #${order.machineId}`}
+                    machineCode={machineMap.get(order.machineId) ?? `${t('label.machineHash')} #${order.machineId}`}
                   />
                 </motion.div>
               ))}

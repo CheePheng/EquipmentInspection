@@ -355,4 +355,42 @@ export const ms: Record<string, string> = {
   'empty.sitesDesc': 'Tambah tapak pertama anda untuk bermula.',
   'toast.siteSaved': 'Tapak disimpan',
   'toast.siteAdded': 'Tapak ditambah',
+
+  // Profile
+  'profile.mode': 'Mod',
+  'profile.offlinePwa': 'PWA Luar Talian',
+
+  // Welcome
+  'toast.welcome': 'Selamat datang',
+
+  // Maintenance
+  'page.maintenance': 'Penyelenggaraan',
+  'maintenance.overdue': 'Tertunggak',
+  'maintenance.dueSoon': 'Hampir Tiba',
+  'maintenance.ok': 'Terkini',
+  'maintenance.scheduleInfo': 'Maklumat Jadual',
+  'maintenance.notFound': 'Jadual tidak dijumpai',
+  'maintenance.notFoundDesc': 'Jadual penyelenggaraan ini tidak wujud atau telah dibuang.',
+  'maintenance.notes': 'Nota',
+  'placeholder.maintenanceNotes': 'Terangkan kerja, alat ganti, pemerhatian…',
+  'toast.maintenanceRecorded': 'Penyelenggaraan berjaya direkod',
+  'toast.maintenanceFailed': 'Gagal merekod penyelenggaraan',
+
+  // Inspection
+  'placeholder.describeFault': 'Terangkan kerosakan… (pilihan)',
+  'action.reportDefectLink': 'Lapor kerosakan →',
+
+  // Yes/No labels
+  'label.yes': 'Ya',
+  'label.no': 'Tidak',
+
+  // Downtime toasts
+  'toast.downtimeStopped': 'Masa henti dihentikan',
+  'toast.downtimeStopFailed': 'Gagal menghentikan masa henti',
+
+  // Inspection toast
+  'toast.inspectionFailed': 'Gagal menyimpan pemeriksaan. Sila cuba lagi.',
+
+  // Machine fallback
+  'label.machineHash': 'Mesin',
 };

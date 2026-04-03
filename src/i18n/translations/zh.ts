@@ -355,4 +355,42 @@ export const zh: Record<string, string> = {
   'empty.sitesDesc': '添加您的第一个工地以开始使用。',
   'toast.siteSaved': '工地已保存',
   'toast.siteAdded': '工地已添加',
+
+  // Profile
+  'profile.mode': '模式',
+  'profile.offlinePwa': '离线优先 PWA',
+
+  // Welcome
+  'toast.welcome': '欢迎',
+
+  // Maintenance
+  'page.maintenance': '保养',
+  'maintenance.overdue': '逾期',
+  'maintenance.dueSoon': '即将到期',
+  'maintenance.ok': '正常',
+  'maintenance.scheduleInfo': '计划信息',
+  'maintenance.notFound': '未找到计划',
+  'maintenance.notFoundDesc': '此保养计划不存在或已被删除。',
+  'maintenance.notes': '备注',
+  'placeholder.maintenanceNotes': '描述完成的工作、使用的零件、观察…',
+  'toast.maintenanceRecorded': '保养记录已提交',
+  'toast.maintenanceFailed': '记录保养失败',
+
+  // Inspection
+  'placeholder.describeFault': '描述故障…（可选）',
+  'action.reportDefectLink': '报告缺陷 →',
+
+  // Yes/No labels
+  'label.yes': '是',
+  'label.no': '否',
+
+  // Downtime toasts
+  'toast.downtimeStopped': '停机已结束',
+  'toast.downtimeStopFailed': '停止停机失败',
+
+  // Inspection toast
+  'toast.inspectionFailed': '保存检查失败，请重试。',
+
+  // Machine fallback
+  'label.machineHash': '机器',
 };

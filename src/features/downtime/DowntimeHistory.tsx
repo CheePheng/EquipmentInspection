@@ -164,9 +164,9 @@ export default function DowntimeHistory() {
     setStoppingId(eventId);
     try {
       await stopDowntime(eventId);
-      addToast('Downtime stopped', 'success');
+      addToast(t('toast.downtimeStopped'), 'success');
     } catch {
-      addToast('Failed to stop downtime', 'error');
+      addToast(t('toast.downtimeStopFailed'), 'error');
     } finally {
       setStoppingId(null);
     }

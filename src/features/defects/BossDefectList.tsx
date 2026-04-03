@@ -62,7 +62,7 @@ export default function BossDefectList() {
                       </span>
                     </div>
                     <p className="text-sm font-medium text-text-primary">
-                      {machineMap.get(defect.machineId) ?? `Machine #${defect.machineId}`}
+                      {machineMap.get(defect.machineId) ?? `${t('label.machineHash')} #${defect.machineId}`}
                     </p>
                   </Card>
                 </motion.div>

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { SegmentedControl } from '../../components/ui/SegmentedControl';
+import { useTranslation } from '../../i18n/useTranslation';
 
 interface ChecklistItemData {
   id: string;
@@ -21,24 +22,6 @@ interface ChecklistItemProps {
   inspectionId?: number;
 }
 
-const RESULT_OPTIONS = [
-  { value: 'pass', label: 'Pass' },
-  { value: 'fail', label: 'Fail' },
-  { value: 'na', label: 'N/A' },
-];
-
-const CATEGORY_LABELS: Record<string, string> = {
-  engine: 'Engine',
-  hydraulic: 'Hydraulic',
-  electrical: 'Electrical',
-  structural: 'Structural',
-  safety: 'Safety',
-  'tires-tracks': 'Tyres/Tracks',
-  'cab-controls': 'Cab/Controls',
-  'lights-signals': 'Lights/Signals',
-  'fluid-leaks': 'Fluid Leaks',
-  other: 'Other',
-};
 
 function resultBorderClass(result: string): string {
   if (result === 'pass') return 'border-emerald-700/60';
@@ -54,7 +37,27 @@ function resultBgClass(result: string): string {
 
 export function ChecklistItem({ item, value, onChange, machineId, inspectionId }: ChecklistItemProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const isFail = value.result === 'fail';
+
+  const RESULT_OPTIONS = [
+    { value: 'pass', label: t('inspection.pass') },
+    { value: 'fail', label: t('inspection.fail') },
+    { value: 'na', label: t('inspection.na') },
+  ];
+
+  const CATEGORY_LABELS: Record<string, string> = {
+    engine: t('category.engine'),
+    hydraulic: t('category.hydraulic'),
+    electrical: t('category.electrical'),
+    structural: t('category.structural'),
+    safety: t('category.safety'),
+    'tires-tracks': t('category.tiresTracks'),
+    'cab-controls': t('category.cabControls'),
+    'lights-signals': t('category.lightsSignals'),
+    'fluid-leaks': t('category.fluidLeaks'),
+    other: t('category.other'),
+  };
 
   function handleResultChange(result: string) {
     onChange({
@@ -105,7 +108,7 @@ export function ChecklistItem({ item, value, onChange, machineId, inspectionId }
           <textarea
             value={value.notes}
             onChange={(e) => handleNotesChange(e.target.value)}
-            placeholder="Describe the fault… (optional)"
+            placeholder={t('placeholder.describeFault')}
             rows={2}
             className="w-full bg-elevated border border-border rounded-xl px-3 py-2.5 text-sm text-text-primary placeholder:text-text-muted resize-none outline-none focus:border-amber-primary transition-colors duration-150"
           />
@@ -114,7 +117,7 @@ export function ChecklistItem({ item, value, onChange, machineId, inspectionId }
             onClick={handleReportDefect}
             className="text-sm text-amber-primary hover:text-amber-hover underline underline-offset-2 transition-colors duration-150"
           >
-            Report defect →
+            {t('action.reportDefectLink')}
           </button>
         </div>
       )}

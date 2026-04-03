@@ -12,6 +12,7 @@ import { Spinner } from '../../components/ui/Spinner';
 import { useMaintenanceSchedules } from './useMaintenance';
 import type { MaintenanceStatus } from './useMaintenance';
 import { formatDate, formatMeterHours, today } from '../../lib/utils';
+import { useTranslation } from '../../i18n/useTranslation';
 
 type FilterTab = 'all' | 'due-soon' | 'overdue';
 
@@ -58,16 +59,16 @@ const STATUS_BADGE_VARIANT: Record<MaintenanceStatus, 'critical' | 'medium' | 'a
   ok: 'available',
 };
 
-const STATUS_LABEL: Record<MaintenanceStatus, string> = {
-  overdue: 'Overdue',
-  'due-soon': 'Due Soon',
-  ok: 'OK',
-};
-
 type ScheduleWithMachine = Awaited<ReturnType<typeof useMaintenanceSchedules>> extends (infer T)[] | undefined ? T : never;
 
 function MaintenanceCard({ item }: { item: ScheduleWithMachine }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const statusLabel: Record<MaintenanceStatus, string> = {
+    overdue: t('maintenance.overdue'),
+    'due-soon': t('maintenance.dueSoon'),
+    ok: t('maintenance.ok'),
+  };
   const machine = item.machine;
   const meterHours = machine?.currentMeterHours ?? 0;
   const dueInfo = getDueInfo(item.dueDate, item.dueHours, meterHours, item.maintenanceStatus);
@@ -83,7 +84,7 @@ function MaintenanceCard({ item }: { item: ScheduleWithMachine }) {
             : `Machine #${item.machineId}`}
         </p>
         <Badge variant={STATUS_BADGE_VARIANT[item.maintenanceStatus as MaintenanceStatus]}>
-          {STATUS_LABEL[item.maintenanceStatus as MaintenanceStatus]}
+          {statusLabel[item.maintenanceStatus as MaintenanceStatus]}
         </Badge>
       </div>
 
@@ -116,6 +117,7 @@ function MaintenanceCard({ item }: { item: ScheduleWithMachine }) {
 export default function MaintenanceList() {
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
   const schedules = useMaintenanceSchedules();
+  const { t } = useTranslation();
 
   const filtered = schedules
     ? activeTab === 'all'
@@ -127,15 +129,15 @@ export default function MaintenanceList() {
   const dueSoonCnt = schedules?.filter(s => s.maintenanceStatus === 'due-soon').length ?? 0;
 
   const tabs: { key: FilterTab; label: string; count?: number }[] = [
-    { key: 'all', label: 'All', count: schedules?.length },
-    { key: 'due-soon', label: 'Due Soon', count: dueSoonCnt },
-    { key: 'overdue', label: 'Overdue', count: overdueCnt },
+    { key: 'all', label: t('label.all'), count: schedules?.length },
+    { key: 'due-soon', label: t('maintenance.dueSoon'), count: dueSoonCnt },
+    { key: 'overdue', label: t('maintenance.overdue'), count: overdueCnt },
   ];
 
   return (
     <AnimatedPage>
       <div className="min-h-screen bg-obsidian pb-24">
-        <PageHeader title="Maintenance" />
+        <PageHeader title={t('page.maintenance')} />
 
         {/* Filter tabs */}
         <div className="flex gap-2 px-4 pt-3 pb-1 overflow-x-auto scrollbar-none">

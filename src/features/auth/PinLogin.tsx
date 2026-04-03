@@ -43,7 +43,7 @@ export default function PinLogin() {
       }
 
       login(user);
-      addToast(`Welcome, ${user.name}`);
+      addToast(`${t('toast.welcome')}, ${user.name}`);
 
       // Navigate to role-based home
       switch (user.role) {

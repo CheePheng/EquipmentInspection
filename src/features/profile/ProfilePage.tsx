@@ -192,8 +192,8 @@ export default function ProfilePage() {
                 <span className="text-text-primary font-medium">CCT FieldOps v1.0.0</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-text-secondary">Mode</span>
-                <span className="text-text-primary font-medium">Offline-first PWA</span>
+                <span className="text-text-secondary">{t('profile.mode')}</span>
+                <span className="text-text-primary font-medium">{t('profile.offlinePwa')}</span>
               </div>
             </div>
           </Card>

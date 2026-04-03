@@ -57,8 +57,8 @@ export default function DefectReport() {
   ];
 
   const SAFE_OPTIONS = [
-    { value: 'yes', label: 'Yes' },
-    { value: 'no', label: 'No' },
+    { value: 'yes', label: t('label.yes') },
+    { value: 'no', label: t('label.no') },
   ];
 
   const selectedMachineId = preselectedMachineId ?? machineId;

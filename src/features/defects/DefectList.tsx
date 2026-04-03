@@ -161,7 +161,7 @@ export default function DefectList() {
                 >
                   <DefectCard
                     defect={defect}
-                    machineName={machineMap.get(defect.machineId) ?? `Machine #${defect.machineId}`}
+                    machineName={machineMap.get(defect.machineId) ?? `${t('label.machineHash')} #${defect.machineId}`}
                   />
                 </motion.div>
               ))}
