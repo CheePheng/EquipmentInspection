@@ -107,8 +107,8 @@ export default function TeamPage() {
           ) : users.length === 0 ? (
             <EmptyState
               icon={Users}
-              title={t('empty.users.title')}
-              description={t('empty.users.description')}
+              title={t('empty.team')}
+              description={t('empty.teamDesc')}
             />
           ) : (
             users.map((u: any) => (
@@ -120,7 +120,7 @@ export default function TeamPage() {
                     </div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <Badge variant={u.role === 'supervisor' ? 'available' : 'default'}>
-                        {u.role}
+                        {u.role === 'supervisor' ? t('role.supervisor') : t('role.worker')}
                       </Badge>
                       <span className="text-xs text-text-secondary">
                         {siteName(u.siteId)}
@@ -164,7 +164,7 @@ export default function TeamPage() {
               <input
                 type="text"
                 className={inputClass}
-                placeholder="4-6 digits"
+                placeholder={t('placeholder.pinDigits')}
                 value={form.pin}
                 onChange={(e) => {
                   const val = e.target.value.replace(/\D/g, '').slice(0, 6);
