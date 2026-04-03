@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
 import { useNetworkStatus } from '../stores/app.store';
-import { seedDatabase } from '../db/seed';
+import { seedDatabase, runMigrations } from '../db/seed';
 import { checkStorageWarning } from '../lib/storage';
 import { useToastStore } from '../stores/toast.store';
 
@@ -11,7 +11,7 @@ export default function App() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    seedDatabase().then(() => {
+    seedDatabase().then(() => runMigrations()).then(() => {
       setReady(true);
       // Check storage usage
       checkStorageWarning().then(warning => {

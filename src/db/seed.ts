@@ -599,3 +599,20 @@ export async function seedDatabase(): Promise<void> {
   // -----------------------------------------------------------------------
   await setDoc(doc(firestore, 'meta', 'seeded'), { value: 'true' });
 }
+
+// ---------------------------------------------------------------------------
+// Migrations — run AFTER seed check to patch existing databases
+// ---------------------------------------------------------------------------
+export async function runMigrations(): Promise<void> {
+  // Migration 1: Add boss user if missing
+  const bossDoc = await getDoc(doc(firestore, 'users', '7'));
+  if (!bossDoc.exists()) {
+    await setDoc(doc(firestore, 'users', '7'), {
+      id: 7,
+      pin: '888888',
+      name: "Dato' Chai",
+      role: 'boss',
+      siteId: 1,
+    });
+  }
+}
