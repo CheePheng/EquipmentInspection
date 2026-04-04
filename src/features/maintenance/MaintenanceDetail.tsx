@@ -150,19 +150,19 @@ export default function MaintenanceDetail() {
               <div className="grid grid-cols-2 gap-3 text-sm">
                 {schedule.intervalDays && (
                   <div>
-                    <p className="text-xs text-text-muted mb-0.5">Interval</p>
-                    <p className="text-text-primary font-medium">Every {schedule.intervalDays} days</p>
+                    <p className="text-xs text-text-muted mb-0.5">{t('maintenance.interval')}</p>
+                    <p className="text-text-primary font-medium">{t('maintenance.everyDays').replace('{n}', String(schedule.intervalDays))}</p>
                   </div>
                 )}
                 {schedule.intervalHours && (
                   <div>
-                    <p className="text-xs text-text-muted mb-0.5">Hour Interval</p>
-                    <p className="text-text-primary font-medium">Every {schedule.intervalHours.toLocaleString()} hrs</p>
+                    <p className="text-xs text-text-muted mb-0.5">{t('maintenance.hourInterval')}</p>
+                    <p className="text-text-primary font-medium">{t('maintenance.everyHours').replace('{n}', schedule.intervalHours.toLocaleString())}</p>
                   </div>
                 )}
                 {schedule.dueDate && (
                   <div>
-                    <p className="text-xs text-text-muted mb-0.5">Due Date</p>
+                    <p className="text-xs text-text-muted mb-0.5">{t('maintenance.dueDate')}</p>
                     <p className={[
                       'font-medium',
                       status === 'overdue' ? 'text-red-400' : status === 'due-soon' ? 'text-amber-primary' : 'text-text-primary',
@@ -173,7 +173,7 @@ export default function MaintenanceDetail() {
                 )}
                 {schedule.dueHours !== null && schedule.dueHours !== undefined && (
                   <div>
-                    <p className="text-xs text-text-muted mb-0.5">Due Hours</p>
+                    <p className="text-xs text-text-muted mb-0.5">{t('maintenance.dueHours')}</p>
                     <p className={[
                       'font-medium',
                       status === 'overdue' && schedule.dueHours <= meterHours ? 'text-red-400' : 'text-text-primary',
@@ -184,13 +184,13 @@ export default function MaintenanceDetail() {
                 )}
                 {machine && (
                   <div>
-                    <p className="text-xs text-text-muted mb-0.5">Current Hours</p>
+                    <p className="text-xs text-text-muted mb-0.5">{t('maintenance.currentHours')}</p>
                     <p className="text-text-primary font-medium">{formatMeterHours(meterHours)}</p>
                   </div>
                 )}
                 {schedule.lastCompletedDate && (
                   <div>
-                    <p className="text-xs text-text-muted mb-0.5">Last Completed</p>
+                    <p className="text-xs text-text-muted mb-0.5">{t('maintenance.lastCompleted')}</p>
                     <p className="text-text-primary font-medium">{formatDate(schedule.lastCompletedDate)}</p>
                   </div>
                 )}
@@ -205,7 +205,7 @@ export default function MaintenanceDetail() {
               onClick={() => setFormOpen(prev => !prev)}
               className="w-full flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-text-muted mb-2 hover:text-text-secondary transition-colors"
             >
-              <span>Record Completion</span>
+              <span>{t('maintenance.recordCompletion')}</span>
               {formOpen
                 ? <ChevronUp size={16} />
                 : <ChevronDown size={16} />}
@@ -215,7 +215,7 @@ export default function MaintenanceDetail() {
               <Card>
                 <div className="space-y-4">
                   <MeterInput
-                    label="Current Meter Reading"
+                    label={t('maintenance.currentMeterReading')}
                     value={meterReading}
                     onChange={setMeterReading}
                   />
@@ -262,7 +262,7 @@ export default function MaintenanceDetail() {
           {/* History section */}
           <section>
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-              Service History
+              {t('maintenance.serviceHistory')}
             </p>
 
             {events === undefined ? (
@@ -270,7 +270,7 @@ export default function MaintenanceDetail() {
                 <Spinner size="md" />
               </div>
             ) : events.length === 0 ? (
-              <p className="text-text-muted text-sm px-1">No service history recorded yet.</p>
+              <p className="text-text-muted text-sm px-1">{t('maintenance.noServiceHistory')}</p>
             ) : (
               <div className="space-y-2">
                 {events.map(event => (

@@ -52,10 +52,10 @@ function timelineRoute(type: string, id: number): string {
   }
 }
 
-function formatDateHeader(iso: string): string {
+function formatDateHeader(iso: string, t: (key: string) => string): string {
   const date = parseISO(iso);
-  if (isToday(date)) return 'Today';
-  if (isYesterday(date)) return 'Yesterday';
+  if (isToday(date)) return t('date.today');
+  if (isYesterday(date)) return t('date.yesterday');
   return format(date, 'EEE, dd MMM');
 }
 
@@ -119,7 +119,7 @@ export default function MachineDetail() {
               <AlertBanner
                 severity="warning"
                 title={`${t('machine.outForServiceAt')} ${activeServiceOrder.workshopName}`}
-                description={`${formatDate(activeServiceOrder.dateSent)}`}
+                description={`${t('machine.sentOn')} ${formatDate(activeServiceOrder.dateSent)}`}
                 action={{
                   label: t('action.viewOrder'),
                   onClick: () => navigate(`/service-orders/${activeServiceOrder.id}`),
@@ -224,7 +224,7 @@ export default function MachineDetail() {
                     <div key={dateKey}>
                       {/* Date header */}
                       <p className="text-text-muted text-xs font-medium uppercase tracking-wide mb-2">
-                        {formatDateHeader(items[0].date)}
+                        {formatDateHeader(items[0].date, t)}
                       </p>
 
                       {/* Timeline items with connecting line */}

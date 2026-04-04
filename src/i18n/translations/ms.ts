@@ -413,4 +413,51 @@ export const ms: Record<string, string> = {
   'settings.unavailable': 'Tidak tersedia',
   'settings.noTemplatesFound': 'Tiada templat dijumpai.',
   'settings.noUsersFound': 'Tiada pengguna dijumpai.',
+
+  // Error boundary
+  'error.title': 'Sesuatu telah berlaku',
+  'error.description': 'Ralat tidak dijangka berlaku. Cuba muat semula atau kembali ke skrin utama.',
+  'action.reload': 'Muat Semula',
+  'action.home': 'Utama',
+
+  // Date labels
+  'date.today': 'Hari Ini',
+  'date.yesterday': 'Semalam',
+
+  // Downtime timeline
+  'downtime.started': 'Bermula',
+  'downtime.elapsedLabel': 'berlalu',
+
+  // Maintenance detail labels
+  'maintenance.interval': 'Selang',
+  'maintenance.hourInterval': 'Selang Jam',
+  'maintenance.dueDate': 'Tarikh Perlu',
+  'maintenance.dueHours': 'Jam Perlu',
+  'maintenance.currentHours': 'Jam Semasa',
+  'maintenance.lastCompleted': 'Terakhir Selesai',
+  'maintenance.recordCompletion': 'Rekod Penyiapan',
+  'maintenance.serviceHistory': 'Sejarah Servis',
+  'maintenance.noServiceHistory': 'Tiada sejarah servis direkodkan lagi.',
+  'maintenance.currentMeterReading': 'Bacaan Meter Semasa',
+  'maintenance.everyDays': 'Setiap {n} hari',
+  'maintenance.everyHours': 'Setiap {n} jam',
+
+  // Maintenance getDueInfo
+  'maintenance.dueTodayDate': 'Perlu hari ini',
+  'maintenance.dueTomorrow': 'Perlu esok',
+  'maintenance.dueInDays': 'Perlu dalam {n} hari',
+  'maintenance.overdueByDays': 'Tertunggak {n} hari',
+  'maintenance.overdueByHours': 'Tertunggak {n} jam',
+  'maintenance.dueAtHours': 'Perlu pada {h} ({n} jam lagi)',
+  'maintenance.dueAtHoursOnly': 'Perlu pada {h}',
+  'maintenance.scheduleOk': 'Jadual OK',
+
+  // Defect detail
+  'empty.defectRemoved': 'Kerosakan ini mungkin telah dibuang.',
+
+  // Inspection
+  'inspection.noTemplateForType': 'Tiada templat pemeriksaan aktif untuk jenis mesin ini.',
+
+  // Machine detail banner
+  'machine.sentOn': 'Dihantar',
 };

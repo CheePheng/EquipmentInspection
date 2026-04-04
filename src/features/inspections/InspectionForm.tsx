@@ -126,7 +126,6 @@ export default function InspectionForm() {
         }, 3000);
       }
     } catch (err) {
-      console.error('Failed to save inspection', err);
       addToast(t('toast.inspectionFailed'), 'error');
     } finally {
       setSubmitting(false);
@@ -167,7 +166,7 @@ export default function InspectionForm() {
         <EmptyState
           icon={ClipboardList}
           title={t('inspection.noTemplate')}
-          description={`No active inspection template exists for ${machine?.type ?? 'this machine type'}.`}
+          description={t('inspection.noTemplateForType')}
           action={{ label: t('action.goBack'), onClick: () => navigate(-1) }}
         />
       </AnimatedPage>

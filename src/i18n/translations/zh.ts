@@ -413,4 +413,51 @@ export const zh: Record<string, string> = {
   'settings.unavailable': '不可用',
   'settings.noTemplatesFound': '未找到模板。',
   'settings.noUsersFound': '未找到用户。',
+
+  // Error boundary
+  'error.title': '出现错误',
+  'error.description': '发生意外错误。请尝试重新加载或返回主页。',
+  'action.reload': '重新加载',
+  'action.home': '主页',
+
+  // Date labels
+  'date.today': '今天',
+  'date.yesterday': '昨天',
+
+  // Downtime timeline
+  'downtime.started': '已开始',
+  'downtime.elapsedLabel': '已过',
+
+  // Maintenance detail labels
+  'maintenance.interval': '间隔',
+  'maintenance.hourInterval': '小时间隔',
+  'maintenance.dueDate': '到期日期',
+  'maintenance.dueHours': '到期工时',
+  'maintenance.currentHours': '当前工时',
+  'maintenance.lastCompleted': '上次完成',
+  'maintenance.recordCompletion': '记录完成',
+  'maintenance.serviceHistory': '维修历史',
+  'maintenance.noServiceHistory': '尚无维修历史记录。',
+  'maintenance.currentMeterReading': '当前仪表读数',
+  'maintenance.everyDays': '每 {n} 天',
+  'maintenance.everyHours': '每 {n} 小时',
+
+  // Maintenance getDueInfo
+  'maintenance.dueTodayDate': '今天到期',
+  'maintenance.dueTomorrow': '明天到期',
+  'maintenance.dueInDays': '{n} 天后到期',
+  'maintenance.overdueByDays': '逾期 {n} 天',
+  'maintenance.overdueByHours': '逾期 {n} 小时',
+  'maintenance.dueAtHours': '到期于 {h}（剩余 {n} 小时）',
+  'maintenance.dueAtHoursOnly': '到期于 {h}',
+  'maintenance.scheduleOk': '计划正常',
+
+  // Defect detail
+  'empty.defectRemoved': '此缺陷可能已被删除。',
+
+  // Inspection
+  'inspection.noTemplateForType': '此机器类型没有有效的检查模板。',
+
+  // Machine detail banner
+  'machine.sentOn': '送出',
 };

@@ -79,7 +79,7 @@ function ActiveDowntimeCard({ event, machineName, onStop, stopping, downtimeLabe
 
       <div className="flex items-center gap-1 text-xs text-text-secondary">
         <Timer size={12} />
-        <span>Started {formatTimeAgo(event.startTime)} · elapsed </span>
+        <span>{t('downtime.started')} {formatTimeAgo(event.startTime)} · {t('downtime.elapsedLabel')} </span>
         <span className="font-mono text-red-300">
           <ElapsedTimer startIso={event.startTime} />
         </span>

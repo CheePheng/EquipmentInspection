@@ -18,6 +18,7 @@ type FilterTab = 'all' | 'due-soon' | 'overdue';
 
 // Compute a human-readable due info string
 function getDueInfo(
+  t: (key: string) => string,
   dueDate: string | null,
   dueHours: number | null,
   meterHours: number,
@@ -28,29 +29,29 @@ function getDueInfo(
   if (status === 'overdue') {
     if (dueDate && dueDate <= todayStr) {
       const days = differenceInCalendarDays(new Date(), parseISO(dueDate));
-      if (days === 0) return 'Due today (date)';
-      return `Overdue by ${days} day${days !== 1 ? 's' : ''}`;
+      if (days === 0) return t('maintenance.dueTodayDate');
+      return t('maintenance.overdueByDays').replace('{n}', String(days));
     }
     if (dueHours !== null && dueHours <= meterHours) {
       const over = Math.round(meterHours - dueHours);
-      return `Overdue by ${over.toLocaleString()} hrs`;
+      return t('maintenance.overdueByHours').replace('{n}', over.toLocaleString());
     }
   }
 
   const parts: string[] = [];
   if (dueDate) {
     const days = differenceInCalendarDays(parseISO(dueDate), new Date());
-    if (days === 0) parts.push('Due today');
-    else if (days === 1) parts.push('Due tomorrow');
-    else parts.push(`Due in ${days} days`);
+    if (days === 0) parts.push(t('maintenance.dueTodayDate'));
+    else if (days === 1) parts.push(t('maintenance.dueTomorrow'));
+    else parts.push(t('maintenance.dueInDays').replace('{n}', String(days)));
   }
   if (dueHours !== null) {
     const remaining = Math.round(dueHours - meterHours);
-    if (remaining > 0) parts.push(`Due at ${formatMeterHours(dueHours)} (${remaining.toLocaleString()} hrs left)`);
-    else parts.push(`Due at ${formatMeterHours(dueHours)}`);
+    if (remaining > 0) parts.push(t('maintenance.dueAtHours').replace('{h}', formatMeterHours(dueHours)).replace('{n}', remaining.toLocaleString()));
+    else parts.push(t('maintenance.dueAtHoursOnly').replace('{h}', formatMeterHours(dueHours)));
   }
 
-  return parts.join(' · ') || 'Schedule OK';
+  return parts.join(' · ') || t('maintenance.scheduleOk');
 }
 
 const STATUS_BADGE_VARIANT: Record<MaintenanceStatus, 'critical' | 'medium' | 'available'> = {
@@ -71,7 +72,7 @@ function MaintenanceCard({ item }: { item: ScheduleWithMachine }) {
   };
   const machine = item.machine;
   const meterHours = machine?.currentMeterHours ?? 0;
-  const dueInfo = getDueInfo(item.dueDate, item.dueHours, meterHours, item.maintenanceStatus);
+  const dueInfo = getDueInfo(t, item.dueDate, item.dueHours, meterHours, item.maintenanceStatus);
   const isOverdue = item.maintenanceStatus === 'overdue';
 
   return (
@@ -184,15 +185,15 @@ export default function MaintenanceList() {
               icon={CalendarClock}
               title={
                 activeTab === 'overdue'
-                  ? 'No overdue services'
+                  ? t('maintenance.noOverdueServices')
                   : activeTab === 'due-soon'
-                    ? 'Nothing due soon'
-                    : 'No maintenance schedules'
+                    ? t('maintenance.nothingDueSoon')
+                    : t('maintenance.noSchedules')
               }
               description={
                 activeTab === 'all'
-                  ? 'No active maintenance schedules found.'
-                  : 'All services are up to date.'
+                  ? t('maintenance.noSchedulesDesc')
+                  : t('maintenance.allUpToDate')
               }
             />
           ) : (

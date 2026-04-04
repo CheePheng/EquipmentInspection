@@ -413,4 +413,51 @@ export const en: Record<string, string> = {
   'settings.unavailable': 'Unavailable',
   'settings.noTemplatesFound': 'No templates found.',
   'settings.noUsersFound': 'No users found.',
+
+  // Error boundary
+  'error.title': 'Something went wrong',
+  'error.description': 'An unexpected error occurred. Try reloading or go back to the home screen.',
+  'action.reload': 'Reload',
+  'action.home': 'Home',
+
+  // Date labels
+  'date.today': 'Today',
+  'date.yesterday': 'Yesterday',
+
+  // Downtime timeline
+  'downtime.started': 'Started',
+  'downtime.elapsedLabel': 'elapsed',
+
+  // Maintenance detail labels
+  'maintenance.interval': 'Interval',
+  'maintenance.hourInterval': 'Hour Interval',
+  'maintenance.dueDate': 'Due Date',
+  'maintenance.dueHours': 'Due Hours',
+  'maintenance.currentHours': 'Current Hours',
+  'maintenance.lastCompleted': 'Last Completed',
+  'maintenance.recordCompletion': 'Record Completion',
+  'maintenance.serviceHistory': 'Service History',
+  'maintenance.noServiceHistory': 'No service history recorded yet.',
+  'maintenance.currentMeterReading': 'Current Meter Reading',
+  'maintenance.everyDays': 'Every {n} days',
+  'maintenance.everyHours': 'Every {n} hrs',
+
+  // Maintenance getDueInfo
+  'maintenance.dueTodayDate': 'Due today',
+  'maintenance.dueTomorrow': 'Due tomorrow',
+  'maintenance.dueInDays': 'Due in {n} days',
+  'maintenance.overdueByDays': 'Overdue by {n} days',
+  'maintenance.overdueByHours': 'Overdue by {n} hrs',
+  'maintenance.dueAtHours': 'Due at {h} ({n} hrs left)',
+  'maintenance.dueAtHoursOnly': 'Due at {h}',
+  'maintenance.scheduleOk': 'Schedule OK',
+
+  // Defect detail
+  'empty.defectRemoved': 'This defect may have been removed.',
+
+  // Inspection
+  'inspection.noTemplateForType': 'No active inspection template exists for this machine type.',
+
+  // Machine detail banner
+  'machine.sentOn': 'Sent',
 };

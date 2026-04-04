@@ -125,7 +125,7 @@ export default function DefectDetail() {
           <EmptyState
             icon={AlertTriangle}
             title={t('empty.defectNotFound')}
-            description="This defect may have been removed."
+            description={t('empty.defectRemoved')}
             action={{ label: t('action.goBack'), onClick: () => navigate(-1) }}
           />
         </div>
