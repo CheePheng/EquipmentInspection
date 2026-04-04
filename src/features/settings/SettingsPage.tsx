@@ -36,10 +36,10 @@ export default function SettingsPage() {
     }
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistration().then((reg) => {
-        setSwStatus(reg ? 'Registered' : 'Not registered');
+        setSwStatus(reg ? 'registered' : 'not-registered');
       });
     } else {
-      setSwStatus('Not supported');
+      setSwStatus('not-supported');
     }
   }, []);
 
@@ -138,7 +138,7 @@ export default function SettingsPage() {
                 ))
               ) : (
                 <Card>
-                  <p className="text-sm text-text-muted text-center">No templates found.</p>
+                  <p className="text-sm text-text-muted text-center">{t('settings.noTemplatesFound')}</p>
                 </Card>
               )}
             </div>
@@ -201,7 +201,7 @@ export default function SettingsPage() {
                 ))
               ) : (
                 <Card>
-                  <p className="text-sm text-text-muted text-center">No users found.</p>
+                  <p className="text-sm text-text-muted text-center">{t('settings.noUsersFound')}</p>
                 </Card>
               )}
             </div>
@@ -218,23 +218,25 @@ export default function SettingsPage() {
             <Card>
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-text-secondary">Version</span>
+                  <span className="text-text-secondary">{t('settings.version')}</span>
                   <span className="text-text-primary font-medium">1.0.0</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-text-secondary">Service Worker</span>
-                  <span className="text-text-primary font-medium">{swStatus}</span>
+                  <span className="text-text-secondary">{t('settings.serviceWorker')}</span>
+                  <span className="text-text-primary font-medium">
+                    {swStatus === 'registered' ? t('settings.swRegistered') : t('settings.swNotSupported')}
+                  </span>
                 </div>
                 {storageInfo ? (
                   <>
                     <div className="flex justify-between text-sm">
-                      <span className="text-text-secondary">Storage Used</span>
+                      <span className="text-text-secondary">{t('settings.storageUsed')}</span>
                       <span className="text-text-primary font-medium">
                         {formatBytes(storageInfo.usage)}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-text-secondary">Storage Quota</span>
+                      <span className="text-text-secondary">{t('settings.storageQuota')}</span>
                       <span className="text-text-primary font-medium">
                         {formatBytes(storageInfo.quota)}
                       </span>
@@ -242,8 +244,8 @@ export default function SettingsPage() {
                   </>
                 ) : (
                   <div className="flex justify-between text-sm">
-                    <span className="text-text-secondary">Storage</span>
-                    <span className="text-text-muted font-medium">Unavailable</span>
+                    <span className="text-text-secondary">{t('settings.storage')}</span>
+                    <span className="text-text-muted font-medium">{t('settings.unavailable')}</span>
                   </div>
                 )}
               </div>

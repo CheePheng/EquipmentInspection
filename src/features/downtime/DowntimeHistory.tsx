@@ -50,6 +50,7 @@ interface ActiveCardProps {
 }
 
 function ActiveDowntimeCard({ event, machineName, onStop, stopping, downtimeLabel }: ActiveCardProps) {
+  const { t } = useTranslation();
   return (
     <div className="bg-red-900/20 border border-red-800/60 rounded-xl p-4">
       <div className="flex items-start justify-between gap-3 mb-3">
@@ -59,7 +60,7 @@ function ActiveDowntimeCard({ event, machineName, onStop, stopping, downtimeLabe
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
           </span>
-          <span className="text-xs font-semibold text-red-400 uppercase tracking-wide">Active</span>
+          <span className="text-xs font-semibold text-red-400 uppercase tracking-wide">{t('downtime.active')}</span>
         </div>
         <Button
           variant="danger"
@@ -67,7 +68,7 @@ function ActiveDowntimeCard({ event, machineName, onStop, stopping, downtimeLabe
           onClick={() => onStop(event.id!)}
           loading={stopping}
         >
-          Stop
+          {t('action.stop')}
         </Button>
       </div>
 

@@ -95,7 +95,7 @@ export default function InspectionForm() {
       // Check for existing in-progress inspection today
       const existing = await getExistingTodayInspection(machineId);
       if (existing && existing.status === 'in-progress') {
-        addToast('An in-progress inspection already exists for today. Please complete it first.', 'error');
+        addToast(t('inspection.existingInProgress'), 'error');
         setSubmitting(false);
         return;
       }

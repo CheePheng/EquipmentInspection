@@ -393,4 +393,24 @@ export const en: Record<string, string> = {
 
   // Machine fallback
   'label.machineHash': 'Machine',
+
+  // App / system
+  'action.stop': 'Stop',
+  'toast.serviceOrderUpdateFailed': 'Failed to update service order',
+  'empty.serviceOrderRemoved': 'This service order may have been removed.',
+  'empty.machineRemoved': 'This machine may have been removed.',
+  'machine.outForServiceAt': 'Out for service at',
+  'inspection.existingInProgress': 'An in-progress inspection already exists for today. Please complete it first.',
+
+  // Settings
+  'settings.version': 'Version',
+  'settings.serviceWorker': 'Service Worker',
+  'settings.swRegistered': 'Registered',
+  'settings.swNotSupported': 'Not supported',
+  'settings.storageUsed': 'Storage Used',
+  'settings.storageQuota': 'Storage Quota',
+  'settings.storage': 'Storage',
+  'settings.unavailable': 'Unavailable',
+  'settings.noTemplatesFound': 'No templates found.',
+  'settings.noUsersFound': 'No users found.',
 };

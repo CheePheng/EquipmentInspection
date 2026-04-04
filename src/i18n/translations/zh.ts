@@ -393,4 +393,24 @@ export const zh: Record<string, string> = {
 
   // Machine fallback
   'label.machineHash': '机器',
+
+  // App / system
+  'action.stop': '停止',
+  'toast.serviceOrderUpdateFailed': '更新维修工单失败',
+  'empty.serviceOrderRemoved': '此维修工单可能已被删除。',
+  'empty.machineRemoved': '此机器可能已被删除。',
+  'machine.outForServiceAt': '送修中 —',
+  'inspection.existingInProgress': '今天已有一个进行中的检查。请先完成它。',
+
+  // Settings
+  'settings.version': '版本',
+  'settings.serviceWorker': 'Service Worker',
+  'settings.swRegistered': '已注册',
+  'settings.swNotSupported': '不支持',
+  'settings.storageUsed': '已用存储',
+  'settings.storageQuota': '存储配额',
+  'settings.storage': '存储',
+  'settings.unavailable': '不可用',
+  'settings.noTemplatesFound': '未找到模板。',
+  'settings.noUsersFound': '未找到用户。',
 };

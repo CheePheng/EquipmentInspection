@@ -54,7 +54,7 @@ export default function ServiceOrderDetail() {
       await updateServiceOrderStatus(orderId, newStatus as any, extra as any);
       addToast(`${STATUS_LABELS[newStatus] ?? newStatus}`, 'success');
     } catch {
-      addToast('Failed to update service order', 'error');
+      addToast(t('toast.serviceOrderUpdateFailed'), 'error');
     } finally {
       setLoading(false);
     }
@@ -86,7 +86,7 @@ export default function ServiceOrderDetail() {
           <EmptyState
             icon={AlertTriangle}
             title={t('empty.orderNotFound')}
-            description="This service order may have been removed."
+            description={t('empty.serviceOrderRemoved')}
             action={{ label: t('action.goBack'), onClick: () => navigate(-1) }}
           />
         </div>

@@ -393,4 +393,24 @@ export const ms: Record<string, string> = {
 
   // Machine fallback
   'label.machineHash': 'Mesin',
+
+  // App / system
+  'action.stop': 'Berhenti',
+  'toast.serviceOrderUpdateFailed': 'Gagal mengemaskini pesanan servis',
+  'empty.serviceOrderRemoved': 'Pesanan servis ini mungkin telah dibuang.',
+  'empty.machineRemoved': 'Mesin ini mungkin telah dibuang.',
+  'machine.outForServiceAt': 'Dihantar servis di',
+  'inspection.existingInProgress': 'Pemeriksaan sedang berjalan sudah wujud untuk hari ini. Sila selesaikan dahulu.',
+
+  // Settings
+  'settings.version': 'Versi',
+  'settings.serviceWorker': 'Service Worker',
+  'settings.swRegistered': 'Berdaftar',
+  'settings.swNotSupported': 'Tidak disokong',
+  'settings.storageUsed': 'Storan Digunakan',
+  'settings.storageQuota': 'Kuota Storan',
+  'settings.storage': 'Storan',
+  'settings.unavailable': 'Tidak tersedia',
+  'settings.noTemplatesFound': 'Tiada templat dijumpai.',
+  'settings.noUsersFound': 'Tiada pengguna dijumpai.',
 };

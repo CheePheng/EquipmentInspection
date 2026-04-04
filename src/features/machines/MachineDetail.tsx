@@ -106,7 +106,7 @@ export default function MachineDetail() {
             <EmptyState
               icon={Cpu}
               title={t('empty.machineNotFound')}
-              description="This machine may have been removed."
+              description={t('empty.machineRemoved')}
               action={{ label: t('nav.machines'), onClick: () => navigate('/machines') }}
             />
           </div>
@@ -118,8 +118,8 @@ export default function MachineDetail() {
             {activeServiceOrder && (
               <AlertBanner
                 severity="warning"
-                title={`Out for service at ${activeServiceOrder.workshopName}`}
-                description={`Sent ${formatDate(activeServiceOrder.dateSent)}`}
+                title={`${t('machine.outForServiceAt')} ${activeServiceOrder.workshopName}`}
+                description={`${formatDate(activeServiceOrder.dateSent)}`}
                 action={{
                   label: t('action.viewOrder'),
                   onClick: () => navigate(`/service-orders/${activeServiceOrder.id}`),
